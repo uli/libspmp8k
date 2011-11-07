@@ -1,0 +1,9 @@
+
+d_main.c
+	IdentifyVersion		modified to identify as shareware
+
+m_misc.c
+	M_C.. 	removed the default.cfg reading
+
+teaser version (fails on gaming)
+http://www.2shared.com/file/11545834/8be7887c/0doom.html
