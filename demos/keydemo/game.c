@@ -1,9 +1,12 @@
 
+#include <stdio.h>
+#include <string.h>
+
 #include "libgame.h"
 #include "gfx_types.h"
 #include "font.h"
 
-#define	NULL	(void*)0
+//#define	NULL	(void*)0
 
 #ifndef HAVE_NEWLIB
 extern int sprintf(char *__s, const char *format, ...);

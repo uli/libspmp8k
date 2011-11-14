@@ -9,7 +9,7 @@
 #	build it and use it in conjunction with this libgame.
 #
 
-TOOLCHAIN=arm-elf-
+include libgame.cfg
 
 TARGET	= libgame.a
 
@@ -19,14 +19,12 @@ AR		= $(TOOLCHAIN)ar
 CPP		= $(TOOLCHAIN)cpp
 RM		= rm -f
 
-include libgame.cfg
-
 START_O	= start.o
 
 ifdef NEWLIB
 CFLAGS	= -O2 -c -I$(NEWLIB)/include -nostdlib -march=armv5 -msoft-float
-#OBJS	= start.o libgame.o glue.o dmsg.o
-OBJS	= libgame.o glue.o dmsg.o font6x8.o
+OBJS	= start.o libgame.o glue.o dmsg.o font6x8.o
+#OBJS	= libgame.o glue.o dmsg.o font6x8.o
 else
 CFLAGS	= -O2 -c -nostdlib -march=armv5 -msoft-float
 #OBJS	= start.o libgame.o

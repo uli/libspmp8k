@@ -4,8 +4,9 @@
 #
 #
 
+include ../libgame/libgame.cfg
+
 TARGET	= rgbgame
-TOOLCHAIN=arm-elf-
 
 CC		= $(TOOLCHAIN)gcc
 AS		= $(TOOLCHAIN)as
@@ -16,7 +17,7 @@ MKBING	= ../../tools/bingtools/mkbing
 RM		= rm -f
 
 CFLAGS	= -O2 -c
-ASFLAGS	= -mcpu=arm926ejs
+ASFLAGS	= -mcpu=arm9
 
 LDSCRIPT= game.ld
 
@@ -33,11 +34,11 @@ OBJS	= start.o game.o
 all		: $(OBJS)
 		$(LD) -T$(LDSCRIPT) $(OBJS) -o $(TARGET).1
 		$(OBJCOPY) -S -O binary $(TARGET).1 $(TARGET).2
-		$(MKBING) $(TARGET).2 $(TARGET).BIN
+		$(MKBING) $(TARGET).2 $(TARGET).bin
 
 clean	:
 		$(RM) $(OBJS)
 		$(RM) $(TARGET).1
 		$(RM) $(TARGET).2
-		$(RM) $(TARGET).BIN
+		$(RM) $(TARGET).bin
 

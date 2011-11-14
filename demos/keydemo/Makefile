@@ -1,17 +1,18 @@
 
-ifdef $(NEWLIB)
-undef $(NEWLIB)
-endif
+#ifdef $(NEWLIB)
+#undef $(NEWLIB)
+#endif
 
 TARGET	= keydemo
 
 TOOLS_DIR = ../../bin
-LIBGAME	= ../libgame
+
+include ../libgame/libgame.cfg
 
 # resources
 RESOBJS	= font.o
 
-ifdef $(NEWLIB)
+ifdef NEWLIB
 OBJS	= $(RESOBJS) game.o
 else
 OBJS	= $(RESOBJS) game.o printf.o

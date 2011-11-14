@@ -3,7 +3,7 @@
 #
 #
 
-TOOLCHAIN=arm-elf-
+include ../libgame/libgame.cfg
 
 CC		= $(TOOLCHAIN)gcc
 AS		= $(TOOLCHAIN)gcc

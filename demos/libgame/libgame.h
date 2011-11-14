@@ -3,6 +3,7 @@
 #define __LIBGAME_H__
 
 #include "gfx_types.h"
+#include <stdlib.h>
 
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((b & 0xf8) << 11) | ((g & 0xfc) << 5) | (r & 0x1f))
@@ -20,7 +21,7 @@ typedef unsigned short		uint16_t;
 typedef unsigned long		uint32_t;
 typedef unsigned long long	uint64_t;
 */
-typedef uint32_t	size_t;
+//typedef uint32_t	size_t;
 /*
 #define COLOR_ROP_TRANSP	0xcc	// draws opaque
 #define COLOR_ROP_NOP		0xf0

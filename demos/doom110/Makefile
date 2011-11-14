@@ -1,10 +1,8 @@
 
 TARGET	= 0doom
-
-NEWLIB	= ../../../newlib
-
 TOOLS_DIR = ../../bin
-LIBGAME	= ../libgame
+
+#include ../libgame/libgame.cfg
 
 # RESOBJS	= loading.o
 
@@ -23,7 +21,7 @@ OBJS	= ./objs/g_game.o ./objs/am_map.o ./objs/f_wipe.o  ./objs/m_random.o \
 
 # OBJS	+= $(RESOBJS)
 
-LIBS	= -lgame -lc -lgcc -lgame
+LIBS	= -lc -lgcc -lgame
 
 include ../libgame/libgame.mk
 
