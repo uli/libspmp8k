@@ -30,7 +30,7 @@
 int main(int argc, char **argv)
 {
 	char	filename[256];
-	char	str[256];
+	char	str[256] = "";
 	FILE	*fin = NULL;
 	FILE	*fout = NULL;
 	uint8_t	*data = NULL;
@@ -49,12 +49,20 @@ int main(int argc, char **argv)
 
 	// write the header file
 	strcpy(filename, argv[2]);
+	
+	if(isdigit(filename[0])) {
+		sprintf(str, "_%s", filename);
+		strcpy(filename, str);
+		memset(str, '\0', sizeof(str));
+	}
+	
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
 	strcat(filename, ".h");
 	if ((fout = fopen(filename, "w+")) == NULL) ERR("cannot create header file\n")
-	strcpy(filename, argv[2]);
+	//strcpy(filename, argv[2]);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
 	for (i=0; i<strlen(argv[2]); i++) str[i] = toupper(filename[i]);
+	
 	fprintf(fout, "\n#ifndef __%s_H__\n#define __%s_H__\n\n", str, str);
 	fprintf(fout, "#define %s_LENGTH\t%d\n\n", str, size);
 	fprintf(fout, "extern char %s_data[];\n\n", filename);
@@ -63,16 +71,16 @@ int main(int argc, char **argv)
 	fout = NULL;
 
 	// write data to .c file
-	strcpy(filename, argv[2]);
+	//strcpy(filename, argv[2]);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
 	strcat(filename, ".c");
 	if ((fout = fopen(filename, "w+")) == NULL) ERR("cannot create header file\n")
-	strcpy(filename, argv[2]);
+	//strcpy(filename, argv[2]);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
 	fprintf(fout, "\n#include \"%s.h\"\n\n", filename);
 	fprintf(fout, "char %s_data[%s_LENGTH] = {", filename, str);
 	for (i=0; i<size; i++) {
-		if ((i & 0xf) == 0) fprintf(fout, "\n\t");
+		if ((i % 12) == 0) fprintf(fout, "\n\t");
 		if (i == (size-1)) fprintf(fout, "0x%02x\n};\n\n", data[i]);
 		else fprintf(fout, "0x%02x, ", data[i]);
 	}

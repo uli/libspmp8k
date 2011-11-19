@@ -1,0 +1,148 @@
+.text:002C98F0                 LDR     R3, =Dummy1
+.text:002C98F4                 STR     R3, [R4]
+.text:002C98F8                 LDR     R3, =diag_printf
+.text:002C98FC                 STR     R3, [R4,#(gFunTable+4 - 0x5555CC)]
+.text:002C9900                 LDR     R3, =Dummy2
+.text:002C9904                 STR     R3, [R4,#(gFunTable+8 - 0x5555CC)]
+.text:002C9908                 LDR     R3, =MCatchFlush
+.text:002C990C                 STR     R3, [R4,#(gFunTable+0xC - 0x5555CC)]
+.text:002C9910                 LDR     R3, =MCatchPaint
+.text:002C9914                 STR     R3, [R4,#(gFunTable+0x10 - 0x5555CC)]
+.text:002C9918                 LDR     R3, =MCatchLoadImage
+.text:002C991C                 STR     R3, [R4,#(gFunTable+0x14 - 0x5555CC)]
+.text:002C9920                 LDR     R3, =MCatchFreeImage
+.text:002C9924                 STR     R3, [R4,#(gFunTable+0x18 - 0x5555CC)]
+.text:002C9928                 LDR     R3, =MCatchStoreImage
+.text:002C992C                 STR     R3, [R4,#(gFunTable+0x1C - 0x5555CC)]
+.text:002C9930                 LDR     R3, =Dummy3
+.text:002C9934                 STR     R3, [R4,#(gFunTable+0x20 - 0x5555CC)]
+.text:002C9938                 LDR     R3, =Dummy4
+.text:002C993C                 STR     R3, [R4,#(gFunTable+0x24 - 0x5555CC)]
+.text:002C9940                 LDR     R3, =MCatchDecodeImageFromCard
+.text:002C9944                 STR     R3, [R4,#(gFunTable+0x28 - 0x5555CC)]
+.text:002C9948                 LDR     R3, =Dummy5
+.text:002C994C                 STR     R3, [R4,#(gFunTable+0x2C - 0x5555CC)]
+.text:002C9950                 LDR     R3, =Dummy6
+.text:002C9954                 STR     R3, [R4,#(gFunTable+0x30 - 0x5555CC)]
+.text:002C9958                 LDR     R3, =Dummy7
+.text:002C995C                 STR     R3, [R4,#(gFunTable+0x34 - 0x5555CC)]
+.text:002C9960                 LDR     R3, =MCatchInitGraph
+.text:002C9964                 STR     R3, [R4,#(gFunTable+0x38 - 0x5555CC)]
+.text:002C9968                 LDR     R3, =MCatchSetColorROP
+.text:002C996C                 STR     R3, [R4,#(gFunTable+0x3C - 0x5555CC)]
+.text:002C9970                 LDR     R3, =MCatchGetColorROP
+.text:002C9974                 STR     R3, [R4,#(gFunTable+0x40 - 0x5555CC)]
+.text:002C9978                 LDR     R3, =MCatchSetFGColor
+.text:002C997C                 STR     R3, [R4,#(gFunTable+0x44 - 0x5555CC)]
+.text:002C9980                 LDR     R3, =MCatchGetFGColor
+.text:002C9984                 STR     R3, [R4,#(gFunTable+0x48 - 0x5555CC)]
+.text:002C9988                 LDR     R3, =MCatchSetBitPlaneMask
+.text:002C998C                 STR     R3, [R4,#(gFunTable+0x4C - 0x5555CC)]
+.text:002C9990                 LDR     R3, =MCatchGetBitPlaneMask
+.text:002C9994                 STR     R3, [R4,#(gFunTable+0x50 - 0x5555CC)]
+.text:002C9998                 LDR     R3, =MCatchSetDisplayScreen
+.text:002C999C                 STR     R3, [R4,#(gFunTable+0x54 - 0x5555CC)]
+.text:002C99A0                 LDR     R3, =MCatchGetDisplayScreen
+.text:002C99A4                 STR     R3, [R4,#(gFunTable+0x58 - 0x5555CC)]
+.text:002C99A8                 LDR     R3, =MCatchSetRectClip
+.text:002C99AC                 STR     R3, [R4,#(gFunTable+0x5C - 0x5555CC)]
+.text:002C99B0                 LDR     R3, =MCatchGetRectClip
+.text:002C99B4                 STR     R3, [R4,#(gFunTable+0x60 - 0x5555CC)]
+.text:002C99B8                 LDR     R3, =MCatchSetStyleMask
+.text:002C99BC                 STR     R3, [R4,#(gFunTable+0x64 - 0x5555CC)]
+.text:002C99C0                 LDR     R3, =MCatchGetStyleMask
+.text:002C99C4                 STR     R3, [R4,#(gFunTable+0x68 - 0x5555CC)]
+.text:002C99C8                 LDR     R3, =MCatchSetLineMask
+.text:002C99CC                 STR     R3, [R4,#(gFunTable+0x6C - 0x5555CC)]
+.text:002C99D0                 LDR     R3, =MCatchGetLineMask
+.text:002C99D4                 STR     R3, [R4,#(gFunTable+0x70 - 0x5555CC)]
+.text:002C99D8                 LDR     R3, =MCatchSetAlphaBld
+.text:002C99DC                 STR     R3, [R4,#(gFunTable+0x74 - 0x5555CC)]
+.text:002C99E0                 LDR     R3, =MCatchGetAlphaBld
+.text:002C99E4                 STR     R3, [R4,#(gFunTable+0x78 - 0x5555CC)]
+.text:002C99E8                 LDR     R3, =MCatchEnableFeature
+.text:002C99EC                 STR     R3, [R4,#(gFunTable+0x7C - 0x5555CC)]
+.text:002C99F0                 LDR     R3, =MCatchDisableFeature
+.text:002C99F4                 STR     R3, [R4,#(gFunTable+0x80 - 0x5555CC)]
+.text:002C99F8                 LDR     R3, =MCatchSetStyleLine
+.text:002C99FC                 STR     R3, [R4,#(gFunTable+0x84 - 0x5555CC)]
+.text:002C9A00                 LDR     R3, =MCatchPreviewColorkey
+.text:002C9A04                 STR     R3, [R4,#(gFunTable+0x88 - 0x5555CC)]
+.text:002C9A08                 LDR     R3, =MCatchSetCameraMode
+.text:002C9A0C                 STR     R3, [R4,#(gFunTable+0x8C - 0x5555CC)]
+.text:002C9A10                 LDR     R3, =MCatchSetFrameBuffer
+.text:002C9A14                 STR     R3, [R4,#(gFunTable+0x90 - 0x5555CC)]
+.text:002C9A18                 LDR     R3, =MCatchGetFrameBuffer
+.text:002C9A1C                 STR     R3, [R4,#(gFunTable+0x94 - 0x5555CC)]
+.text:002C9A20                 LDR     R3, =MCatchSetMutableImage
+.text:002C9A24                 STR     R3, [R4,#(gFunTable+0x98 - 0x5555CC)]
+.text:002C9A28                 LDR     R3, =MCatchSetPerPixelAlphaEq
+.text:002C9A2C                 STR     R3, [R4,#(gFunTable+0x9C - 0x5555CC)]
+.text:002C9A30                 LDR     R3, =MCatchSetTransformation
+.text:002C9A34                 STR     R3, [R4,#(gFunTable+0xA0 - 0x5555CC)]
+.text:002C9A38                 LDR     R3, =MCatchQueryImage
+.text:002C9A3C                 STR     R3, [R4,#(gFunTable+0xA4 - 0x5555CC)]
+.text:002C9A40                 LDR     R3, =MCatchEnableDoubleBuffer
+.text:002C9A44                 STR     R3, [R4,#(gFunTable+0xA8 - 0x5555CC)]
+.text:002C9A48                 LDR     R3, =Dummy8
+.text:002C9A4C                 STR     R3, [R4,#(gFunTable+0xAC - 0x5555CC)]
+.text:002C9A50                 LDR     R3, =Dummy9
+.text:002C9A54                 STR     R3, [R4,#(gFunTable+0xB0 - 0x5555CC)]
+.text:002C9A58                 LDR     R3, =MCatchBitblt
+.text:002C9A5C                 STR     R3, [R4,#(gFunTable+0xB4 - 0x5555CC)]
+.text:002C9A60                 LDR     R3, =MCatchSprite
+.text:002C9A64                 STR     R3, [R4,#(gFunTable+0xB8 - 0x5555CC)]
+.text:002C9A68                 LDR     R3, =Dummy10
+.text:002C9A6C                 STR     R3, [R4,#(gFunTable+0xBC - 0x5555CC)]
+.text:002C9A70                 LDR     R3, =MCatchGradientFill
+.text:002C9A74                 STR     R3, [R4,#(gFunTable+0xC0 - 0x5555CC)]
+.text:002C9A78                 LDR     R3, =MCatchFillRect
+.text:002C9A7C                 STR     R3, [R4,#(gFunTable+0xC4 - 0x5555CC)]
+.text:002C9A80                 LDR     R3, =MCatchUpdateScreen
+.text:002C9A84                 STR     R3, [R4,#(gFunTable+0xC8 - 0x5555CC)]
+.text:002C9A88                 LDR     R3, =MCatchShowFont
+.text:002C9A8C                 STR     R3, [R4,#(gFunTable+0xCC - 0x5555CC)]
+.text:002C9A90                 LDR     R3, =MCatchModifyPalette
+.text:002C9A94                 STR     R3, [R4,#(gFunTable+0xD0 - 0x5555CC)]
+.text:002C9A98                 LDR     R3, =NativeGE_initRes
+.text:002C9A9C                 STR     R3, [R4,#(gFunTable+0xD4 - 0x5555CC)]
+.text:002C9AA0                 LDR     R3, =NativeGE_getRes
+.text:002C9AA4                 STR     R3, [R4,#(gFunTable+0xD8 - 0x5555CC)]
+.text:002C9AA8                 LDR     R3, =NativeGE_playRes
+.text:002C9AAC                 STR     R3, [R4,#(gFunTable+0xDC - 0x5555CC)]
+.text:002C9AB0                 LDR     R3, =NativeGE_pauseRes
+.text:002C9AB4                 STR     R3, [R4,#(gFunTable+0xE0 - 0x5555CC)]
+.text:002C9AB8                 LDR     R3, =NativeGE_resumeRes
+.text:002C9ABC                 STR     R3, [R4,#(gFunTable+0xE4 - 0x5555CC)]
+.text:002C9AC0                 LDR     R3, =NativeGE_stopRes
+.text:002C9AC4                 STR     R3, [R4,#(gFunTable+0xE8 - 0x5555CC)]
+.text:002C9AC8                 LDR     R3, =NativeGE_writeRecord
+.text:002C9ACC                 STR     R3, [R4,#(gFunTable+0xEC - 0x5555CC)]
+.text:002C9AD0                 LDR     R3, =NativeGE_readRecord
+.text:002C9AD4                 STR     R3, [R4,#(gFunTable+0xF0 - 0x5555CC)]
+.text:002C9AD8                 MOV     R3, #0
+.text:002C9ADC                 STR     R3, [R4,#(gFunTable+0x150 - 0x5555CC)]
+.text:002C9AE0                 LDR     R3, =NativeGE_getKeyInput4Ntv
+.text:002C9AE4                 STR     R3, [R4,#(gFunTable+0x100 - 0x5555CC)]
+.text:002C9AE8                 LDR     R3, =cyg_thread_delay
+.text:002C9AEC                 STR     R3, [R4,#(gFunTable+0x11C - 0x5555CC)]
+.text:002C9AF0                 LDR     R3, =NativeGE_GetTime
+.text:002C9AF4                 STR     R3, [R4,#(gFunTable+0x124 - 0x5555CC)]
+.text:002C9AF8                 LDR     R3, =NativeGE_gameExit
+.text:002C9AFC                 STR     R3, [R4,#(gFunTable+0x130 - 0x5555CC)]
+.text:002C9B00                 LDR     R3, =NativeGE_getTPEvent
+.text:002C9B04                 STR     R3, [R4,#(gFunTable+0x134 - 0x5555CC)]
+.text:002C9B08                 LDR     R3, =NativeGE_setTPClickArea
+.text:002C9B0C                 STR     R3, [R4,#(gFunTable+0x138 - 0x5555CC)]
+.text:002C9B10                 LDR     R3, =NativeGE_fsOpen
+.text:002C9B14                 STR     R3, [R4,#(gFunTable+0x13C - 0x5555CC)]
+.text:002C9B18                 LDR     R3, =NativeGE_fsRead
+.text:002C9B1C                 STR     R3, [R4,#(gFunTable+0x140 - 0x5555CC)]
+.text:002C9B20                 LDR     R3, =NativeGE_fsWrite
+.text:002C9B24                 STR     R3, [R4,#(gFunTable+0x144 - 0x5555CC)]
+.text:002C9B28                 LDR     R3, =NativeGE_fsClose
+.text:002C9B2C                 STR     R3, [R4,#(gFunTable+0x148 - 0x5555CC)]
+.text:002C9B30                 LDR     R3, =NativeGE_fsSeek
+.text:002C9B34                 STR     R3, [R4,#(gFunTable+0x14C - 0x5555CC)]
+.text:002C9B38                 LDR     R3, =NativeGE_ShowFPS
+.text:002C9B3C                 STR     R3, [R4,#(gFunTable+0x108 - 0x5555CC)]
