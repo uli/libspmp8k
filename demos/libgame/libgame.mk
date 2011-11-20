@@ -48,6 +48,9 @@ all		: $(OBJS)
 
 %.c		: %.mid
 		$(BIN2C) $< $@
+		
+%.c		: %.wav
+		$(BIN2C) $< $@
 
 clean	:
 		$(RM) $(OBJS)

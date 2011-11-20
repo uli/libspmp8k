@@ -85,6 +85,10 @@ int libgame_init(void)
 	res_init              = FUNC(0xD4);
 	res_get               = FUNC(0xD8);
 	res_play              = FUNC(0xDC);
+	/*
+	* res_pause           = FUNC(0xE0);
+	* res_resume          = FUNC(0xE4);
+	*/
 	res_stop              = FUNC(0xE8);
 
 	fs_open               = FUNC(0x13C);
