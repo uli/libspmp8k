@@ -12,8 +12,13 @@
 #define	KEY_DOWN	2
 #define	KEY_LEFT	4
 #define	KEY_RIGHT	8
-#define	KEY_O		1 << 16
-#define	KEY_X		2 << 16
+#define	KEY_O		(1 << 16)
+#define	KEY_X		(2 << 16)
+#define	KEY_START	(1 << 13)
+
+/* Cybergame Joystick mapping */
+#define	KEY_2		KEY_O
+#define	KEY_3		KEY_X
 
 /*
 typedef unsigned char		uint8_t;
