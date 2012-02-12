@@ -5,7 +5,7 @@
 #
 #
 
-all: build-rgbgame build-libgame build-libemu build-keydemo build-doom110
+all: build-rgbgame build-libgame build-libemu build-keydemo build-doom110 build-z26
 
 clean:
 	make -C rgbgame clean
@@ -14,6 +14,7 @@ clean:
 	make -C libemu clean
 	make -C keydemo clean
 	make -C doom110 clean
+	make -C z26 clean
 
 #build-uarttest:
 #	make -C uarttest
@@ -33,4 +34,6 @@ build-keydemo:
 build-doom110:
 	make -C doom110
 
+build-z26:
+	make -C z26
 
