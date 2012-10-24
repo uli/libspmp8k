@@ -86,13 +86,13 @@ int main()
 	gfx_set_colorrop(COLOR_ROP_NOP);
 	gfx_fillrect(&rect);
 
-
 	rect.x = 30;
 	rect.y = 30;
 	rect.width = 260;
 	rect.height = 180;
 
-	color = MAKE_RGB(0,255,0);
+	color = MAKE_RGB(128,0,0);
+	gfx_enable_feature(3);
 	gfx_set_fgcolor(&color);
 	gfx_set_colorrop(COLOR_ROP_NOP);
 	gfx_fillrect(&rect);
@@ -106,21 +106,40 @@ int main()
 	gfx_set_fgcolor(&color);
 	gfx_set_colorrop(COLOR_ROP_NOP);
 	gfx_fillrect(&rect);
-/*
+///*
 	// is it used at all ?
 	for (i=0; i<320; i++) fbuff[(100*320)+i] = 0;
-*/
+//*/
 	gfx_set_colorrop(COLOR_ROP_NOP);
 	gfx_flush();
 	gfx_paint();
 
-
+	int fd = open("file.bin", FS_O_CREAT|FS_O_WRONLY, 0644);
+	write(fd, "Huhu!\n", 6);
+	close(fd);
+	
 	get_keys(&no_keys);
 //	no_keys.key2 &= ~0x5ff0;
 	while (1) {
 		get_keys(&keys);
 //		keys.key2 &= ~0x5ff0;
 		if (keys.key2 != no_keys.key2) break;
+		uint16_t *fb = (uint16_t *)0x1d80000;
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
+		}
+		fb = (uint16_t *)0x1da0000;
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
+		}
+		fb = (uint16_t *)0x1dc0000;
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
+		}
+		fb = (uint16_t *)0x1de0000;
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
+		}
 	}
 
 	return 0;
