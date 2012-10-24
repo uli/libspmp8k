@@ -36,7 +36,7 @@ typedef struct sound_params {
  * the emu function table offset, so it may be either hardcoded or found in
  * runtime.
  */
-#define EMU_FUNC_TABLE		0x0053a164
+#define EMU_FUNC_TABLE		0x004e7438
 
 #define EMU_FUNC_ENTRY(n)	*((void **)(EMU_FUNC_TABLE + (n)))
 
