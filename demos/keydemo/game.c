@@ -14,6 +14,11 @@ extern int sprintf(char *__s, const char *format, ...);
 
 void draw_string(uint8_t font_id, uint16_t x, uint16_t y, char *str);
 void draw_string_centered(uint8_t font_id, uint16_t y, char *str);
+extern void **ftab;
+uint16_t fbuff[320*240];
+uint16_t *(*int_get_framebuffer)(void);
+uint16_t *(*int_get_shadowbuffer)(void);
+void **itab = (void **)0x5a1e48;
 
 int main()
 {
@@ -32,7 +37,9 @@ int main()
 
 	// initialize the game api
 	libgame_init();
-	gfx_init(NULL, 0);
+	int_get_shadowbuffer = itab[0];
+	int_get_framebuffer = itab[1];
+	gfx_init(fbuff, sizeof(fbuff));
 
 	rect.x = 0;
 	rect.y = 0;
@@ -43,21 +50,32 @@ int main()
 	gfx_set_display_screen(&rect);//320, 240);
 
 	// pure black
-	color = MAKE_RGB(0,0,0);
+	color = MAKE_RGB(255,0,0);
 	gfx_enable_feature(3);
 	gfx_set_fgcolor(&color);
 	gfx_set_colorrop(COLOR_ROP_NOP);
 	gfx_fillrect(&rect);
 
 	// load an image
-	if (gfx_load_image(&font_img, &font_id) != 0) return;
+	if (gfx_load_image(&font_img, &font_id) != 0) return 0;
 
 	draw_string_centered(font_id, 50, "KEY DEMO");
-	gfx_set_colorrop(COLOR_ROP_TRANSP);
+	//gfx_set_colorrop(COLOR_ROP_TRANSP);
 	gfx_flush();
 	gfx_paint();
 
-	color = MAKE_RGB(0, 0, 0);
+#if 0
+	int res;
+	fs_open("file.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
+	//fs_write(fd, "Huhu!\n", 6, &res);
+	fs_write(fd, (void *)0x280000, 0x480000, &res);
+	fs_close(fd);
+	fs_open("ftab.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
+	fs_write(fd, (void *)ftab, 0x150, &res);
+	fs_close(fd);
+#endif
+	
+	color = MAKE_RGB(0, 255, 0);
 	okeys.key1 = 0;
 	okeys.key2 = 1;
 	i=0;
@@ -90,6 +108,16 @@ int main()
 			okeys.key2 = keys.key2;
 			gfx_flush();
 			gfx_paint();
+		}
+		gfx_flush();
+		gfx_paint();
+		uint16_t *fb = int_get_framebuffer();
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
+		}
+		fb = int_get_shadowbuffer();
+		for (i = 0; i < 65536; i++) {
+			fb[i] = i;
 		}
 	}
 
