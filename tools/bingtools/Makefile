@@ -5,8 +5,8 @@
 
 CC		= gcc
 CXX		= g++
-CXXFLAGS= -O2 -c
-CFLAGS	= -O2
+CXXFLAGS= -O2 -c -Wall -g
+CFLAGS	= -O2 -Wall -g
 
 MKBOBJS	= Des.o mkbing.o
 UNBOBJS = Des.o unbing.o
@@ -31,7 +31,7 @@ png2c	: png2c.c
 		$(CC) $(CFLAGS) -lpng png2c.c -o png2c
 
 clean	:
-		rm -f $(OBJS)
+		rm -f $(MKBOBJS) $(UNBOBJS)
 		rm -f mkbing
 		rm -f unbing
 		rm -f bin2c

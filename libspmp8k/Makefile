@@ -4,7 +4,7 @@
 #
 #
 
-TOOLCHAIN_PATH=/home/tripleoxygen/re/cybergame/code/toolchain/install/bin
+TOOLCHAIN_PATH=/usr/local/bin
 TOOLCHAIN=$(TOOLCHAIN_PATH)/arm-elf-
 
 TARGET	= libspmp8k.a
