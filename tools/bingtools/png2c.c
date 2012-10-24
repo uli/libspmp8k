@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 		info_ptr->width, info_ptr->height, info_ptr->bit_depth);
 
 	// clean up after the read, and free any memory allocated
-	png_read_destroy(png_ptr, info_ptr, (png_infop)0);
+	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infop)0);
 //	png_read_end(png_ptr, NULL);
 
 i_am_done:
