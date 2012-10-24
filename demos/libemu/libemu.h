@@ -30,6 +30,19 @@ typedef struct sound_params {
 	uint32_t *callback;	/* + 0x10 */ /* used only when gEmuType is 5 (flash?) */
 } sound_params_t;
 
+typedef struct graph_params {
+	uint16_t *pixels;	// goes to src_ctx + 4
+	uint32_t width;	// +4
+	uint32_t height;	// +8
+	uint32_t unknown_flag;	// +c
+	uint32_t palette;	// +10
+	uint32_t pad2;
+	uint32_t src_clip_x;	// +18
+	uint32_t src_clip_y;
+	uint32_t src_clip_w;	// +1c
+	uint32_t src_clip_h;
+} graph_params_t;
+
 /*
  * This address is for Cybergame only!
  * If the code is running as a native game (BIN), we have no information about
@@ -40,6 +53,9 @@ typedef struct sound_params {
 
 #define EMU_FUNC_ENTRY(n)	*((void **)(EMU_FUNC_TABLE + (n)))
 
+extern int (*emuIfGraphInit)(graph_params_t *);
+extern int (*emuIfGraphShow)(void);
+extern int (*emuIfGraphCleanup)(void);
 /*
 extern uint32_t (*emuIfGraphInit)()
 emuIfGraphShow
