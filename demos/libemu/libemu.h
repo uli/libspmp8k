@@ -28,7 +28,7 @@ typedef struct sound_params {
 	uint8_t depth;		/* + 0xc */
 	uint8_t channels;	/* + 0xd */
 	uint32_t *callback;	/* + 0x10 */ /* used only when gEmuType is 5 (flash?) */
-} __attribute__((packed)) sound_params_t;
+} sound_params_t;
 
 /*
  * This address is for Cybergame only!
