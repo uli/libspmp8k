@@ -19,7 +19,8 @@ OBJS	= libemu.o
 ASFLAGS	= -mcpu=arm9
 ARFLAGS	= cr
 
-all: $(OBJS)
+all: $(TARGET)
+$(TARGET): $(OBJS)
 	$(AR) $(ARFLAGS) $(TARGET) $(OBJS)
 
 %.o: %.c
@@ -33,3 +34,5 @@ all: $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) $(TARGET)
+
+libemu.c: libemu.h
