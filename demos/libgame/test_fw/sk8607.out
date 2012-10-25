@@ -1,0 +1,21 @@
+diag_printf = 002c2fdc
+gfx_init = 002f40c4
+fs_open = 002f15dc
+fs_read = 002f16ac
+fs_write = 002f170c
+g_stEmuFuncs 0049c8ac (old ABI)
+gDisplayDev 0049b158
+compiled with frame pointer
+_ecos_close 002c9ccc
+_ecos_read 002c9c6c
+_ecos_write 002c9c9c
+_ecos_lseek 002c9d28
+_ecos_fstat 002c9e3c
+_ecos_open 0029aa20
+_ecos_opendir 002c9ec4
+_ecos_cyg_error_get_errno_p 002c4324
+_ecos_cyg_fd_alloc 0029a644
+_ecos_readdir_r 002ca068
+_ecos_readdir 002ca02c
+_ecos_closedir 002c9ccc
+SPMP_SendSignal 002b82f8

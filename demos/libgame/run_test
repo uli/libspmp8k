@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+gcc-4.7 -O2 -Wall -W -DTEST_BUILD -m32 -g -o test_abi test_abi.c libgame.c
+function do_test {
+	name=$1
+	shift
+	./test_abi ./test_fw/${name}.rap $@ >out
+	diff -u out ./test_fw/${name}.out
+	rm out
+}
+# specify addresses of diag_printf, MCatchInitGraph,
+# NativeGE_fsOpen, NativeGE_fsRead, NativeGE_fsWrite
+do_test jxd100 0x297d90 0x2ced3c 0x42488c 0x4245f0 0x424594
+do_test sk8607 0x2c2fdc 0x2f40c4 0x2f15dc 0x2f16ac 0x2f170c
+do_test mmm-2 0x298b64 0x2df000 0x462a6c 0x462b40 0x462ba8
+do_test mmm-3.1 0x298b64 0x2df000 0x462a74 0x462b48 0x462bb0
+do_test a1000 0x298160 0x328d18 0x429f08 0x429c88 0x429c2c
+do_test jxd1000 0x298188 0x2dee40 0x470614 0x4706e8 0x470750
+do_test jxd-v3 0x297df4 0x2ddf3c 0x46b554 0x46b698 0x46b700
