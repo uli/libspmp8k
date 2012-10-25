@@ -102,7 +102,11 @@ static uint32_t *next_bl(uint32_t *loc) {
 	return 0;
 }
 static uint32_t *next_bl_target(uint32_t *loc) {
-	return branch_address(next_bl(loc));
+	uint32_t *next = next_bl(loc);
+	if (!next)
+		return 0;
+	else
+		return branch_address(next);
 }
 static uint32_t is_prolog(uint32_t val) {
 	return (has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
@@ -119,6 +123,8 @@ static void libemu_detect_firmware_abi()
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (*head == (uint32_t)diag_printf) {
 			uint32_t *subhead = head - 28;
+			if (subhead < FW_START_P)
+				continue;
 			new_emu_abi = 1;
 			if (!is_ptr(*subhead)) {
 				new_emu_abi = 0;
@@ -243,6 +249,8 @@ out:
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (is_prolog(*head)) {
 		   	uint32_t *subhead = next_bl(head);
+		   	if (!subhead)
+		   		continue;
 		   	if (is_branch_link(*subhead) && branch_address(subhead) != _ecos_readdir_r) {
 		   		head = subhead;
 		   		continue;
