@@ -20,17 +20,6 @@
 #define	KEY_2		KEY_O
 #define	KEY_3		KEY_X
 
-/*
-typedef unsigned char		uint8_t;
-typedef unsigned short		uint16_t;
-typedef unsigned long		uint32_t;
-typedef unsigned long long	uint64_t;
-*/
-//typedef uint32_t	size_t;
-/*
-#define COLOR_ROP_TRANSP	0xcc	// draws opaque
-#define COLOR_ROP_NOP		0xf0
-*/
 typedef struct res_entry {
 	char	filename[16];
 	uint8_t	*res_data;
