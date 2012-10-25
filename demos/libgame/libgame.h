@@ -89,7 +89,7 @@ extern void (*get_keys)(key_data_t *keys);//uint64_t *keys);
 
 // ### initializes the function pointers
 // ### (must be called before everything else!)
-int libgame_init(void);
+void libgame_init(void);
 
 // dmsg stuff
 int dmsg_init(int x, int y, int width, int height);

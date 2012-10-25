@@ -260,7 +260,7 @@ out:
 	return;
 }
 
-int libgame_init(void)
+void libgame_init(void)
 {
 	// setup function pointers
 	diag_printf               = FUNC(0x04);

@@ -49,7 +49,9 @@ int _close(int file)
 **
 **  Minimal implementation (for a system without processes):
 */
-int _execve(char *name, char **argv, char **env)
+int _execve(char *name __attribute__((unused)),
+            char **argv __attribute__((unused)),
+            char **env __attribute__((unused)))
 {
 	errno=ENOMEM;
 	return -1;
@@ -74,7 +76,7 @@ int _fork()
 **
 **  The `sys/stat.h' header file is distributed in the `include' subdirectory for this C library.
 */
-int _fstat(int file, struct stat *st)
+int _fstat(int file __attribute__((unused)), struct stat *st)
 {
 //	if (file < 3) st->st_mode = S_IFCHR;
 	st->st_mode = S_IFMT;
@@ -99,7 +101,7 @@ int _getpid()
 **  For consistency with the other minimal implementations, which only support output to stdout,
 **  this minimal implementation is suggested:
 */
-int _isatty(int file)
+int _isatty(int file __attribute__((unused)))
 {
 //	if (file < 2) return 1;
 	return 0;
@@ -110,7 +112,7 @@ int _isatty(int file)
 **
 **  Minimal implementation:
 */
-int _kill(int pid, int sig)
+int _kill(int pid __attribute__((unused)), int sig __attribute__((unused)))
 {
 	errno=EINVAL;
 	return(-1);
@@ -121,7 +123,7 @@ int _kill(int pid, int sig)
 **
 **  Minimal implementation:
 */
-int _link(char *old, char *new)
+int _link(char *old __attribute__((unused)), char *new __attribute__((unused)))
 {
 	errno=EMLINK;
 	return -1;
@@ -147,7 +149,7 @@ int _lseek(int file, int ptr, int dir)
 //#ifdef DBG
 //extern int fbuff_printf(char *format, ...);
 //#endif
-int _open(const char *name, int flags, int mode)
+int _open(const char *name, int flags, int mode __attribute__((unused)))
 {
 	int fd, _flags;
 	
@@ -215,7 +217,7 @@ caddr_t _sbrk(int incr)
 **
 **  Minimal implementation:
 */
-int _stat(const char *file, struct stat *st)
+int _stat(const char *file __attribute__((unused)), struct stat *st)
 {
 //	st->st_mode = S_IFCHR;
 	st->st_mode = S_IFMT;
@@ -227,7 +229,7 @@ int _stat(const char *file, struct stat *st)
 **
 **  Minimal implementation:
 */
-clock_t _times(struct tms *buf)
+clock_t _times(struct tms *buf __attribute__((unused)))
 {
 	return -1;
 }
@@ -237,7 +239,7 @@ clock_t _times(struct tms *buf)
 **
 **  Minimal implementation:
 */
-int _unlink(char *name)
+int _unlink(char *name __attribute__((unused)))
 {
 	errno=ENOENT;
 	return -1; 
@@ -248,7 +250,7 @@ int _unlink(char *name)
 **
 **  Minimal implementation:
 */
-int _wait(int *status)
+int _wait(int *status __attribute__((unused)))
 {
 	errno=ECHILD;
 	return -1;
