@@ -79,6 +79,8 @@ void *_ecos_cyg_fd_alloc = 0;
 int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
                    unsigned int count) = 0;
 int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
+int (*_ecos_closedir)(DIR *dirp) = 0;
+
 int has_frame_pointer;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 
@@ -161,6 +163,7 @@ static void libemu_detect_firmware_abi()
 		return;
 	_ecos_close = (void *)next_bl_target(g_stEmuFuncs[new_emu_abi ? 20 : 19]);
 	has_frame_pointer = 0;
+	_ecos_closedir = (void *)_ecos_close;
 	if (*((uint32_t *)_ecos_close) == 0xe1a0c00d /* MOV R12, SP */) {
 		has_frame_pointer = 1;
 	}

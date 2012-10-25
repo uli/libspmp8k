@@ -120,6 +120,7 @@ extern void *_ecos_cyg_fd_alloc;
 extern int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
                    unsigned int count);
 extern int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result);
+extern int (*_ecos_closedir)(DIR *dirp);
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 
 #endif // __LIBGAME_H__
