@@ -24,7 +24,7 @@ void **ftab;
 //extern char *heap_ending;
 extern int heap_ending;
 
-void (*_dprintf)(char *fmt, ...);
+void (*diag_printf)(char *fmt, ...);
 
 int (*gfx_init)(void *buffer, int buffsize);
 int (*gfx_set_framebuffer)(int width, int height);
@@ -63,7 +63,7 @@ void (*get_keys)(key_data_t *keys);//uint64_t *keys);
 int libgame_init(void)
 {
 	// setup function pointers
-	_dprintf               = FUNC(0x04);
+	diag_printf               = FUNC(0x04);
 	gfx_init              = FUNC(0x38);
 	gfx_set_framebuffer   = FUNC(0x90);
 	gfx_set_display_screen= FUNC(0x54);

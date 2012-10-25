@@ -42,7 +42,7 @@ typedef struct key_data {
 } key_data_t;
 
 // the printf (to serial)
-extern void (*_dprintf)(char *fmt, ...);
+extern void (*diag_printf)(char *fmt, ...);
 
 // graphics stuff
 extern int (*gfx_init)(void *buffer, int buffsize);
