@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdio.h>
 #include "libgame.h"
 
 // the tiny font
@@ -80,6 +82,7 @@ int dmsg_init(int x, int y, int width, int height)
 	gfx_load_image(&dmsg_buff_img, &dmsg_buff_id);
 	
 	gfx_set_colorrop(0xcc);
+	return 0;
 }
 
 void dmsg_shutdown(void)
