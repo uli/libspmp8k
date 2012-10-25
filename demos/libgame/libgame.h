@@ -110,5 +110,21 @@ void dmsg_clear(void);
 int dmsg_puts(char *__s);
 int dmsg_printf(char *format, ...);
 
+extern void **g_stEmuFuncs;
+extern void **gDisplayDev;
+extern int (*_ecos_close)(int fd);
+extern int (*_ecos_read)(int fd, void *buf, unsigned int count);
+extern int (*_ecos_write)(int fd, const void *buf, unsigned int count);
+extern int (*_ecos_lseek)(int fd, int offset, int whence);
+extern int (*_ecos_fstat)(int fd, /* struct stat */ void *buf);
+extern int (*_ecos_open)(const char *pathname, int flags, int mode);
+extern void *(*_ecos_opendir)(const char *name);
+extern void *_ecos_cyg_error_get_errno_p;
+extern void *_ecos_cyg_fd_alloc;
+extern int (*_ecos_readdir)(unsigned int fd, void *dirp,
+                   unsigned int count);
+extern int (*_ecos_readdir_r)(void *dirp, void *entry, void **result);
+extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
+
 #endif // __LIBGAME_H__
 

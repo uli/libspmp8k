@@ -60,6 +60,206 @@ void (*get_keys)(key_data_t *keys);//uint64_t *keys);
 
 #define	FUNC(n)		*(ftab + (n >> 2))
 
+#define FW_START 0x280000
+#define FW_START_P ((uint32_t *)FW_START)
+#define FW_END 0xa00000
+#define FW_END_P ((uint32_t *)FW_END)
+
+void **g_stEmuFuncs = 0;
+void **gDisplayDev = 0;
+int (*_ecos_close)(int fd) = 0;
+int (*_ecos_read)(int fd, void *buf, unsigned int count) = 0;
+int (*_ecos_write)(int fd, const void *buf, unsigned int count) = 0;
+int (*_ecos_lseek)(int fd, int offset, int whence) = 0;
+int (*_ecos_fstat)(int fd, /* struct stat */ void *buf) = 0;
+int (*_ecos_open)(const char *pathname, int flags, int mode) = 0;
+void *(*_ecos_opendir)(const char *name) = 0;
+void *_ecos_cyg_error_get_errno_p = 0;
+void *_ecos_cyg_fd_alloc = 0;
+int (*_ecos_readdir)(unsigned int fd, void *dirp,
+                   unsigned int count) = 0;
+int (*_ecos_readdir_r)(void *dirp, void *entry, void **result) = 0;
+int has_frame_pointer;
+uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
+
+static int is_ptr(uint32_t val) {
+	return (val >= FW_START && val < FW_END);
+}
+static int is_branch_link(uint32_t val) {
+	return (val & 0xff000000U) == 0xeb000000U;
+}
+static void *branch_address(uint32_t *loc) {
+	int32_t diff = ((int32_t)(*loc << 8)) >> 8;
+	return (void *)(loc + diff + 2);
+}
+static uint32_t *next_bl(uint32_t *loc) {
+	uint32_t *head;
+	for (head = loc; head < loc + 100; head++) {
+		if (is_branch_link(*head)) {
+			return head;
+		}
+	}
+	return 0;
+}
+static uint32_t *next_bl_target(uint32_t *loc) {
+	return branch_address(next_bl(loc));
+}
+static uint32_t is_prolog(uint32_t val) {
+	return (has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
+	        (!has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
+}
+
+static void libemu_detect_firmware_abi()
+{
+	int new_emu_abi = -1;
+	uint32_t *head;
+	uint32_t *start;
+	
+	/* Find g_stEmuFuncs */
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (*head == (uint32_t)diag_printf) {
+			uint32_t *subhead = head - 28;
+			new_emu_abi = 1;
+			if (!is_ptr(*subhead)) {
+				new_emu_abi = 0;
+				subhead = head - 20;
+			}
+			g_stEmuFuncs = (void **)subhead;
+			for (; subhead < head; subhead++) {
+				if (!is_ptr(*subhead)) {
+					g_stEmuFuncs = NULL;
+					break;
+				}
+			}
+		}
+		if (g_stEmuFuncs)
+			break;
+	}
+	
+	/* Find gDisplayDev */
+	int getGameBuffWidth_found = 0;
+	start = (uint32_t *)gfx_init;
+	for (head = start; head < start + 100; head++) {
+		if ((*head & 0xff000000U) == 0xeb000000U) {
+			getGameBuffWidth_found = 1;
+		}
+		if (getGameBuffWidth_found && (*head & 0xffff0000U) ==
+		    0xe59f0000U /* LDR Rx, [PC, #...] */) {
+			gDisplayDev = (void **)*(head + (*head & 0xfff) / 4 + 2);
+			break;
+		}
+	}
+	
+	/* Find eCos close and determine if built with frame pointer */
+	if (!g_stEmuFuncs)
+		return;
+	_ecos_close = (void *)next_bl_target(g_stEmuFuncs[new_emu_abi ? 20 : 19]);
+	has_frame_pointer = 0;
+	if (*((uint32_t *)_ecos_close) == 0xe1a0c00d /* MOV R12, SP */) {
+		has_frame_pointer = 1;
+	}
+	
+	/* Find eCos read/write */
+	start = (uint32_t *)fs_read;
+	for (head = start; head < start + 200; head++) {
+		if (is_branch_link(*head)) {
+			if (branch_address(head) == (uint32_t *)diag_printf)
+				continue;
+			_ecos_read = branch_address(head);
+			break;
+		}
+	}
+	start = (uint32_t *)fs_write;
+	for (head = start; head < start + 200; head++) {
+		if (is_branch_link(*head)) {
+			/* skip debug output calls */
+			if (branch_address(head) == (uint32_t *)diag_printf)
+				continue;
+			_ecos_write = branch_address(head);
+			break;
+		}
+	}
+
+	/* Find lseek, fstat */
+	_ecos_lseek = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x4c : 0x48) / 4]);
+	_ecos_fstat = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x38 : 0x34) / 4]);
+	
+	/* Find open */
+	if (!_ecos_fstat)
+		return;
+
+	start = (uint32_t *)fs_open;
+	void *previous = 0;
+	for (head = start; head < start + 400; head++) {
+		if (!is_branch_link(*head))
+			continue;
+		if (branch_address(head) == _ecos_fstat) {
+			/* previous branch went to open */
+			break;
+		}
+		previous = branch_address(head);
+	}
+	_ecos_open = previous;
+	
+	/* Find cyg_fd_alloc, cyg_error_get_errno_p; they are needed to find
+	   opendir and readdir */
+	if (!_ecos_open)
+		return;
+	start = (uint32_t *)_ecos_open;
+	for (head = start; head < start + 200; head++) {
+		if (is_branch_link(*head)) {
+			if (!_ecos_cyg_error_get_errno_p)
+				_ecos_cyg_error_get_errno_p = branch_address(head);
+			else {
+				_ecos_cyg_fd_alloc = branch_address(head);
+				break;
+			}
+		}
+	}
+	
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+			if (next_bl_target(head) == _ecos_cyg_fd_alloc) {
+				_ecos_opendir = (void *)head;
+				break;
+			}
+		}
+	}
+
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+		   	uint32_t *subhead;
+		   	for (subhead = head + 1; subhead < head + 100 && !is_prolog(*subhead); subhead++) {
+				if (*subhead == 0xe3a02f41 /* MOV R2, #0x104 */ &&
+				    next_bl_target(subhead) == (void *)_ecos_read
+				   ) {
+					_ecos_readdir_r = (void *)head;
+					goto out;
+				}
+			}
+		}
+	}
+out:
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+		   	uint32_t *subhead = next_bl(head);
+		   	if (is_branch_link(*subhead) && branch_address(subhead) != _ecos_readdir_r) {
+		   		head = subhead;
+		   		continue;
+			}
+			subhead = next_bl(subhead + 1);
+			if (branch_address(subhead) == _ecos_cyg_error_get_errno_p) {
+				_ecos_readdir = (void *)head;
+				break;
+			}
+		}
+	}
+	
+	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x28 : 0x24) / 4]);
+	
+	return;
+}
+
 int libgame_init(void)
 {
 	// setup function pointers
@@ -102,5 +302,7 @@ int libgame_init(void)
 	
 //	heap_ending = (char*)0;
 	heap_ending = 0;
+	
+	libemu_detect_firmware_abi();
 }
 
