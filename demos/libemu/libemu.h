@@ -80,7 +80,7 @@ emuIfFsFileSeek
 emuIfFsFileCurPos
 emuIfFsFileClose
 */
-extern uint32_t (*diag_printf)(char *fmt, ...);
+//extern uint32_t (*diag_printf)(char *fmt, ...);
 extern void libemu_init(void);
 
 #endif /* _LIBEMU_H_ */

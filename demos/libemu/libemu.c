@@ -24,7 +24,7 @@ int (*emuIfGraphCleanup)(void);
 uint32_t (*emuIfSoundInit)(sound_params_t *params);
 uint32_t (*emuIfSoundPlay)(sound_params_t *params);
 uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
-uint32_t (*diag_printf)(char *fmt, ...);
+//uint32_t (*diag_printf)(char *fmt, ...);
 
 void libemu_init(void)
 {
@@ -34,5 +34,5 @@ void libemu_init(void)
 	emuIfSoundInit		= EMU_FUNC_ENTRY(0x14);
 	emuIfSoundPlay		= EMU_FUNC_ENTRY(0x18);
 	emuIfSoundCleanup	= EMU_FUNC_ENTRY(0x1c);
-	diag_printf		= EMU_FUNC_ENTRY(0x70);
+	//diag_printf		= EMU_FUNC_ENTRY(0x70);
 }
