@@ -4,6 +4,7 @@
 
 #include "gfx_types.h"
 #include <stdlib.h>
+#include <sys/types.h>
 
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((b & 0xf8) << 11) | ((g & 0xfc) << 5) | (r & 0x1f))
@@ -99,6 +100,12 @@ void dmsg_clear(void);
 int dmsg_puts(char *__s);
 int dmsg_printf(char *format, ...);
 
+typedef void DIR;
+#define NAME_MAX 255
+struct dirent {
+  mode_t d_mode;
+  char d_name[NAME_MAX + 1];
+};
 extern void **g_stEmuFuncs;
 extern void **gDisplayDev;
 extern int (*_ecos_close)(int fd);
@@ -107,12 +114,12 @@ extern int (*_ecos_write)(int fd, const void *buf, unsigned int count);
 extern int (*_ecos_lseek)(int fd, int offset, int whence);
 extern int (*_ecos_fstat)(int fd, /* struct stat */ void *buf);
 extern int (*_ecos_open)(const char *pathname, int flags, int mode);
-extern void *(*_ecos_opendir)(const char *name);
+extern DIR *(*_ecos_opendir)(const char *name);
 extern void *_ecos_cyg_error_get_errno_p;
 extern void *_ecos_cyg_fd_alloc;
-extern int (*_ecos_readdir)(unsigned int fd, void *dirp,
+extern int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
                    unsigned int count);
-extern int (*_ecos_readdir_r)(void *dirp, void *entry, void **result);
+extern int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result);
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 
 #endif // __LIBGAME_H__

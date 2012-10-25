@@ -73,12 +73,12 @@ int (*_ecos_write)(int fd, const void *buf, unsigned int count) = 0;
 int (*_ecos_lseek)(int fd, int offset, int whence) = 0;
 int (*_ecos_fstat)(int fd, /* struct stat */ void *buf) = 0;
 int (*_ecos_open)(const char *pathname, int flags, int mode) = 0;
-void *(*_ecos_opendir)(const char *name) = 0;
+DIR *(*_ecos_opendir)(const char *name) = 0;
 void *_ecos_cyg_error_get_errno_p = 0;
 void *_ecos_cyg_fd_alloc = 0;
-int (*_ecos_readdir)(unsigned int fd, void *dirp,
+int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
                    unsigned int count) = 0;
-int (*_ecos_readdir_r)(void *dirp, void *entry, void **result) = 0;
+int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
 int has_frame_pointer;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 
