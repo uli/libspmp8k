@@ -81,8 +81,9 @@ int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
 int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
 int (*_ecos_closedir)(DIR *dirp) = 0;
 
-int has_frame_pointer;
+int _has_frame_pointer = -1;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
+int _new_emu_abi = -1;
 
 static int is_ptr(uint32_t val) {
 	return (val >= FW_START && val < FW_END);
@@ -111,13 +112,12 @@ static uint32_t *next_bl_target(uint32_t *loc) {
 		return branch_address(next);
 }
 static uint32_t is_prolog(uint32_t val) {
-	return (has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
-	        (!has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
+	return (_has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
+	        (!_has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
 }
 
 static void libemu_detect_firmware_abi()
 {
-	int new_emu_abi = -1;
 	uint32_t *head;
 	uint32_t *start;
 	
@@ -127,9 +127,9 @@ static void libemu_detect_firmware_abi()
 			uint32_t *subhead = head - 28;
 			if (subhead < FW_START_P)
 				continue;
-			new_emu_abi = 1;
+			_new_emu_abi = 1;
 			if (!is_ptr(*subhead)) {
-				new_emu_abi = 0;
+				_new_emu_abi = 0;
 				subhead = head - 20;
 			}
 			g_stEmuFuncs = (void **)subhead;
@@ -161,11 +161,11 @@ static void libemu_detect_firmware_abi()
 	/* Find eCos close and determine if built with frame pointer */
 	if (!g_stEmuFuncs)
 		return;
-	_ecos_close = (void *)next_bl_target(g_stEmuFuncs[new_emu_abi ? 20 : 19]);
-	has_frame_pointer = 0;
+	_ecos_close = (void *)next_bl_target(g_stEmuFuncs[_new_emu_abi ? 20 : 19]);
 	_ecos_closedir = (void *)_ecos_close;
+	_has_frame_pointer = 0;
 	if (*((uint32_t *)_ecos_close) == 0xe1a0c00d /* MOV R12, SP */) {
-		has_frame_pointer = 1;
+		_has_frame_pointer = 1;
 	}
 	
 	/* Find eCos read/write */
@@ -190,8 +190,8 @@ static void libemu_detect_firmware_abi()
 	}
 
 	/* Find lseek, fstat */
-	_ecos_lseek = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x4c : 0x48) / 4]);
-	_ecos_fstat = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x38 : 0x34) / 4]);
+	_ecos_lseek = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x4c : 0x48) / 4]);
+	_ecos_fstat = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x38 : 0x34) / 4]);
 	
 	/* Find open */
 	if (!_ecos_fstat)
@@ -266,7 +266,7 @@ out:
 		}
 	}
 	
-	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(new_emu_abi ? 0x28 : 0x24) / 4]);
+	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x28 : 0x24) / 4]);
 	
 	return;
 }
