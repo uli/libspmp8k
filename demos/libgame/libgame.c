@@ -116,7 +116,10 @@ static uint32_t is_prolog(uint32_t val) {
 	        (!_has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
 }
 
-static void libemu_detect_firmware_abi()
+#ifndef TEST_BUILD
+static
+#endif
+void libgame_detect_firmware_abi()
 {
 	uint32_t *head;
 	uint32_t *start;
@@ -314,6 +317,6 @@ void libgame_init(void)
 //	heap_ending = (char*)0;
 	heap_ending = 0;
 	
-	libemu_detect_firmware_abi();
+	libgame_detect_firmware_abi();
 }
 
