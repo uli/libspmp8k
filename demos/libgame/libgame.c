@@ -86,20 +86,25 @@ int (*_ecos_unlink)(const char *pathname) = 0;
 int (*_ecos_rmdir)(const char *pathname) = 0;
 int (*_ecos_mkdir)(const char *pathname, _ecos_mode_t mode) = 0;
 
-int _has_frame_pointer = -1;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
+
+int _has_frame_pointer = -1;	/* required to find function entry points */
 int _new_emu_abi = -1;
 
+/* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val) {
 	return (val >= FW_START && val < FW_END);
 }
+/* returns true if val is an unconditional BL insn */
 static int is_branch_link(uint32_t val) {
 	return (val & 0xff000000U) == 0xeb000000U;
 }
+/* returns the target of the branch at loc */
 static void *branch_address(uint32_t *loc) {
 	int32_t diff = ((int32_t)(*loc << 8)) >> 8;
 	return (void *)(loc + diff + 2);
 }
+/* returns the address of the next unconditional BL insn */
 static uint32_t *next_bl(uint32_t *loc) {
 	uint32_t *head;
 	for (head = loc; head < loc + 100; head++) {
@@ -109,6 +114,7 @@ static uint32_t *next_bl(uint32_t *loc) {
 	}
 	return 0;
 }
+/* returns the target of the next unconditional BL insn */
 static uint32_t *next_bl_target(uint32_t *loc) {
 	uint32_t *next = next_bl(loc);
 	if (!next)
@@ -116,11 +122,17 @@ static uint32_t *next_bl_target(uint32_t *loc) {
 	else
 		return branch_address(next);
 }
+/* Returns true if val is an instruction you would expect at the start of
+   a function, being either a MOV R12, SP for firmwares compiled with
+   frame pointer, or an STMFD SP!, {...} for firmwares compiled without.
+   In the latter case, this technique fails on very small functions that
+   save zero or one register (using STR). */
 static uint32_t is_prolog(uint32_t val) {
 	return (_has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
 	        (!_has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
 }
 
+/* Find a filesystem function via the filesystem method it uses. */
 static uint32_t *find_fs_function(int index) {
 	uint32_t *head;
 	for (head = FW_START_P; head < FW_END_P; head++) {
@@ -132,7 +144,7 @@ static uint32_t *find_fs_function(int index) {
 					break;
 				if (is_branch_link(*subhead) && branch_address(subhead) == _ecos_cyg_error_get_errno_p)
 					errno_p_found = 1;
-				else if (errno_p_found && (*subhead & 0xfff0ffffU) == (0xe590f000U + index) /* MOV PC, [Rx, #index] */) {
+				else if (errno_p_found && (*subhead & 0xfff0ffffU) == (0xe590f000U + index) /* MOV PC, [Rx, #offset] */) {
 					return head;
 				}
 			}
@@ -254,6 +266,8 @@ void libgame_detect_firmware_abi()
 		}
 	}
 	
+	/* There are only two functions that use cyg_fd_alloc(), and only
+	   opendir() calls it first. */
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (is_prolog(*head)) {
 			if (next_bl_target(head) == _ecos_cyg_fd_alloc) {
@@ -263,6 +277,8 @@ void libgame_detect_firmware_abi()
 		}
 	}
 
+	/* Find readdir_r() on the assumption that it's the only function
+	   reading a block of 0x104 bytes. */
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (is_prolog(*head)) {
 		   	uint32_t *subhead;
@@ -277,6 +293,10 @@ void libgame_detect_firmware_abi()
 		}
 	}
 out:
+
+	/* readdir() calls readdir_r(), but so does another function, so
+	   we make sure we have the right one by checking for a call to
+	   cyg_error_get_errno_p(). */
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (is_prolog(*head)) {
 		   	uint32_t *subhead = next_bl(head);
@@ -301,8 +321,15 @@ out:
 	_ecos_mkdir = (void *)find_fs_function(0x1c);
 	_ecos_rmdir = (void *)find_fs_function(0x20);
 	_ecos_stat = (void *)find_fs_function(0x34);
+
+	/* This could go wrong because two other exported eCos functions use
+	   the getinfo() method at offset 0x38 (pathconf() and
+	   cyg_fs_get_attrib()), but we seem to be lucky: I could not find any
+	   trace of them in the firmwares investigated. */
 	_ecos_getcwd = (void *)find_fs_function(0x38);
+
 	_ecos_chdir = (void *)find_fs_function(0x30);
+
 	return;
 }
 
