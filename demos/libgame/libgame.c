@@ -85,6 +85,7 @@ int (*_ecos_chdir)(const char *path) = 0;
 int (*_ecos_unlink)(const char *pathname) = 0;
 int (*_ecos_rmdir)(const char *pathname) = 0;
 int (*_ecos_mkdir)(const char *pathname, _ecos_mode_t mode) = 0;
+int (*_ecos_fsync)(int fd) = 0;
 
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 
@@ -317,6 +318,7 @@ out:
 	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x28 : 0x24) / 4]);
 	
 	/* Find various file functions */
+	_ecos_fsync = (void *)find_fs_function(0x14);
 	_ecos_unlink = (void *)find_fs_function(0x18);
 	_ecos_mkdir = (void *)find_fs_function(0x1c);
 	_ecos_rmdir = (void *)find_fs_function(0x20);
