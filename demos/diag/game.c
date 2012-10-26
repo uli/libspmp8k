@@ -81,8 +81,28 @@ int main()
 	fs_fprintf(fd, "_ecos_cyg_fd_alloc %08x\n", (uint32_t)_ecos_cyg_fd_alloc);
 	fs_fprintf(fd, "_ecos_readdir_r %08x\n", (uint32_t)_ecos_readdir_r);
 	fs_fprintf(fd, "_ecos_readdir %08x\n", (uint32_t)_ecos_readdir);
+	fs_fprintf(fd, "_ecos_stat %08x\n", (uint32_t)_ecos_stat);
 	fs_fprintf(fd, "SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
-	fs_close(fd);
+	//fs_close(fd);
 	
+	DIR *dp = _ecos_opendir(".");
+	if (!dp) {
+	  fs_fprintf(fd, "opendir failed\n");
+	  fs_close(fd);
+	  return 0;
+        }
+        struct dirent *de;
+        while ((de = _ecos_readdir(dp))) {
+          fs_fprintf(fd, "file %s\n", de->d_name);
+          struct _ecos_stat st;
+          if (_ecos_stat(de->d_name, &st) < 0) {
+            fs_fprintf(fd, "stat failed\n");
+            fs_close(fd);
+            return 0;
+          }
+          fs_fprintf(fd, "size %d dir %d reg %d\n", st.st_size, _ECOS_S_ISDIR(st.st_mode), _ECOS_S_ISREG(st.st_mode));
+        }
+        _ecos_closedir(dp);
+        fs_close(fd);
 	return 0;
 }

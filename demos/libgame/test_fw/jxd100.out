@@ -18,4 +18,5 @@ _ecos_cyg_fd_alloc 002a4f80
 _ecos_readdir_r 002a5c60
 _ecos_readdir 002a5cb0
 _ecos_closedir 002da56c
+_ecos_stat 002a5174
 SPMP_SendSignal 002c7660

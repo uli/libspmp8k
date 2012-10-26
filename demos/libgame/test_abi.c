@@ -64,6 +64,7 @@ int main(int argc, char **argv)
   printf("_ecos_readdir_r %08x\n", (uint32_t)_ecos_readdir_r);
   printf("_ecos_readdir %08x\n", (uint32_t)_ecos_readdir);
   printf("_ecos_closedir %08x\n", (uint32_t)_ecos_closedir);
+  printf("_ecos_stat %08x\n", (uint32_t)_ecos_stat);
   printf("SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
   return 0;
 }
