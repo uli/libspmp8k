@@ -106,6 +106,37 @@ struct dirent {
   /* no d_type :( */
   char d_name[NAME_MAX + 1];
 };
+
+typedef short _ecos_dev_t;
+typedef unsigned int _ecos_ino_t;
+typedef unsigned int _ecos_mode_t;
+typedef unsigned short _ecos_nlink_t;
+typedef int _ecos_time_t;
+typedef unsigned short _ecos_uid_t;
+typedef unsigned short _ecos_gid_t;
+typedef int _ecos_off_t;
+
+#undef st_atime
+#undef st_mtime
+#undef st_ctime
+#define _ecos___stat_mode_DIR    (1<<0)
+#define _ecos___stat_mode_REG    (1<<3)
+#define _ECOS_S_ISREG(__mode)  ((__mode) & _ecos___stat_mode_REG )
+#define _ECOS_S_ISDIR(__mode)  ((__mode) & _ecos___stat_mode_DIR )
+
+struct _ecos_stat {
+    _ecos_mode_t  st_mode;     /* File mode */
+    _ecos_ino_t   st_ino;      /* File serial number */
+    _ecos_dev_t   st_dev;      /* ID of device containing file */
+    _ecos_nlink_t st_nlink;    /* Number of hard links */
+    _ecos_uid_t   st_uid;      /* User ID of the file owner */
+    _ecos_gid_t   st_gid;      /* Group ID of the file's group */
+    _ecos_off_t   st_size;     /* File size (regular files only) */
+    _ecos_time_t  st_atime;    /* Last access time */
+    _ecos_time_t  st_mtime;    /* Last data modification time */
+    _ecos_time_t  st_ctime;    /* Last file status change time */
+};
+
 extern void **g_stEmuFuncs;
 extern void **gDisplayDev;
 extern int (*_ecos_close)(int fd);
@@ -120,6 +151,8 @@ extern void *_ecos_cyg_fd_alloc;
 extern struct dirent *(*_ecos_readdir)(DIR *dirp);
 extern int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result);
 extern int (*_ecos_closedir)(DIR *dirp);
+extern int (*_ecos_stat)(const char *path, struct _ecos_stat *buf);
+
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 
 #endif // __LIBGAME_H__

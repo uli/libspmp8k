@@ -79,6 +79,7 @@ void *_ecos_cyg_fd_alloc = 0;
 struct dirent *(*_ecos_readdir)(DIR *dirp) = 0;
 int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
 int (*_ecos_closedir)(DIR *dirp) = 0;
+int (*_ecos_stat)(const char *path, struct _ecos_stat *buf) = 0;
 
 int _has_frame_pointer = -1;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
@@ -270,6 +271,24 @@ out:
 	
 	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x28 : 0x24) / 4]);
 	
+	/* Find stat */
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+			uint32_t *subhead;
+			int errno_p_found = 0;
+			for (subhead = head + 1; subhead < FW_END_P; subhead++) {
+				if (is_prolog(*subhead))	/* start of next function */
+					break;
+				if (is_branch_link(*subhead) && branch_address(subhead) == _ecos_cyg_error_get_errno_p)
+					errno_p_found = 1;
+				else if (errno_p_found && (*subhead & 0xfff0ffffU) == 0xe590f034U /* MOV PC, [Rx, #0x34] */) {
+					_ecos_stat = (void *)head;
+					goto out2;
+				}
+			}
+		}
+	}
+out2:
 	return;
 }
 
