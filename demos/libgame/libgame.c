@@ -80,6 +80,8 @@ struct dirent *(*_ecos_readdir)(DIR *dirp) = 0;
 int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
 int (*_ecos_closedir)(DIR *dirp) = 0;
 int (*_ecos_stat)(const char *path, struct _ecos_stat *buf) = 0;
+char *(*_ecos_getcwd)(char *buf, size_t size) = 0;
+int (*_ecos_chdir)(const char *path) = 0;
 
 int _has_frame_pointer = -1;
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
@@ -114,6 +116,26 @@ static uint32_t *next_bl_target(uint32_t *loc) {
 static uint32_t is_prolog(uint32_t val) {
 	return (_has_frame_pointer && val == 0xe1a0c00d /* MOV R12, SP */) ||
 	        (!_has_frame_pointer && (val & 0xffff0000U) == 0xe92d0000 /* STMFD SP!, {...} */);
+}
+
+static uint32_t *find_fs_function(int index) {
+	uint32_t *head;
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+			uint32_t *subhead;
+			int errno_p_found = 0;
+			for (subhead = head + 1; subhead < FW_END_P; subhead++) {
+				if (is_prolog(*subhead))	/* start of next function */
+					break;
+				if (is_branch_link(*subhead) && branch_address(subhead) == _ecos_cyg_error_get_errno_p)
+					errno_p_found = 1;
+				else if (errno_p_found && (*subhead & 0xfff0ffffU) == (0xe590f000U + index) /* MOV PC, [Rx, #index] */) {
+					return head;
+				}
+			}
+		}
+	}
+	return 0;
 }
 
 #ifndef TEST_BUILD
@@ -271,24 +293,10 @@ out:
 	
 	SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x28 : 0x24) / 4]);
 	
-	/* Find stat */
-	for (head = FW_START_P; head < FW_END_P; head++) {
-		if (is_prolog(*head)) {
-			uint32_t *subhead;
-			int errno_p_found = 0;
-			for (subhead = head + 1; subhead < FW_END_P; subhead++) {
-				if (is_prolog(*subhead))	/* start of next function */
-					break;
-				if (is_branch_link(*subhead) && branch_address(subhead) == _ecos_cyg_error_get_errno_p)
-					errno_p_found = 1;
-				else if (errno_p_found && (*subhead & 0xfff0ffffU) == 0xe590f034U /* MOV PC, [Rx, #0x34] */) {
-					_ecos_stat = (void *)head;
-					goto out2;
-				}
-			}
-		}
-	}
-out2:
+	/* Find stat etc. */
+	_ecos_stat = (void *)find_fs_function(0x34);
+	_ecos_getcwd = (void *)find_fs_function(0x38);
+	_ecos_chdir = (void *)find_fs_function(0x30);
 	return;
 }
 

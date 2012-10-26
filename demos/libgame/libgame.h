@@ -152,6 +152,8 @@ extern struct dirent *(*_ecos_readdir)(DIR *dirp);
 extern int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result);
 extern int (*_ecos_closedir)(DIR *dirp);
 extern int (*_ecos_stat)(const char *path, struct _ecos_stat *buf);
+extern char *(*_ecos_getcwd)(char *buf, size_t size);
+extern int (*_ecos_chdir)(const char *path);
 
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 
