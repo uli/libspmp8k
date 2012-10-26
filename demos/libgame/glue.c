@@ -11,6 +11,8 @@
 #include <reent.h>
 #include <errno.h>
 #include <sys/unistd.h>
+#include <string.h>
+
 #undef errno
 extern int errno;
 
@@ -40,8 +42,7 @@ void _exit(int err)
 */
 int _close(int file)
 {
-	return fs_close(file);
-//	return -1;
+	return _ecos_close(file);
 }
 
 /* execve
@@ -69,6 +70,21 @@ int _fork()
 	return -1;
 }
 
+static void _ecos_stat_to_stat(struct stat *st, struct _ecos_stat *est)
+{
+	memset(st, 0, sizeof(struct stat));
+	st->st_mode = est->st_mode;
+	st->st_ino = est->st_ino;
+	st->st_dev = est->st_dev;
+	st->st_nlink = est->st_nlink;
+	st->st_uid = est->st_uid;
+	st->st_gid = est->st_gid;
+	st->st_size = est->st_size;
+	st->st_atime = est->st_atime;
+	st->st_mtime = est->st_mtime;
+	st->st_ctime = est->st_ctime;
+}
+
 /* fstat
 **  Status of an open file.
 **
@@ -76,11 +92,13 @@ int _fork()
 **
 **  The `sys/stat.h' header file is distributed in the `include' subdirectory for this C library.
 */
-int _fstat(int file __attribute__((unused)), struct stat *st)
+int _fstat(int file, struct stat *st)
 {
-//	if (file < 3) st->st_mode = S_IFCHR;
-	st->st_mode = S_IFMT;
-	return 0;
+	struct _ecos_stat est;
+	int ret = _ecos_fstat(file, &est);
+	if (!ret)
+		_ecos_stat_to_stat(st, &est);
+	return ret;
 }
 
 /* getpid
@@ -136,10 +154,7 @@ int _link(char *old __attribute__((unused)), char *new __attribute__((unused)))
 */
 int _lseek(int file, int ptr, int dir)
 {
-	uint64_t ret;
-	
-	ret = fs_seek(file, ptr, dir);
-	return (ret >> 32);
+	return _ecos_lseek(file, ptr, dir);
 }
 
 /* open
@@ -151,17 +166,7 @@ int _lseek(int file, int ptr, int dir)
 //#endif
 int _open(const char *name, int flags, int mode __attribute__((unused)))
 {
-	int fd, _flags;
-	
-	// _F_CREAT
-	_flags = flags & 3;
-	if (flags & 0x200) _flags = 8 | (flags & 3);
-	if ((flags & 0xf) == 0) _flags = 1;
-#ifdef DBG
-	dmsg_printf("(%s)ifl=%x->of=%x\n", name, flags, _flags);
-#endif
-	fs_open(name, _flags, &fd);
-	return fd;
+	return _ecos_open(name, flags, mode);
 }
 
 /* read
@@ -169,13 +174,7 @@ int _open(const char *name, int flags, int mode __attribute__((unused)))
 */
 int _read(int file, char *ptr, int len)
 {
-	int result = 0;
-	int ret;
-
-	ret = fs_read(file, ptr, len, &result);
-//	dmsg_printf("read(len=%d), ret=%d, res=%d\n", len, ret, result);
-	return result;
-//	return 0;
+	return _ecos_read(file, ptr, len);
 }
 
 /* sbrk
@@ -219,9 +218,11 @@ caddr_t _sbrk(int incr)
 */
 int _stat(const char *file __attribute__((unused)), struct stat *st)
 {
-//	st->st_mode = S_IFCHR;
-	st->st_mode = S_IFMT;
-	return 0;
+	struct _ecos_stat est;
+	int ret = _ecos_stat(file, &est);
+	if (!ret)
+		_ecos_stat_to_stat(st, &est);
+	return ret;
 }
 
 /* times
@@ -239,10 +240,9 @@ clock_t _times(struct tms *buf __attribute__((unused)))
 **
 **  Minimal implementation:
 */
-int _unlink(char *name __attribute__((unused)))
+int _unlink(char *name)
 {
-	errno=ENOENT;
-	return -1; 
+	return _ecos_unlink(name);
 }
 
 /* wait
@@ -269,16 +269,6 @@ int _wait(int *status __attribute__((unused)))
 */
 int _write(int file, char *ptr, int len)
 {
-	int result = 0;
-
-	fs_write(file, ptr, len, &result);
-	return result;
-/*	int todo;
-
-	for (todo=0; todo<len; todo++) {
-		writechar(*ptr++);
-	}
-	return len;
-*/
+	return _ecos_write(file, ptr, len);
 }
 
