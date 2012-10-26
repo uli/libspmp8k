@@ -103,6 +103,12 @@ int main()
           fs_fprintf(fd, "size %d dir %d reg %d\n", st.st_size, _ECOS_S_ISDIR(st.st_mode), _ECOS_S_ISREG(st.st_mode));
         }
         _ecos_closedir(dp);
+        char dir[256];
+        _ecos_getcwd(dir, 256);
+        fs_fprintf(fd, "cwd %s\n", dir);
+        _ecos_chdir("..");
+        _ecos_getcwd(dir, 256);
+        fs_fprintf(fd, "cwd afer chdir %s\n", dir);
         fs_close(fd);
 	return 0;
 }
