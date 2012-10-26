@@ -76,8 +76,7 @@ int (*_ecos_open)(const char *pathname, int flags, int mode) = 0;
 DIR *(*_ecos_opendir)(const char *name) = 0;
 void *_ecos_cyg_error_get_errno_p = 0;
 void *_ecos_cyg_fd_alloc = 0;
-int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
-                   unsigned int count) = 0;
+struct dirent *(*_ecos_readdir)(DIR *dirp) = 0;
 int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result) = 0;
 int (*_ecos_closedir)(DIR *dirp) = 0;
 

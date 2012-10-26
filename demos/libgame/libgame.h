@@ -101,9 +101,9 @@ int dmsg_puts(char *__s);
 int dmsg_printf(char *format, ...);
 
 typedef void DIR;
-#define NAME_MAX 255
+#define NAME_MAX 256
 struct dirent {
-  mode_t d_mode;
+  /* no d_type :( */
   char d_name[NAME_MAX + 1];
 };
 extern void **g_stEmuFuncs;
@@ -117,8 +117,7 @@ extern int (*_ecos_open)(const char *pathname, int flags, int mode);
 extern DIR *(*_ecos_opendir)(const char *name);
 extern void *_ecos_cyg_error_get_errno_p;
 extern void *_ecos_cyg_fd_alloc;
-extern int (*_ecos_readdir)(unsigned int fd, struct dirent *dirp,
-                   unsigned int count);
+extern struct dirent *(*_ecos_readdir)(DIR *dirp);
 extern int (*_ecos_readdir_r)(DIR *dirp, struct dirent *entry, struct dirent **result);
 extern int (*_ecos_closedir)(DIR *dirp);
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
