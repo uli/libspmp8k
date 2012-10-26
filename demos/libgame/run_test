@@ -5,7 +5,7 @@ function do_test {
 	name=$1
 	shift
 	./test_abi ./test_fw/${name}.rap $@ >out
-	diff -u out ./test_fw/${name}.out
+	diff -u ./test_fw/${name}.out out
 	rm out
 }
 # specify addresses of diag_printf, MCatchInitGraph,
