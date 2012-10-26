@@ -19,4 +19,6 @@ _ecos_readdir_r 002a5c60
 _ecos_readdir 002a5cb0
 _ecos_closedir 002da56c
 _ecos_stat 002a5174
+_ecos_getcwd 002a5724
+_ecos_chdir 002a52b8
 SPMP_SendSignal 002c7660
