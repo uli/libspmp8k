@@ -143,7 +143,7 @@ extern int (*_ecos_close)(int fd);
 extern int (*_ecos_read)(int fd, void *buf, unsigned int count);
 extern int (*_ecos_write)(int fd, const void *buf, unsigned int count);
 extern int (*_ecos_lseek)(int fd, int offset, int whence);
-extern int (*_ecos_fstat)(int fd, /* struct stat */ void *buf);
+extern int (*_ecos_fstat)(int fd, struct _ecos_stat *buf);
 extern int (*_ecos_open)(const char *pathname, int flags, int mode);
 extern DIR *(*_ecos_opendir)(const char *name);
 extern void *_ecos_cyg_error_get_errno_p;
