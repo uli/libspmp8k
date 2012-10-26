@@ -137,8 +137,21 @@ struct _ecos_stat {
     _ecos_time_t  st_ctime;    /* Last file status change time */
 };
 
+typedef struct {
+    void (*setBuffFormat)(int);
+    int (*getBuffFormat)(void);
+    int (*getWidth)(void);
+    int (*getHeight)(void);
+    uint16_t *(*getShadowBuffer)(void);
+    void (*setFrameBuffer)(uint16_t *fb); // educated guess
+    void (*lcdFlip)(void);
+    void (*lcdClear)(void); // actually returns BitBlt_hw retval, but that is always 0
+    void (*setShadowBuffer)(uint16_t *fb); // educated guess
+    uint16_t *(*getFrameBuffer)(void);
+} display_dev_t;
+
 extern void **g_stEmuFuncs;
-extern void **gDisplayDev;
+display_dev_t *gDisplayDev;
 extern int (*_ecos_close)(int fd);
 extern int (*_ecos_read)(int fd, void *buf, unsigned int count);
 extern int (*_ecos_write)(int fd, const void *buf, unsigned int count);

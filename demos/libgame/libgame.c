@@ -66,7 +66,7 @@ void (*get_keys)(key_data_t *keys);//uint64_t *keys);
 #define FW_END_P ((uint32_t *)FW_END)
 
 void **g_stEmuFuncs = 0;
-void **gDisplayDev = 0;
+display_dev_t *gDisplayDev = 0;
 int (*_ecos_close)(int fd) = 0;
 int (*_ecos_read)(int fd, void *buf, unsigned int count) = 0;
 int (*_ecos_write)(int fd, const void *buf, unsigned int count) = 0;
@@ -194,7 +194,7 @@ void libgame_detect_firmware_abi()
 		}
 		if (getGameBuffWidth_found && (*head & 0xffff0000U) ==
 		    0xe59f0000U /* LDR Rx, [PC, #...] */) {
-			gDisplayDev = (void **)*(head + (*head & 0xfff) / 4 + 2);
+			gDisplayDev = (display_dev_t *)*(head + (*head & 0xfff) / 4 + 2);
 			break;
 		}
 	}
