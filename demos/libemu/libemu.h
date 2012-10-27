@@ -55,6 +55,7 @@ typedef struct graph_params {
 
 extern int (*emuIfGraphInit)(graph_params_t *);
 extern int (*emuIfGraphShow)(void);
+extern int (*emuIfGraphChgView)(graph_params_t *);
 extern int (*emuIfGraphCleanup)(void);
 /*
 extern uint32_t (*emuIfGraphInit)()

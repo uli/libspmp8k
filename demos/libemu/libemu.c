@@ -19,6 +19,7 @@
 #include "libemu.h"
 
 int (*emuIfGraphInit)(graph_params_t *params);
+int (*emuIfGraphChgView)(graph_params_t *params);
 int (*emuIfGraphShow)(void);
 int (*emuIfGraphCleanup)(void);
 uint32_t (*emuIfSoundInit)(sound_params_t *params);
@@ -30,6 +31,7 @@ void libemu_init(void)
 {
 	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
 	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
+	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
 	emuIfGraphCleanup	= EMU_FUNC_ENTRY(0x10);
 	emuIfSoundInit		= EMU_FUNC_ENTRY(0x14);
 	emuIfSoundPlay		= EMU_FUNC_ENTRY(0x18);
