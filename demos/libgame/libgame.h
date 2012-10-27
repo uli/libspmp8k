@@ -137,6 +137,29 @@ struct _ecos_stat {
     _ecos_time_t  st_ctime;    /* Last file status change time */
 };
 
+/* File access modes used for open() and fnctl() */
+#define _ECOS_O_RDONLY     (1<<0)   /* Open for reading only */
+#define _ECOS_O_WRONLY     (1<<1)   /* Open for writing only */
+#define _ECOS_O_RDWR       (_ECOS_O_RDONLY|_ECOS_O_WRONLY) /* Open for reading and writing */
+
+/* File access mode mask */
+#define _ECOS_O_ACCMODE    (_ECOS_O_RDONLY|_ECOS_O_RDWR|_ECOS_O_WRONLY)
+
+/* open() mode flags */
+
+#define _ECOS_O_CREAT      (1<<3)    /* Create file it it does not exist */
+#define _ECOS_O_EXCL       (1<<4)    /* Exclusive use */
+#define _ECOS_O_NOCTTY     (1<<5)    /* Do not assign a controlling terminal */
+#define _ECOS_O_TRUNC      (1<<6)    /* Truncate */
+
+/* File status flags used for open() and fcntl() */
+#define _ECOS_O_APPEND     (1<<7)    /* Set append mode */
+#define _ECOS_O_DSYNC      (1<<8)    /* Synchronized I/O data integrity writes */
+#define _ECOS_O_NONBLOCK   (1<<9)    /* No delay */
+#define _ECOS_O_RSYNC      (1<<10)   /* Synchronized read I/O */
+#define _ECOS_O_SYNC       (1<<11)   /* Synchronized I/O file integrity writes */
+
+
 typedef struct {
     void (*setBuffFormat)(int);
     int (*getBuffFormat)(void);
