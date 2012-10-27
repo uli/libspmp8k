@@ -86,6 +86,7 @@ int (*_ecos_unlink)(const char *pathname) = 0;
 int (*_ecos_rmdir)(const char *pathname) = 0;
 int (*_ecos_mkdir)(const char *pathname, _ecos_mode_t mode) = 0;
 int (*_ecos_fsync)(int fd) = 0;
+void (*cyg_thread_delay)(uint64_t /* cyg_tick_count_t */ delay) = 0;
 
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 
@@ -374,6 +375,8 @@ void libgame_init(void)
 
 	get_time              = FUNC(0x124);
 	get_keys              = FUNC(0x100);
+	
+	cyg_thread_delay = FUNC(0x11c);
 	
 //	heap_ending = (char*)0;
 	heap_ending = 0;
