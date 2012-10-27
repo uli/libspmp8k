@@ -28,6 +28,7 @@ int main(int argc, char **argv)
   SETFUN(3, fs_read)
   SETFUN(4, fs_write)
   SETFUN(5, gfx_paint)
+  SETFUN(6, get_keys)
 
   /* Load the firmware image to memory at 0x280000. We assume that the
      code in the firmware file starts at offset 0x4c. */
@@ -74,5 +75,6 @@ int main(int argc, char **argv)
   printf("_ecos_fsync %08x\n", (uint32_t)_ecos_fsync);
   printf("SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
   printf("cache_sync %08x\n", (uint32_t)cache_sync);
+  printf("NativeGE_getKeyInput %08x\n", (uint32_t)NativeGE_getKeyInput);
   return 0;
 }

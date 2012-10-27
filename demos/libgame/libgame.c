@@ -90,6 +90,7 @@ void (*cyg_thread_delay)(uint64_t /* cyg_tick_count_t */ delay) = 0;
 
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 void (*cache_sync)(void) = 0;
+int (*NativeGE_getKeyInput)(key_data_t *) = 0;
 
 int _has_frame_pointer = -1;	/* required to find function entry points */
 int _new_emu_abi = -1;
@@ -347,6 +348,19 @@ out:
 	}
 	if (!found_next_prolog)
 		cache_sync = 0;
+	
+	uint32_t *getKeyFromQueue = next_bl_target((uint32_t *)get_keys);
+	if (getKeyFromQueue) {
+		for (head = FW_START_P; head < FW_END_P; head++) {
+			if (is_prolog(*head)) {
+				if (next_bl_target(head) == getKeyFromQueue &&
+				    head != (void *)get_keys) {
+				    	NativeGE_getKeyInput = (void *)head;
+				    	break;
+				}
+			}
+		}
+	}
 
 	return;
 }
