@@ -89,6 +89,7 @@ int (*_ecos_fsync)(int fd) = 0;
 void (*cyg_thread_delay)(uint64_t /* cyg_tick_count_t */ delay) = 0;
 
 uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
+void (*cache_sync)(void) = 0;
 
 int _has_frame_pointer = -1;	/* required to find function entry points */
 int _new_emu_abi = -1;
@@ -332,6 +333,20 @@ out:
 	_ecos_getcwd = (void *)find_fs_function(0x38);
 
 	_ecos_chdir = (void *)find_fs_function(0x30);
+
+	/* Find cache_sync(), the last function called by MCatchPaint(). */
+	start = (uint32_t *)gfx_paint;
+	int found_next_prolog = 0;
+	for (head = start + 1; head < start + 200; head++) {
+		if (is_branch_link(*head))
+			cache_sync = branch_address(head);
+		else if (is_prolog(*head)) {
+			found_next_prolog = 1;
+			break;
+		}
+	}
+	if (!found_next_prolog)
+		cache_sync = 0;
 
 	return;
 }

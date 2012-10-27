@@ -197,6 +197,7 @@ extern int (*_ecos_fsync)(int fd);
 extern void (*cyg_thread_delay)(uint64_t /* cyg_tick_count_t */ delay);
 
 extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
+extern void (*cache_sync)(void);
 
 #endif // __LIBGAME_H__
 
