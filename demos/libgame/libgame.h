@@ -7,7 +7,7 @@
 #include <sys/types.h>
 
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
-#define	MAKE_RGB565(r, g, b) (((b & 0xf8) << 11) | ((g & 0xfc) << 5) | (r & 0x1f))
+#define	MAKE_RGB565(r, g, b) (((b & 0xf8) << 8) | ((g & 0xfc) << 3) | (r >> 3))
 
 #define	KEY_UP		1
 #define	KEY_DOWN	2
