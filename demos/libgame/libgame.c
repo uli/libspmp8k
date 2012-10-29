@@ -207,9 +207,18 @@ static uint32_t *find_fs_function(int index) {
 	uint32_t *head;
 	for (head = FW_START_P; head < FW_END_P; head++) {
 		if (is_prolog(*head)) {
+			if (head == (void *)_ecos_open) {
+				/* open() is misdetected as fsync() on the
+				   JXD100 because it seems to have an
+				   inlined copy of (or just very similar
+				   code to) fsync(). */
+				head++;	/* skip second STMFD */
+				continue;
+			}
 			uint32_t *subhead;
 			int errno_p_found = 0;
-			for (subhead = head + 1; subhead < FW_END_P; subhead++) {
+			/* skip two insns (some functions start with two(!) STMFDs) */
+			for (subhead = head + 2; subhead < FW_END_P; subhead++) {
 				if (is_prolog(*subhead))	/* start of next function */
 					break;
 				if (is_branch_link(*subhead) && branch_address(subhead) == _ecos_cyg_error_get_errno_p)
