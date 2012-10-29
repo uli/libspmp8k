@@ -13,7 +13,7 @@ char *heap_ending;
 
 int main(int argc, char **argv)
 {
-  if (argc < 5)
+  if (argc < 7)
     return -1;
 
   char *fw_name = argv[1];
