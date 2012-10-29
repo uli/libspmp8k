@@ -35,7 +35,8 @@ ARFLAGS	= cr
 
 #$(START_O)
 
-all		: $(OBJS)
+all		: $(TARGET)
+$(TARGET): $(OBJS)
 		$(AR) $(ARFLAGS) $(TARGET) $(OBJS)
 
 %.o		: %.c
