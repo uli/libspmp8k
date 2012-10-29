@@ -51,30 +51,32 @@ int main(int argc, char **argv)
 
   libgame_detect_firmware_abi();
 
+#define PP(x) printf(#x " %08x\n", (uint32_t)x);
+
   printf("g_stEmuFuncs %08x (%s ABI)\n", (uint32_t)g_stEmuFuncs, _new_emu_abi ? "new" : "old");
-  printf("gDisplayDev %08x\n", (uint32_t)gDisplayDev);
+  PP(gDisplayDev)
   printf("compiled %s frame pointer\n", _has_frame_pointer ? "with" : "without");
-  printf("_ecos_close %08x\n", (uint32_t)_ecos_close);
-  printf("_ecos_read %08x\n", (uint32_t)_ecos_read);
-  printf("_ecos_write %08x\n", (uint32_t)_ecos_write);
-  printf("_ecos_lseek %08x\n", (uint32_t)_ecos_lseek);
-  printf("_ecos_fstat %08x\n", (uint32_t)_ecos_fstat);
-  printf("_ecos_open %08x\n", (uint32_t)_ecos_open);
-  printf("_ecos_opendir %08x\n", (uint32_t)_ecos_opendir);
-  printf("_ecos_cyg_error_get_errno_p %08x\n", (uint32_t)_ecos_cyg_error_get_errno_p);
-  printf("_ecos_cyg_fd_alloc %08x\n", (uint32_t)_ecos_cyg_fd_alloc);
-  printf("_ecos_readdir_r %08x\n", (uint32_t)_ecos_readdir_r);
-  printf("_ecos_readdir %08x\n", (uint32_t)_ecos_readdir);
-  printf("_ecos_closedir %08x\n", (uint32_t)_ecos_closedir);
-  printf("_ecos_stat %08x\n", (uint32_t)_ecos_stat);
-  printf("_ecos_getcwd %08x\n", (uint32_t)_ecos_getcwd);
-  printf("_ecos_chdir %08x\n", (uint32_t)_ecos_chdir);
-  printf("_ecos_unlink %08x\n", (uint32_t)_ecos_unlink);
-  printf("_ecos_mkdir %08x\n", (uint32_t)_ecos_mkdir);
-  printf("_ecos_rmdir %08x\n", (uint32_t)_ecos_rmdir);
-  printf("_ecos_fsync %08x\n", (uint32_t)_ecos_fsync);
-  printf("SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
-  printf("cache_sync %08x\n", (uint32_t)cache_sync);
-  printf("NativeGE_getKeyInput %08x\n", (uint32_t)NativeGE_getKeyInput);
+  PP(_ecos_close)
+  PP(_ecos_read)
+  PP(_ecos_write)
+  PP(_ecos_lseek)
+  PP(_ecos_fstat)
+  PP(_ecos_open)
+  PP(_ecos_opendir)
+  PP(_ecos_cyg_error_get_errno_p)
+  PP(_ecos_cyg_fd_alloc)
+  PP(_ecos_readdir_r)
+  PP(_ecos_readdir)
+  PP(_ecos_closedir)
+  PP(_ecos_stat)
+  PP(_ecos_getcwd)
+  PP(_ecos_chdir)
+  PP(_ecos_unlink)
+  PP(_ecos_mkdir)
+  PP(_ecos_rmdir)
+  PP(_ecos_fsync)
+  PP(SPMP_SendSignal)
+  PP(cache_sync)
+  PP(NativeGE_getKeyInput)
   return 0;
 }
