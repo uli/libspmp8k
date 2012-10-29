@@ -30,7 +30,9 @@ endif
 START_O	= $(LIBGAME)/start.o
 
 
-all		: $(OBJS)
+all		: $(TARGET).bin
+
+$(TARGET).bin: $(OBJS)
 		$(LD) $(LDFLAGS) $(START_O) $(OBJS) $(LIBS) -o $(TARGET).1
 		$(OBJCOPY) -S -O binary $(TARGET).1 $(TARGET).2
 		$(MKBING) $(TARGET).2 $(TARGET).bin
