@@ -415,7 +415,7 @@ void libgame_assign_emuif(void)
 	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
 	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
 	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
-	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x08);
+	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x0c);
 	emuIfSoundInit		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x14 : 0x10);
 	emuIfSoundPlay		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x18 : 0x14);
 	emuIfSoundCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x1c : 0x18);
