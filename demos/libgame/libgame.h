@@ -200,5 +200,37 @@ extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 extern void (*cache_sync)(void);
 extern int (*NativeGE_getKeyInput)(key_data_t *);
 
+typedef struct sound_params {
+	uint8_t *buf;		/* + 0x0 */
+	uint32_t buf_size;	/* + 0x4 */
+	uint32_t rate;		/* + 0x8 */
+	uint8_t depth;		/* + 0xc */
+	uint8_t channels;	/* + 0xd */
+	uint32_t *callback;	/* + 0x10 */ /* used only when gEmuType is 5 (flash?) */
+} sound_params_t;
+
+typedef struct graph_params {
+	uint16_t *pixels;	// goes to src_ctx + 4
+	uint32_t width;	// +4
+	uint32_t height;	// +8
+	uint32_t unknown_flag;	// +c
+	uint32_t palette;	// +10
+	uint32_t pad2;
+	uint32_t src_clip_x;	// +18
+	uint32_t src_clip_y;
+	uint32_t src_clip_w;	// +1c
+	uint32_t src_clip_h;
+} graph_params_t;
+
+#define EMU_FUNC_ENTRY(n)	(g_stEmuFuncs[(n) / 4])
+
+extern int (*emuIfGraphInit)(graph_params_t *);
+extern int (*emuIfGraphShow)(void);
+extern int (*emuIfGraphChgView)(graph_params_t *);
+extern int (*emuIfGraphCleanup)(void);
+extern uint32_t (*emuIfSoundInit)(sound_params_t *params);
+extern uint32_t (*emuIfSoundPlay)(sound_params_t *params);
+extern uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
+
 #endif // __LIBGAME_H__
 

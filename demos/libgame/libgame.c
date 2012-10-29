@@ -95,6 +95,14 @@ int (*NativeGE_getKeyInput)(key_data_t *) = 0;
 int _has_frame_pointer = -1;	/* required to find function entry points */
 int _new_emu_abi = -1;
 
+int (*emuIfGraphInit)(graph_params_t *);
+int (*emuIfGraphShow)(void);
+int (*emuIfGraphChgView)(graph_params_t *);
+int (*emuIfGraphCleanup)(void);
+uint32_t (*emuIfSoundInit)(sound_params_t *params);
+uint32_t (*emuIfSoundPlay)(sound_params_t *params);
+uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val) {
 	return (val >= FW_START && val < FW_END);
@@ -411,5 +419,12 @@ void libgame_init(void)
 	heap_ending = 0;
 	
 	libgame_detect_firmware_abi();
+	
+	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
+	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
+	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
+	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x08);
+	emuIfSoundInit		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x14 : 0x10);
+	emuIfSoundPlay		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x18 : 0x14);
+	emuIfSoundCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x1c : 0x18);
 }
-
