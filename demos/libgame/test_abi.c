@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "libgame.h"
 extern void libgame_detect_firmware_abi(void);
+extern void libgame_assign_emuif(void);
 extern int _new_emu_abi;
 extern int _has_frame_pointer;
 char *heap_ending;
@@ -50,6 +51,7 @@ int main(int argc, char **argv)
   }
 
   libgame_detect_firmware_abi();
+  libgame_assign_emuif();
 
 #define PP(x) printf(#x " %08x\n", (uint32_t)x);
 
@@ -78,5 +80,8 @@ int main(int argc, char **argv)
   PP(SPMP_SendSignal)
   PP(cache_sync)
   PP(NativeGE_getKeyInput)
+  /* We don't test every emu function, just one to make sure the right ABI
+     version has been detected. */
+  PP(emuIfSoundCleanup)
   return 0;
 }
