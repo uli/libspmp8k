@@ -115,6 +115,7 @@ typedef int _ecos_time_t;
 typedef unsigned short _ecos_uid_t;
 typedef unsigned short _ecos_gid_t;
 typedef int _ecos_off_t;
+typedef int _ecos_size_t;
 
 #undef st_atime
 #undef st_mtime
@@ -200,39 +201,39 @@ extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 extern void (*cache_sync)(void);
 extern int (*NativeGE_getKeyInput)(key_data_t *);
 
-extern void *MCatchStoreImage;
-extern void *MCatchDecodeImageFromCard;
-extern void *MCatchGetColorROP;
-extern void *MCatchSetBitPlaneMask;
-extern void *MCatchGetBitPlaneMask;
-extern void *MCatchGetDisplayScreen;
-extern void *MCatchSetRectClip;
-extern void *MCatchGetRectClip;
-extern void *MCatchSetStyleMask;
-extern void *MCatchGetStyleMask;
-extern void *MCatchSetLineMask;
-extern void *MCatchGetLineMask;
-extern void *MCatchDisableFeature;
-extern void *MCatchSetStyleLine;
-extern void *MCatchPreviewColorkey;
-extern void *MCatchGetFrameBuffer;
-extern void *MCatchSetMutableImage;
-extern void *MCatchSetPerPixelAlphaEq;
-extern void *MCatchSetTransformation;
-extern void *MCatchQueryImage;
-extern void *MCatchEnableDoubleBuffer;
-extern void *MCatchGradientFill;
-extern void *MCatchUpdateScreen;
-extern void *MCatchShowFont;
-extern void *MCatchModifyPalette;
-extern void *NativeGE_pauseRes;
-extern void *NativeGE_resumeRes;
-extern void *NativeGE_writeRecord;
-extern void *NativeGE_readRecord;
-extern void *NativeGE_showFPS;
-extern void *NativeGE_gameExit;
-extern void *NativeGE_getTPEvent;
-extern void *NativeGE_setTPClickArea;
+/* extern int (*MCatchStoreImage)(void); doesn't do anything */
+/* extern int (*MCatchDecodeImageFromCard)(void); doesn't do anything */
+extern int (*MCatchGetColorROP)(uint32_t *rop);
+extern int (*MCatchSetBitPlaneMask)(int read_write, uint16_t mask);
+extern int (*MCatchGetBitPlaneMask)(int read_write, uint16_t *mask);
+extern int (*MCatchGetDisplayScreen)(gfx_rect_t *);
+extern int (*MCatchSetRectClip)(gfx_rect_t *);
+extern int (*MCatchGetRectClip)(gfx_rect_t *);
+extern int (*MCatchSetStyleMask)(gfx_rect_t *);
+extern int (*MCatchGetStyleMask)(gfx_rect_t *);
+extern int (*MCatchSetLineMask)(gfx_rect_t *);
+extern int (*MCatchGetLineMask)(gfx_rect_t *);
+extern int (*MCatchDisableFeature)(int);
+extern int (*MCatchSetStyleLine)(uint8_t, uint8_t);
+/* extern int (*MCatchPreviewColorkey)(void); doesn't do anything */
+extern int (*MCatchGetFrameBuffer)(uint16_t *width, uint16_t *height);
+extern int (*MCatchSetMutableImage)(uint8_t);
+extern int (*MCatchSetPerPixelAlphaEq)(uint8_t); /* 0 or 1 */
+extern int (*MCatchSetTransformation)(gfx_point2d_t *, int /* 0 to 7 */);
+extern int (*MCatchQueryImage)(uint8_t, uint8_t /* 1 to 3 */);
+extern int (*MCatchEnableDoubleBuffer)(int /* 0 or 1 */);
+extern int (*MCatchGradientFill)(gfx_rect_t *, uint16_t[6], uint32_t[2]);
+/* extern int (*MCatchUpdateScreen)(void); doesn't do anything (except produce debug output) */
+extern int (*MCatchShowFont)(gfx_point2d_t *, int, uint8_t /* < 0x18 */, uint8_t /* < 0x18 */);
+extern int (*MCatchModifyPalette)(uint8_t, uint8_t, uint8_t /* size */, void * /* data */);
+extern void (*NativeGE_pauseRes)(uint8_t);
+extern void (*NativeGE_resumeRes)(uint8_t);
+extern int (*NativeGE_writeRecord)(const char *pathname, void *buf, uint8_t flags, _ecos_off_t offset, _ecos_size_t count);
+extern int (*NativeGE_readRecord)(const char *pathname, void *buf, uint8_t flags, _ecos_off_t offset, _ecos_size_t count);
+/* extern void (*NativeGE_showFPS)(void); doesn't do anything */
+extern int (*NativeGE_gameExit)(void);
+/* extern int (*NativeGE_getTPEvent)(void); doesn't do anything */
+/* extern char (*NativeGE_setTPClickArea)(void); doesn't do anything */
 
 typedef struct sound_params {
 	uint8_t *buf;		/* + 0x0 */
