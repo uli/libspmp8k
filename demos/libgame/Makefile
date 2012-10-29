@@ -21,19 +21,12 @@ RM		= rm -f
 
 START_O	= start.o
 
-ifdef NEWLIB
 CFLAGS	= -O2 -Wall -W -c -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
 OBJS	= start.o libgame.o glue.o dmsg.o font6x8.o
-#OBJS	= libgame.o glue.o dmsg.o font6x8.o
-else
-CFLAGS	= -O2 -c -nostdlib -march=armv5 -msoft-float
-#OBJS	= start.o libgame.o
-OBJS	= libgame.o
-endif
-ASFLAGS	= -mcpu=arm9
-ARFLAGS	= cr
 
-#$(START_O)
+ASFLAGS	= -mcpu=arm9
+
+ARFLAGS	= cr
 
 all		: $(TARGET)
 $(TARGET): $(OBJS)
@@ -51,3 +44,4 @@ clean	:
 		$(RM) $(OBJS)
 		$(RM) $(TARGET)
 
+libgame.o: libgame.h
