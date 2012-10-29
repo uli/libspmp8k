@@ -373,6 +373,20 @@ out:
 	return;
 }
 
+#ifndef TEST_BUILD
+static
+#endif
+void libgame_assign_emuif(void)
+{
+	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
+	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
+	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
+	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x08);
+	emuIfSoundInit		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x14 : 0x10);
+	emuIfSoundPlay		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x18 : 0x14);
+	emuIfSoundCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x1c : 0x18);
+}
+
 void libgame_init(void)
 {
 	// setup function pointers
@@ -419,12 +433,5 @@ void libgame_init(void)
 	heap_ending = 0;
 	
 	libgame_detect_firmware_abi();
-	
-	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
-	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
-	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
-	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x08);
-	emuIfSoundInit		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x14 : 0x10);
-	emuIfSoundPlay		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x18 : 0x14);
-	emuIfSoundCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x1c : 0x18);
+	libgame_assign_emuif();
 }
