@@ -22,7 +22,7 @@ void (*lcd_clear)(void); // actually returns BitBlt_hw retval, but that is alway
 #define fs_fprintf(fd, x...) { \
   char buf[256]; int res; \
   sprintf(buf, x); \
-  fs_write(fd, buf, strlen(buf), &res); \
+  NativeGE_fsWrite(fd, buf, strlen(buf), &res); \
 }
 
 int is_valid_arm_insn(uint32_t insn, int unconditional_only)
@@ -55,16 +55,16 @@ int main()
 
 #if 0
 	int res;
-	fs_open("dump.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
-	//fs_write(fd, "Huhu!\n", 6, &res);
-	fs_write(fd, (void *)0x280000, 0x480000, &res);
-	fs_close(fd);
-	fs_open("ftab.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
-	fs_write(fd, (void *)ftab, 0x150, &res);
-	fs_close(fd);
+	NativeGE_fsOpen("dump.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
+	//NativeGE_fsWrite(fd, "Huhu!\n", 6, &res);
+	NativeGE_fsWrite(fd, (void *)0x280000, 0x480000, &res);
+	NativeGE_fsClose(fd);
+	NativeGE_fsOpen("ftab.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
+	NativeGE_fsWrite(fd, (void *)ftab, 0x150, &res);
+	NativeGE_fsClose(fd);
 #endif
 	
-	fs_open("diag.txt", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
+	NativeGE_fsOpen("diag.txt", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
 	//fs_fprintf(fd, "Framebuffer %08x, shadow buffer %08x\n", getLCDFrameBuffer(), getLCDShadowBuffer());
 	//fs_fprintf(fd, "Width %d, Height %d\n", getLCDWidth(), getLCDHeight());
 	//fs_fprintf(fd, "LCD format %08x\n", getLCDBuffFormat());
@@ -83,12 +83,12 @@ int main()
 	fs_fprintf(fd, "_ecos_readdir %08x\n", (uint32_t)_ecos_readdir);
 	fs_fprintf(fd, "_ecos_stat %08x\n", (uint32_t)_ecos_stat);
 	fs_fprintf(fd, "SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
-	//fs_close(fd);
+	//NativeGE_fsClose(fd);
 	
 	DIR *dp = _ecos_opendir(".");
 	if (!dp) {
 	  fs_fprintf(fd, "opendir failed\n");
-	  fs_close(fd);
+	  NativeGE_fsClose(fd);
 	  return 0;
         }
         struct dirent *de;
@@ -97,7 +97,7 @@ int main()
           struct _ecos_stat st;
           if (_ecos_stat(de->d_name, &st) < 0) {
             fs_fprintf(fd, "stat failed\n");
-            fs_close(fd);
+            NativeGE_fsClose(fd);
             return 0;
           }
           fs_fprintf(fd, "size %d dir %d reg %d\n", st.st_size, _ECOS_S_ISDIR(st.st_mode), _ECOS_S_ISREG(st.st_mode));
@@ -109,6 +109,6 @@ int main()
         _ecos_chdir("..");
         _ecos_getcwd(dir, 256);
         fs_fprintf(fd, "cwd afer chdir %s\n", dir);
-        fs_close(fd);
+        NativeGE_fsClose(fd);
 	return 0;
 }

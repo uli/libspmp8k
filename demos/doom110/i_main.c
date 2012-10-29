@@ -58,15 +58,15 @@ main
 	
 	// initialize the game api
 	libgame_init();
-	gfx_init(NULL, 0);
+	MCatchInitGraph(NULL, 0);
 
 	rect.x = 0;
 	rect.y = 0;
 	rect.width = 320;
 	rect.height = 240;
 
-	gfx_set_framebuffer(320, 240);
-	gfx_set_display_screen(&rect);
+	MCatchSetFrameBuffer(320, 240);
+	MCatchSetDisplayScreen(&rect);
 /*	
 	// clear the background
 	if (loading_img.data == NULL) {
@@ -77,20 +77,20 @@ main
 	}
 	else color = MAKE_RGB(255,255,255);
 */	
-	gfx_enable_feature(3);
-	gfx_set_fgcolor(&color);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_fillrect(&rect);
+	MCatchEnableFeature(3);
+	MCatchSetFGColor(&color);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFillRect(&rect);
 /*
 	// loading screen
 	uint8_t loading_id;
 	
-	if (gfx_load_image(&loading_img, &loading_id) != 0) return;
+	if (MCatchLoadImage(&loading_img, &loading_id) != 0) return;
 	{
 		gfx_point2d_t at;
 		gfx_rect_t rect;
 		
-		gfx_set_colorrop(0xcc);
+		MCatchSetColorROP(0xcc);
 		
 		at.x = 8;
 		at.y = 8;
@@ -99,8 +99,8 @@ main
 		rect.width=300;
 		rect.height= 200;
 		
-	//	gfx_bitblt(loading_id, &rect, &at);
-		gfx_sprite(loading_id, &rect, &at);
+	//	MCatchBitblt(loading_id, &rect, &at);
+		MCatchSprite(loading_id, &rect, &at);
 	}
 */
 //#ifdef DEBUG
@@ -112,8 +112,8 @@ main
 	dmsg_puts(rls_text1);
 	dmsg_puts(rls_text2);
 /*
-	gfx_flush();
-	gfx_paint();
+	MCatchFlush();
+	MCatchPaint();
 */
 	D_DoomMain();
 

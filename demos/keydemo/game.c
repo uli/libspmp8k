@@ -39,40 +39,40 @@ int main()
 	libgame_init();
 	int_get_shadowbuffer = itab[0];
 	int_get_framebuffer = itab[1];
-	gfx_init(fbuff, sizeof(fbuff));
+	MCatchInitGraph(fbuff, sizeof(fbuff));
 
 	rect.x = 0;
 	rect.y = 0;
 	rect.width = 320;
 	rect.height = 240;
 
-	gfx_set_framebuffer(320, 240);
-	gfx_set_display_screen(&rect);//320, 240);
+	MCatchSetFrameBuffer(320, 240);
+	MCatchSetDisplayScreen(&rect);//320, 240);
 
 	// pure black
 	color = MAKE_RGB(255,0,0);
-	gfx_enable_feature(3);
-	gfx_set_fgcolor(&color);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_fillrect(&rect);
+	MCatchEnableFeature(3);
+	MCatchSetFGColor(&color);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFillRect(&rect);
 
 	// load an image
-	if (gfx_load_image(&font_img, &font_id) != 0) return 0;
+	if (MCatchLoadImage(&font_img, &font_id) != 0) return 0;
 
 	draw_string_centered(font_id, 50, "KEY DEMO");
-	//gfx_set_colorrop(COLOR_ROP_TRANSP);
-	gfx_flush();
-	gfx_paint();
+	//MCatchSetColorROP(COLOR_ROP_TRANSP);
+	MCatchFlush();
+	MCatchPaint();
 
 #if 0
 	int res;
-	fs_open("file.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
-	//fs_write(fd, "Huhu!\n", 6, &res);
-	fs_write(fd, (void *)0x280000, 0x480000, &res);
-	fs_close(fd);
-	fs_open("ftab.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
-	fs_write(fd, (void *)ftab, 0x150, &res);
-	fs_close(fd);
+	NativeGE_fsOpen("file.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
+	//NativeGE_fsWrite(fd, "Huhu!\n", 6, &res);
+	NativeGE_fsWrite(fd, (void *)0x280000, 0x480000, &res);
+	NativeGE_fsClose(fd);
+	NativeGE_fsOpen("ftab.bin", FS_O_CREAT|FS_O_WRONLY, &fd);
+	NativeGE_fsWrite(fd, (void *)ftab, 0x150, &res);
+	NativeGE_fsClose(fd);
 #endif
 	
 	color = MAKE_RGB(0, 255, 0);
@@ -80,20 +80,20 @@ int main()
 	okeys.key2 = 1;
 	i=0;
 	while (1) {
-		get_keys(&keys);
+		NativeGE_getKeyInput4Ntv(&keys);
 
 		if (keys.key1 != okeys.key1) {
 			rect.x = 0;
 			rect.y = 100;
 			rect.width = 320;
 			rect.height = 16;
-			gfx_set_colorrop(0xcc);
-			gfx_fillrect(&rect);
+			MCatchSetColorROP(0xcc);
+			MCatchFillRect(&rect);
 			sprintf(key1, "KEY1: %08X", keys.key1);
 			draw_string_centered(font_id, 100, key1);
 			okeys.key1 = keys.key1;
-			gfx_flush();
-			gfx_paint();
+			MCatchFlush();
+			MCatchPaint();
 		}
 		
 		if (keys.key2 != okeys.key2) {
@@ -101,16 +101,16 @@ int main()
 			rect.y = 140;
 			rect.width = 320;
 			rect.height = 16;
-			gfx_set_colorrop(0xcc);
-			gfx_fillrect(&rect);
+			MCatchSetColorROP(0xcc);
+			MCatchFillRect(&rect);
 			sprintf(key2, "KEY2: %08X", keys.key2);
 			draw_string_centered(font_id, 120, key2);
 			okeys.key2 = keys.key2;
-			gfx_flush();
-			gfx_paint();
+			MCatchFlush();
+			MCatchPaint();
 		}
-		gfx_flush();
-		gfx_paint();
+		MCatchFlush();
+		MCatchPaint();
 		uint16_t *fb = int_get_framebuffer();
 		for (i = 0; i < 65536; i++) {
 			fb[i] = i;
@@ -121,7 +121,7 @@ int main()
 		}
 	}
 
-	gfx_free_image(font_id);
+	MCatchFreeImage(font_id);
 
 	return 0;
 }
@@ -163,8 +163,8 @@ void draw_string(uint8_t font_id, uint16_t x, uint16_t y, char *str)
 			nchar = str[i] -0x20;
 			rect.x = (nchar & 0xf) << 4;
 			rect.y = nchar & 0x30;
-			gfx_set_colorrop(0xcc);
-			gfx_sprite(font_id, &rect, &pos);
+			MCatchSetColorROP(0xcc);
+			MCatchSprite(font_id, &rect, &pos);
 			pos.x += 16;
 		}
 		i++;

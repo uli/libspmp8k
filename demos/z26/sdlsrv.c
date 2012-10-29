@@ -47,20 +47,20 @@ void Init_SDL()
 
 	printf("Init_SDL()\n");
 
-	gfx_init(NULL, 0);
+	MCatchInitGraph(NULL, 0);
 
 	rect.x = 0;
 	rect.y = 0;
 	rect.width = 320;
 	rect.height = 240;
 
-	gfx_set_framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT);
-	gfx_set_display_screen(&rect);
+	MCatchSetFrameBuffer(SCREEN_WIDTH, SCREEN_HEIGHT);
+	MCatchSetDisplayScreen(&rect);
 
-	gfx_enable_feature(3);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	//gfx_set_fgcolor(&color);
-	//gfx_fillrect(&rect);
+	MCatchEnableFeature(3);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	//MCatchSetFGColor(&color);
+	//MCatchFillRect(&rect);
 
 	//memset(srv_screen_fb, '\28', sizeof(srv_screen_fb));
 
@@ -73,8 +73,8 @@ void Init_SDL()
 	srv_screen.pal_size	= PALETTE_SIZE;
 	srv_screen.unk3		= 0xffffff80;
 
-	gfx_load_image(&srv_screen, &srv_screen_handle);
-	gfx_set_colorrop(0xcc);
+	MCatchLoadImage(&srv_screen, &srv_screen_handle);
+	MCatchSetColorROP(0xcc);
 	/*
 	Init_SoundQ();
 
@@ -156,7 +156,7 @@ void srv_Events()
 	}
 #endif
 
-	get_keys(&keys);
+	NativeGE_getKeyInput4Ntv(&keys);
 	/*
 	KeyTable[P1Up]	  = (keys.key2 & KEY_UP) ? 0x80 : 0;
 	KeyTable[P1Down]	= (keys.key2 & KEY_DOWN) ? 0x80 : 0;
@@ -176,7 +176,7 @@ void Init_Service() {
 
 
 void srv_Cleanup() {
-	//gfx_free_image(srv_screen_handle);
+	//MCatchFreeImage(srv_screen_handle);
 	kv_CloseSampleFile();
 	//srv_sound_off();
 }

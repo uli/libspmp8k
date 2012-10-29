@@ -78,7 +78,7 @@ int main()
 
 	// overclock();
 
-	srand(get_time());
+	srand(NativeGE_getTime());
 	def_LoadDefaults();
 	LaunchedFromCommandline = 0;
 
@@ -137,7 +137,7 @@ int main()
 
 void SDL_Quit()
 {
-	gfx_free_image(srv_screen_handle);
+	MCatchFreeImage(srv_screen_handle);
 }
 /**
 	z26 is Copyright 1997-2011 by John Saeger and contributors.

@@ -46,10 +46,10 @@ void wait_keypress(void)
 {
     key_data_t keys, no_keys;
 
-    get_keys(&no_keys);
+    NativeGE_getKeyInput4Ntv(&no_keys);
 
     while (1) {
-        get_keys(&keys);
+        NativeGE_getKeyInput4Ntv(&keys);
         if (keys.key2 != no_keys.key2)
             break;
     }
@@ -65,16 +65,16 @@ int main(void)
     _dprintf("\n");
     _dprintf("Starting audio test.\n");
 
-    res_init(0, &resources);
+    NativeGE_initRes(0, &resources);
 
-    type = res_get("8k8bpcm.wav", &ri);
-    res_play(type, 1, &ri);
+    type = NativeGE_getRes("8k8bpcm.wav", &ri);
+    NativeGE_playRes(type, 1, &ri);
 
     _dprintf("Playing a mono 8 bit / 8000 Hz PCM wave file.\n");
     _dprintf("Press any key to next sample.\n");
     wait_keypress();
 
-    res_stop(type);
+    NativeGE_stopRes(type);
 
     return 0;
 }

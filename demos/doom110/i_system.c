@@ -109,7 +109,7 @@ int  I_GetTime (void)
 
 	uint32_t t, dt;
 	
-	t = get_time();
+	t = NativeGE_getTime();
 	t = t - old_time;
 
 	return t;
@@ -195,13 +195,13 @@ void I_Error (char *error, ...)
 #endif
 	// wait until 'O' is released
 	while (1) {
-		get_keys(&keys);
+		NativeGE_getKeyInput4Ntv(&keys);
 		if ((keys.key2 & KEY_O) == 0) break;
 	}
 	
 	// wait for 'O'
 	while (1) {
-		get_keys(&keys);
+		NativeGE_getKeyInput4Ntv(&keys);
 		if (keys.key2 & KEY_O) break;
 	}
 	

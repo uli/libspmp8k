@@ -121,7 +121,7 @@ int xlatekey(SDL_keysym *key)
 */
 void I_ShutdownGraphics(void)
 {
-	gfx_free_image(doom_video_handle);
+	MCatchFreeImage(doom_video_handle);
 	free(screens[0]);
 }
 
@@ -208,7 +208,7 @@ void I_StartTic (void)
 	event_t event;
 	uint32_t key, prev_key;
 	
-	get_keys(&keys);
+	NativeGE_getKeyInput4Ntv(&keys);
 	
 	// UP
 	key = keys.key2 & KEY_UP;
@@ -372,10 +372,10 @@ void I_FinishUpdate (void)
 	rect.width = SCREENWIDTH;
 	rect.height = SCREENHEIGHT;
 #endif
-	gfx_bitblt(doom_video_handle, &rect, &pos);
+	MCatchBitblt(doom_video_handle, &rect, &pos);
 	
-	gfx_flush();
-	gfx_paint();
+	MCatchFlush();
+	MCatchPaint();
 }
 
 
@@ -398,7 +398,7 @@ void I_SetPalette (byte* palette)
 	int r, g, b;
 
 	ppal = palette;
-	gfx_free_image(doom_video_handle);
+	MCatchFreeImage(doom_video_handle);
 	for ( i=0; i<256; ++i ) {
 		r = gammatable[usegamma][ppal[0]];
 		g = gammatable[usegamma][ppal[1]];
@@ -406,7 +406,7 @@ void I_SetPalette (byte* palette)
 		doom_video_pal[i] = ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);	// 565 - r:g:b
 		ppal+=3;
 	}
-	gfx_load_image(&doom_video_img, &doom_video_handle);
+	MCatchLoadImage(&doom_video_img, &doom_video_handle);
 }
 
 extern int	ticdup;
@@ -421,16 +421,16 @@ void I_InitGraphics(void)
 	
 	ticdup = 1;
 
-	old_time = get_time();
+	old_time = NativeGE_getTime();
 	// initialize graphics
-/*	gfx_init(NULL, 0);
-	gfx_set_framebuffer(SCREENWIDTH, SCREENHEIGHT);
+/*	MCatchInitGraph(NULL, 0);
+	MCatchSetFrameBuffer(SCREENWIDTH, SCREENHEIGHT);
 
 	rect.x = 0;
 	rect.y = 0;
 	rect.width = SCREENWIDTH;
 	rect.height = SCREENHEIGHT;
-	gfx_set_display_screen(&rect);
+	MCatchSetDisplayScreen(&rect);
 */
 	screens[0] = (unsigned char *)malloc(SCREENWIDTH * SCREENHEIGHT);
 	screens[1] = (unsigned char *)malloc(SCREENWIDTH * SCREENHEIGHT);
@@ -456,8 +456,8 @@ void I_InitGraphics(void)
 	doom_video_img.pal_size = 256;
 	doom_video_img.unk3     = 0xffffff80;
 	
-	gfx_load_image(&doom_video_img, &doom_video_handle);
-	gfx_set_colorrop(0xcc);
+	MCatchLoadImage(&doom_video_img, &doom_video_handle);
+	MCatchSetColorROP(0xcc);
 	
 	// initialize input
 	prev_keys.key1 = 0;

@@ -52,7 +52,7 @@ void srv_SetPalette()
 	db red, grn, blu;
 	//SDL_Color palette[256];
 
-	gfx_free_image(srv_screen_handle);
+	MCatchFreeImage(srv_screen_handle);
 
 	GeneratePalette();
 	for ( i=0; i<128; i++)
@@ -75,7 +75,7 @@ void srv_SetPalette()
 		*/
 	}
 
-	gfx_load_image(&srv_screen, &srv_screen_handle);
+	MCatchLoadImage(&srv_screen, &srv_screen_handle);
 }
 
 #if 0
@@ -165,10 +165,10 @@ gfx_rect_t rect = {
 /* spmp8k CopyScreen */
 void srv_CopyScreen()
 {
-	gfx_bitblt(srv_screen_handle, &rect, &pos);
+	MCatchBitblt(srv_screen_handle, &rect, &pos);
 
-	gfx_flush();
-	gfx_paint();
+	MCatchFlush();
+	MCatchPaint();
 }
 
 #if 0

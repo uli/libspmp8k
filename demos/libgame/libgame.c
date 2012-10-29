@@ -26,37 +26,37 @@ extern int heap_ending;
 
 void (*diag_printf)(char *fmt, ...);
 
-int (*gfx_init)(void *buffer, int buffsize);
-int (*gfx_set_framebuffer)(int width, int height);
-int (*gfx_set_display_screen)(gfx_rect_t *rect);
-int (*gfx_set_cammmode)(int mode);
-int (*gfx_set_fgcolor)(uint32_t *color);
-uint32_t (*gfx_get_fgcolor)();
-int (*gfx_set_colorrop)(uint32_t rop);
-int (*gfx_set_alpha)(uint8_t src_alpha, uint8_t dest_alpha);
-int (*gfx_get_alpha)(uint8_t *src_alpha, uint8_t *dest_alpha);
-int (*gfx_fillrect)(gfx_rect_t *rect);
-int (*gfx_enable_feature)(uint32_t feature);
-int (*gfx_flush)();
-int (*gfx_paint)();
-int (*gfx_load_image)(gfx_loadimg_t *loadimg, uint8_t *imgid);
-int (*gfx_free_image)(uint8_t img_id);
-int (*gfx_bitblt)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
-int (*gfx_sprite)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+int (*MCatchInitGraph)(void *buffer, int buffsize);
+int (*MCatchSetFrameBuffer)(int width, int height);
+int (*MCatchSetDisplayScreen)(gfx_rect_t *rect);
+int (*MCatchSetCameraMode)(int mode);
+int (*MCatchSetFGColor)(uint32_t *color);
+uint32_t (*MCatchGetFGColor)();
+int (*MCatchSetColorROP)(uint32_t rop);
+int (*MCatchSetAlphaBld)(uint8_t src_alpha, uint8_t dest_alpha);
+int (*MCatchGetAlphaBld)(uint8_t *src_alpha, uint8_t *dest_alpha);
+int (*MCatchFillRect)(gfx_rect_t *rect);
+int (*MCatchEnableFeature)(uint32_t feature);
+int (*MCatchFlush)();
+int (*MCatchPaint)();
+int (*MCatchLoadImage)(gfx_loadimg_t *loadimg, uint8_t *imgid);
+int (*MCatchFreeImage)(uint8_t img_id);
+int (*MCatchBitblt)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+int (*MCatchSprite)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
 
-int (*res_init)(int val, void *res_table);
-int (*res_get)(char *filename,void *res_info);
-int (*res_play)(uint8_t res_type, int flags, void *res_info);
-int (*res_stop)(int arg);
+int (*NativeGE_initRes)(int val, void *res_table);
+int (*NativeGE_getRes)(char *filename,void *res_info);
+int (*NativeGE_playRes)(uint8_t res_type, int flags, void *res_info);
+int (*NativeGE_stopRes)(int arg);
 
-int (*fs_open)(const char *filename, int flags, int *fd);
-int (*fs_read)(int fd, const void *buf, size_t count, int *result);
-int (*fs_write)(int fd, const void *buf, size_t count, int *result);
-int (*fs_close)(int fd);
-uint64_t (*fs_seek)(int fd, int offset, int whence);
+int (*NativeGE_fsOpen)(const char *filename, int flags, int *fd);
+int (*NativeGE_fsRead)(int fd, const void *buf, size_t count, int *result);
+int (*NativeGE_fsWrite)(int fd, const void *buf, size_t count, int *result);
+int (*NativeGE_fsClose)(int fd);
+uint64_t (*NativeGE_fsSeek)(int fd, int offset, int whence);
 
-uint32_t (*get_time)();	// returns system ticks equivalent
-void (*get_keys)(key_data_t *keys);//uint64_t *keys);
+uint32_t (*NativeGE_getTime)();	// returns system ticks equivalent
+void (*NativeGE_getKeyInput4Ntv)(key_data_t *keys);//uint64_t *keys);
 
 #define	FUNC(n)		*(ftab + (n >> 2))
 
@@ -256,7 +256,7 @@ void libgame_detect_firmware_abi()
 	
 	/* Find gDisplayDev */
 	int getGameBuffWidth_found = 0;
-	start = (uint32_t *)gfx_init;
+	start = (uint32_t *)MCatchInitGraph;
 	for (head = start; head < start + 100; head++) {
 		if ((*head & 0xff000000U) == 0xeb000000U) {
 			getGameBuffWidth_found = 1;
@@ -279,7 +279,7 @@ void libgame_detect_firmware_abi()
 	}
 	
 	/* Find eCos read/write */
-	start = (uint32_t *)fs_read;
+	start = (uint32_t *)NativeGE_fsRead;
 	for (head = start; head < start + 200; head++) {
 		if (is_branch_link(*head)) {
 			if (branch_address(head) == (uint32_t *)diag_printf)
@@ -288,7 +288,7 @@ void libgame_detect_firmware_abi()
 			break;
 		}
 	}
-	start = (uint32_t *)fs_write;
+	start = (uint32_t *)NativeGE_fsWrite;
 	for (head = start; head < start + 200; head++) {
 		if (is_branch_link(*head)) {
 			/* skip debug output calls */
@@ -307,7 +307,7 @@ void libgame_detect_firmware_abi()
 	if (!_ecos_fstat)
 		return;
 
-	start = (uint32_t *)fs_open;
+	start = (uint32_t *)NativeGE_fsOpen;
 	void *previous = 0;
 	for (head = start; head < start + 400; head++) {
 		if (!is_branch_link(*head))
@@ -402,7 +402,7 @@ out:
 	_ecos_chdir = (void *)find_fs_function(0x30);
 
 	/* Find cache_sync(), the last function called by MCatchPaint(). */
-	start = (uint32_t *)gfx_paint;
+	start = (uint32_t *)MCatchPaint;
 	int found_next_prolog = 0;
 	for (head = start + 1; head < start + 200; head++) {
 		if (is_branch_link(*head))
@@ -415,12 +415,12 @@ out:
 	if (!found_next_prolog)
 		cache_sync = 0;
 	
-	uint32_t *getKeyFromQueue = next_bl_target((uint32_t *)get_keys);
+	uint32_t *getKeyFromQueue = next_bl_target((uint32_t *)NativeGE_getKeyInput4Ntv);
 	if (getKeyFromQueue) {
 		for (head = FW_START_P; head < FW_END_P; head++) {
 			if (is_prolog(*head)) {
 				if (next_bl_target(head) == getKeyFromQueue &&
-				    head != (void *)get_keys) {
+				    head != (void *)NativeGE_getKeyInput4Ntv) {
 				    	NativeGE_getKeyInput = (void *)head;
 				    	break;
 				}
@@ -476,20 +476,20 @@ void libgame_init(void)
 {
 	// setup function pointers
 	diag_printf               = FUNC(0x04);
-	gfx_flush             = FUNC(0xc);
-	gfx_paint             = FUNC(0x10);
-	gfx_load_image        = FUNC(0x14);
-	gfx_free_image        = FUNC(0x18);
-	/* MCatchStoreImage      = FUNC(0x1c);	doesn't do anything */
+	MCatchFlush               = FUNC(0xc);
+	MCatchPaint               = FUNC(0x10);
+	MCatchLoadImage           = FUNC(0x14);
+	MCatchFreeImage           = FUNC(0x18);
+	/* MCatchStoreImage          = FUNC(0x1c);	doesn't do anything */
 	/* MCatchDecodeImageFromCard = FUNC(0x28); doesn't do anything */
-	gfx_init              = FUNC(0x38);
-	gfx_set_colorrop      = FUNC(0x3c);
-	MCatchGetColorROP     = FUNC(0x40);
-	gfx_set_fgcolor       = FUNC(0x44);
-	gfx_get_fgcolor       = FUNC(0x48);
+	MCatchInitGraph           = FUNC(0x38);
+	MCatchSetColorROP         = FUNC(0x3c);
+	MCatchGetColorROP         = FUNC(0x40);
+	MCatchSetFGColor          = FUNC(0x44);
+	MCatchGetFGColor          = FUNC(0x48);
 	MCatchSetBitPlaneMask     = FUNC(0x4c);
 	MCatchGetBitPlaneMask     = FUNC(0x50);
-	gfx_set_display_screen= FUNC(0x54);
+	MCatchSetDisplayScreen    = FUNC(0x54);
 	MCatchGetDisplayScreen    = FUNC(0x58);
 	MCatchSetRectClip         = FUNC(0x5c);
 	MCatchGetRectClip         = FUNC(0x60);
@@ -497,51 +497,51 @@ void libgame_init(void)
 	MCatchGetStyleMask        = FUNC(0x68);
 	MCatchSetLineMask         = FUNC(0x6c);
 	MCatchGetLineMask         = FUNC(0x70);
-	gfx_set_alpha         = FUNC(0x74);
-	gfx_get_alpha         = FUNC(0x78);
-	gfx_enable_feature    = FUNC(0x7c);
+	MCatchSetAlphaBld         = FUNC(0x74);
+	MCatchGetAlphaBld         = FUNC(0x78);
+	MCatchEnableFeature       = FUNC(0x7c);
 	MCatchDisableFeature      = FUNC(0x80);
 	MCatchSetStyleLine        = FUNC(0x84);
 	/* MCatchPreviewColorkey     = FUNC(0x88); doesn't do anything */
-	gfx_set_cammmode      = FUNC(0x8c);
-	gfx_set_framebuffer   = FUNC(0x90);
+	MCatchSetCameraMode       = FUNC(0x8c);
+	MCatchSetFrameBuffer      = FUNC(0x90);
 	MCatchGetFrameBuffer      = FUNC(0x94);
 	MCatchSetMutableImage     = FUNC(0x98);
 	MCatchSetPerPixelAlphaEq  = FUNC(0x9c);
 	MCatchSetTransformation   = FUNC(0xa0);
 	MCatchQueryImage          = FUNC(0xa4);
 	MCatchEnableDoubleBuffer  = FUNC(0xa8);
-	gfx_bitblt            = FUNC(0xB4);
-	gfx_sprite            = FUNC(0xB8);
-	MCatchGradientFill    = FUNC(0xc0);
-	gfx_fillrect          = FUNC(0xc4);
-	/* MCatchUpdateScreen    = FUNC(0xc8); doesn't do anything */
-	MCatchShowFont        = FUNC(0xcc);
-	MCatchModifyPalette   = FUNC(0xd0);
+	MCatchBitblt              = FUNC(0xB4);
+	MCatchSprite              = FUNC(0xB8);
+	MCatchGradientFill        = FUNC(0xc0);
+	MCatchFillRect            = FUNC(0xc4);
+	/* MCatchUpdateScreen     = FUNC(0xc8); doesn't do anything */
+	MCatchShowFont            = FUNC(0xcc);
+	MCatchModifyPalette       = FUNC(0xd0);
 
-	res_init              = FUNC(0xD4);
-	res_get               = FUNC(0xD8);
-	res_play              = FUNC(0xDC);
+	NativeGE_initRes          = FUNC(0xD4);
+	NativeGE_getRes           = FUNC(0xD8);
+	NativeGE_playRes          = FUNC(0xDC);
 	NativeGE_pauseRes         = FUNC(0xE0);
 	NativeGE_resumeRes        = FUNC(0xE4);
-	res_stop              = FUNC(0xE8);
+	NativeGE_stopRes          = FUNC(0xE8);
 	
 	NativeGE_writeRecord      = FUNC(0xec);
 	NativeGE_readRecord       = FUNC(0xf0);
 
-	get_keys              = FUNC(0x100);
+	NativeGE_getKeyInput4Ntv  = FUNC(0x100);
 	/* NativeGE_showFPS          = FUNC(0x108); doesn't do anything */
-	cyg_thread_delay = FUNC(0x11c);
-	get_time              = FUNC(0x124);
+	cyg_thread_delay          = FUNC(0x11c);
+	NativeGE_getTime          = FUNC(0x124);
 	NativeGE_gameExit         = FUNC(0x130);
 	/* NativeGE_getTPEvent       = FUNC(0x134); doesn't do anything */
 	/* NativeGE_setTPClickArea   = FUNC(0x138); doesn't do anything */
 	
-	fs_open               = FUNC(0x13C);
-	fs_read               = FUNC(0x140);
-	fs_write              = FUNC(0x144);
-	fs_close              = FUNC(0x148);
-	fs_seek               = FUNC(0x14C);
+	NativeGE_fsOpen           = FUNC(0x13C);
+	NativeGE_fsRead           = FUNC(0x140);
+	NativeGE_fsWrite          = FUNC(0x144);
+	NativeGE_fsClose          = FUNC(0x148);
+	NativeGE_fsSeek           = FUNC(0x14C);
 
 	
 //	heap_ending = (char*)0;

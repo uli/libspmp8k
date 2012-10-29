@@ -1,8 +1,8 @@
 diag_printf = 00298160
-gfx_init = 00328d18
-fs_open = 00429f08
-fs_read = 00429c88
-fs_write = 00429c2c
+MCatchInitGraph = 00328d18
+NativeGE_fsOpen = 00429f08
+NativeGE_fsRead = 00429c88
+NativeGE_fsWrite = 00429c2c
 g_stEmuFuncs 004e7438 (new ABI)
 gDisplayDev 004de14c
 compiled without frame pointer

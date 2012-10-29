@@ -293,7 +293,7 @@ void def_LoadDefaults(void)
 	KeyboardEnabled = 1;
 	StelladaptorEnabled = 1;
 
-	Seconds = get_time(); //time(&MyTime);	/* randomize RIOT timer (in RIOT.ASM)*/
+	Seconds = NativeGE_getTime(); //time(&MyTime);	/* randomize RIOT timer (in RIOT.ASM)*/
 }
 
 // C-engine specific

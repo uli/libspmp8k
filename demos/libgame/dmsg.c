@@ -79,16 +79,16 @@ int dmsg_init(int x, int y, int width, int height)
 	dmsg_buff_pal[1] = 0xFFFF;	// white
 
 	// register frame buffer to the game API
-	gfx_load_image(&dmsg_buff_img, &dmsg_buff_id);
+	MCatchLoadImage(&dmsg_buff_img, &dmsg_buff_id);
 	
-	gfx_set_colorrop(0xcc);
+	MCatchSetColorROP(0xcc);
 	return 0;
 }
 
 void dmsg_shutdown(void)
 {
 	if (dmsg_buff != NULL) {
-		gfx_free_image(dmsg_buff_id);
+		MCatchFreeImage(dmsg_buff_id);
 #ifndef STATIC_BUFF
 		free(dmsg_buff);
 #endif
@@ -107,7 +107,7 @@ void dmsg_update(void)
 		rect.y = 0;
 		rect.width = dmsg_buff_width;
 		rect.height = dmsg_buff_height;
-		gfx_bitblt(dmsg_buff_id, &rect, &pos);
+		MCatchBitblt(dmsg_buff_id, &rect, &pos);
 //	}
 /*	else {
 	//	if (dmsg_cursor_y > 0) {
@@ -117,19 +117,19 @@ void dmsg_update(void)
 			rect.y = dmsg_cursor_y + 8;
 			rect.width = dmsg_buff_width;
 			rect.height = dmsg_buff_height - dmsg_cursor_y;
-			gfx_bitblt(dmsg_buff_id, &rect, &pos);
+			MCatchBitblt(dmsg_buff_id, &rect, &pos);
 	//	}
 		
 		if (dmsg_cursor_y > 0) {
 			pos.y = dmsg_pos_y + dmsg_cursor_y;
 			rect.y = 0;
 			rect.height = dmsg_cursor_y;
-			gfx_bitblt(dmsg_buff_id, &rect, &pos);
+			MCatchBitblt(dmsg_buff_id, &rect, &pos);
 		}
 	}
 */
-	gfx_flush();
-	gfx_paint();
+	MCatchFlush();
+	MCatchPaint();
 }
 
 #define	FONTCOLOR_LO	0
@@ -184,13 +184,13 @@ int dmsg_puts(char *__s)
 				
 				// wait for 'O' press
 				while (1) {
-					get_keys(&keys);
+					NativeGE_getKeyInput4Ntv(&keys);
 					if (keys.key2 & KEY_O) break;
 				}
 				
 				// wait for 'O' release
 				while (1) {
-					get_keys(&keys);
+					NativeGE_getKeyInput4Ntv(&keys);
 					if ((keys.key2 & KEY_O) == 0) break;
 				}
 			}

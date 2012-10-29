@@ -25,21 +25,21 @@ typedef struct key_data {
 
 void (*dprintf)(char *fmt, ...);
 
-//int (*gfx_init)();
-int (*gfx_init)(void *buffer, int buffsize);
-int (*gfx_set_framebuffer)(int width, int height);
-int (*gfx_set_display_screen)(gfx_rect_t *rect);//int with, int height);
-int (*gfx_set_cammmode)(int mode);
-int (*gfx_set_fgcolor)(uint32_t *color);
-uint32_t (*gfx_get_fgcolor)();
-int (*gfx_set_colorrop)(uint32_t rop);
-int (*gfx_fillrect)(gfx_rect_t *rect);
-int (*gfx_enable_feature)(uint32_t feature);
-int (*gfx_flush)();
-int (*gfx_paint)();
+//int (*MCatchInitGraph)();
+int (*MCatchInitGraph)(void *buffer, int buffsize);
+int (*MCatchSetFrameBuffer)(int width, int height);
+int (*MCatchSetDisplayScreen)(gfx_rect_t *rect);//int with, int height);
+int (*MCatchSetCameraMode)(int mode);
+int (*MCatchSetFGColor)(uint32_t *color);
+uint32_t (*MCatchGetFGColor)();
+int (*MCatchSetColorROP)(uint32_t rop);
+int (*MCatchFillRect)(gfx_rect_t *rect);
+int (*MCatchEnableFeature)(uint32_t feature);
+int (*MCatchFlush)();
+int (*MCatchPaint)();
 
-uint32_t (*get_time)();	// returns system ticks equivalent
-void (*get_keys)(key_data_t *keys);//uint64_t *keys);
+uint32_t (*NativeGE_getTime)();	// returns system ticks equivalent
+void (*NativeGE_getKeyInput4Ntv)(key_data_t *keys);//uint64_t *keys);
 
 #define	FUNC(n)		*(ftab + (n >> 2))
 
@@ -55,36 +55,36 @@ int main()
 
 	// setup function pointers
 	dprintf               = FUNC(0x04);
-	gfx_init              = FUNC(0x38);
-	gfx_set_framebuffer   = FUNC(0x90);
-	gfx_set_display_screen= FUNC(0x54);
-	gfx_set_cammmode      = FUNC(0x8c);
-	gfx_set_colorrop      = FUNC(0x3c);
-	gfx_set_fgcolor       = FUNC(0x44);
-	gfx_get_fgcolor       = FUNC(0x48);
-	gfx_fillrect          = FUNC(0xc4);
-	gfx_enable_feature    = FUNC(0x7c);
-	gfx_flush             = FUNC(0xc);
-	gfx_paint             = FUNC(0x10);
-	get_time              = FUNC(0x124);
-	get_keys              = FUNC(0x100);
+	MCatchInitGraph              = FUNC(0x38);
+	MCatchSetFrameBuffer   = FUNC(0x90);
+	MCatchSetDisplayScreen= FUNC(0x54);
+	MCatchSetCameraMode      = FUNC(0x8c);
+	MCatchSetColorROP      = FUNC(0x3c);
+	MCatchSetFGColor       = FUNC(0x44);
+	MCatchGetFGColor       = FUNC(0x48);
+	MCatchFillRect          = FUNC(0xc4);
+	MCatchEnableFeature    = FUNC(0x7c);
+	MCatchFlush             = FUNC(0xc);
+	MCatchPaint             = FUNC(0x10);
+	NativeGE_getTime              = FUNC(0x124);
+	NativeGE_getKeyInput4Ntv              = FUNC(0x100);
 
 //	dprintf("Hello World!\n");
-	gfx_init(fbuff, sizeof(fbuff));
+	MCatchInitGraph(fbuff, sizeof(fbuff));
 
 	rect.x = 0;
 	rect.y = 0;
 	rect.width = 320;
 	rect.height = 240;
 
-	gfx_set_framebuffer(320, 240);
-	gfx_set_display_screen(&rect);//320, 240);
+	MCatchSetFrameBuffer(320, 240);
+	MCatchSetDisplayScreen(&rect);//320, 240);
 
 	color = MAKE_RGB(255,0,0);
-	gfx_enable_feature(3);
-	gfx_set_fgcolor(&color);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_fillrect(&rect);
+	MCatchEnableFeature(3);
+	MCatchSetFGColor(&color);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFillRect(&rect);
 
 	rect.x = 30;
 	rect.y = 30;
@@ -92,10 +92,10 @@ int main()
 	rect.height = 180;
 
 	color = MAKE_RGB(128,0,0);
-	gfx_enable_feature(3);
-	gfx_set_fgcolor(&color);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_fillrect(&rect);
+	MCatchEnableFeature(3);
+	MCatchSetFGColor(&color);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFillRect(&rect);
 
 	rect.x = 60;
 	rect.y = 60;
@@ -103,25 +103,25 @@ int main()
 	rect.height = 120;
 
 	color = MAKE_RGB(0,0,255);
-	gfx_set_fgcolor(&color);
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_fillrect(&rect);
+	MCatchSetFGColor(&color);
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFillRect(&rect);
 ///*
 	// is it used at all ?
 	for (i=0; i<320; i++) fbuff[(100*320)+i] = 0;
 //*/
-	gfx_set_colorrop(COLOR_ROP_NOP);
-	gfx_flush();
-	gfx_paint();
+	MCatchSetColorROP(COLOR_ROP_NOP);
+	MCatchFlush();
+	MCatchPaint();
 
 	int fd = open("file.bin", FS_O_CREAT|FS_O_WRONLY, 0644);
 	write(fd, "Huhu!\n", 6);
 	close(fd);
 	
-	get_keys(&no_keys);
+	NativeGE_getKeyInput4Ntv(&no_keys);
 //	no_keys.key2 &= ~0x5ff0;
 	while (1) {
-		get_keys(&keys);
+		NativeGE_getKeyInput4Ntv(&keys);
 //		keys.key2 &= ~0x5ff0;
 		if (keys.key2 != no_keys.key2) break;
 		uint16_t *fb = (uint16_t *)0x1d80000;

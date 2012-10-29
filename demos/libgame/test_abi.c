@@ -24,12 +24,12 @@ int main(int argc, char **argv)
      to specify a couple of addresses manually. */
 #define SETFUN(n, x)  printf(#x " = %08x\n", (uint32_t)(x = (void *)strtoul(argv[n + 2], NULL, 0)));
   SETFUN(0, diag_printf)
-  SETFUN(1, gfx_init)
-  SETFUN(2, fs_open)
-  SETFUN(3, fs_read)
-  SETFUN(4, fs_write)
-  SETFUN(5, gfx_paint)
-  SETFUN(6, get_keys)
+  SETFUN(1, MCatchInitGraph)
+  SETFUN(2, NativeGE_fsOpen)
+  SETFUN(3, NativeGE_fsRead)
+  SETFUN(4, NativeGE_fsWrite)
+  SETFUN(5, MCatchPaint)
+  SETFUN(6, NativeGE_getKeyInput4Ntv)
 
   /* Load the firmware image to memory at 0x280000. We assume that the
      code in the firmware file starts at offset 0x4c. */

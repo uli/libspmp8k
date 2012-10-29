@@ -35,29 +35,29 @@ typedef struct key_data {
 extern void (*diag_printf)(char *fmt, ...);
 
 // graphics stuff
-extern int (*gfx_init)(void *buffer, int buffsize);
-extern int (*gfx_set_framebuffer)(int width, int height);
-extern int (*gfx_set_display_screen)(gfx_rect_t *rect);
-extern int (*gfx_set_cammmode)(int mode);
-extern int (*gfx_set_fgcolor)(uint32_t *color);
-extern uint32_t (*gfx_get_fgcolor)();
-extern int (*gfx_set_colorrop)(uint32_t rop);
-extern int (*gfx_set_alpha)(uint8_t src_alpha, uint8_t dest_alpha);
-extern int (*gfx_get_alpha)(uint8_t *src_alpha, uint8_t *dest_alpha);
-extern int (*gfx_fillrect)(gfx_rect_t *rect);
-extern int (*gfx_enable_feature)(uint32_t feature);
-extern int (*gfx_flush)(void);
-extern int (*gfx_paint)(void);
-extern int (*gfx_load_image)(gfx_loadimg_t *loadimg, uint8_t *imgid);
-extern int (*gfx_free_image)(uint8_t img_id);
-extern int (*gfx_bitblt)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
-extern int (*gfx_sprite)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+extern int (*MCatchInitGraph)(void *buffer, int buffsize);
+extern int (*MCatchSetFrameBuffer)(int width, int height);
+extern int (*MCatchSetDisplayScreen)(gfx_rect_t *rect);
+extern int (*MCatchSetCameraMode)(int mode);
+extern int (*MCatchSetFGColor)(uint32_t *color);
+extern uint32_t (*MCatchGetFGColor)();
+extern int (*MCatchSetColorROP)(uint32_t rop);
+extern int (*MCatchSetAlphaBld)(uint8_t src_alpha, uint8_t dest_alpha);
+extern int (*MCatchGetAlphaBld)(uint8_t *src_alpha, uint8_t *dest_alpha);
+extern int (*MCatchFillRect)(gfx_rect_t *rect);
+extern int (*MCatchEnableFeature)(uint32_t feature);
+extern int (*MCatchFlush)(void);
+extern int (*MCatchPaint)(void);
+extern int (*MCatchLoadImage)(gfx_loadimg_t *loadimg, uint8_t *imgid);
+extern int (*MCatchFreeImage)(uint8_t img_id);
+extern int (*MCatchBitblt)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+extern int (*MCatchSprite)(uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
 
 // music & sound (has some problems)
-extern int (*res_init)(int val, void *res_table);
-extern int (*res_get)(char *filename,void *res_info);
-extern int (*res_play)(uint8_t res_type, int flags, void *res_info);
-extern int (*res_stop)(int arg);
+extern int (*NativeGE_initRes)(int val, void *res_table);
+extern int (*NativeGE_getRes)(char *filename,void *res_info);
+extern int (*NativeGE_playRes)(uint8_t res_type, int flags, void *res_info);
+extern int (*NativeGE_stopRes)(int arg);
 
 // taken from eCos fcntl.h / unistd.h
 #define FS_O_RDONLY     (1<<0)					// Open for reading only
@@ -77,16 +77,16 @@ extern int (*res_stop)(int arg);
 #define	FS_STDERR_FILENO	2
 
 // filesystem
-extern int (*fs_open)(const char *filename, int flags, int *fd);
-extern int (*fs_read)(int fd, const void *buf, size_t count, int *result);		// returns 0-okay / 2-error
-extern int (*fs_write)(int fd, const void *buf, size_t count, int *result);
-extern int (*fs_close)(int fd);
-extern uint64_t (*fs_seek)(int fd, int offset, int whence);
-#define tell(fd) (fs_seek(fd, 0, SEEK_CUR) >> 32)
+extern int (*NativeGE_fsOpen)(const char *filename, int flags, int *fd);
+extern int (*NativeGE_fsRead)(int fd, const void *buf, size_t count, int *result);		// returns 0-okay / 2-error
+extern int (*NativeGE_fsWrite)(int fd, const void *buf, size_t count, int *result);
+extern int (*NativeGE_fsClose)(int fd);
+extern uint64_t (*NativeGE_fsSeek)(int fd, int offset, int whence);
+#define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
 
 // misc.
-extern uint32_t (*get_time)(void);			// returns system ticks equivalent
-extern void (*get_keys)(key_data_t *keys);//uint64_t *keys);
+extern uint32_t (*NativeGE_getTime)(void);			// returns system ticks equivalent
+extern void (*NativeGE_getKeyInput4Ntv)(key_data_t *keys);//uint64_t *keys);
 
 // ### initializes the function pointers
 // ### (must be called before everything else!)

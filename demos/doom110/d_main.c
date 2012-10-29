@@ -1228,7 +1228,7 @@ void D_DoomMain (void)
 
 	key_data_t keys;
 	while (1) {
-		get_keys(&keys);
+		NativeGE_getKeyInput4Ntv(&keys);
 		if (keys.key2 & KEY_X) break;
 	}
 
