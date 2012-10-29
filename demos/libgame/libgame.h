@@ -200,6 +200,40 @@ extern uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size);
 extern void (*cache_sync)(void);
 extern int (*NativeGE_getKeyInput)(key_data_t *);
 
+extern void *MCatchStoreImage;
+extern void *MCatchDecodeImageFromCard;
+extern void *MCatchGetColorROP;
+extern void *MCatchSetBitPlaneMask;
+extern void *MCatchGetBitPlaneMask;
+extern void *MCatchGetDisplayScreen;
+extern void *MCatchSetRectClip;
+extern void *MCatchGetRectClip;
+extern void *MCatchSetStyleMask;
+extern void *MCatchGetStyleMask;
+extern void *MCatchSetLineMask;
+extern void *MCatchGetLineMask;
+extern void *MCatchDisableFeature;
+extern void *MCatchSetStyleLine;
+extern void *MCatchPreviewColorkey;
+extern void *MCatchGetFrameBuffer;
+extern void *MCatchSetMutableImage;
+extern void *MCatchSetPerPixelAlphaEq;
+extern void *MCatchSetTransformation;
+extern void *MCatchQueryImage;
+extern void *MCatchEnableDoubleBuffer;
+extern void *MCatchGradientFill;
+extern void *MCatchUpdateScreen;
+extern void *MCatchShowFont;
+extern void *MCatchModifyPalette;
+extern void *NativeGE_pauseRes;
+extern void *NativeGE_resumeRes;
+extern void *NativeGE_writeRecord;
+extern void *NativeGE_readRecord;
+extern void *NativeGE_showFPS;
+extern void *NativeGE_gameExit;
+extern void *NativeGE_getTPEvent;
+extern void *NativeGE_setTPClickArea;
+
 typedef struct sound_params {
 	uint8_t *buf;		/* + 0x0 */
 	uint32_t buf_size;	/* + 0x4 */

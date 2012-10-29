@@ -92,6 +92,40 @@ uint16_t (*SPMP_SendSignal)(uint16_t cmd, void *data, uint16_t size) = 0;
 void (*cache_sync)(void) = 0;
 int (*NativeGE_getKeyInput)(key_data_t *) = 0;
 
+void *MCatchStoreImage = 0;
+void *MCatchDecodeImageFromCard = 0;
+void *MCatchGetColorROP = 0;
+void *MCatchSetBitPlaneMask = 0;
+void *MCatchGetBitPlaneMask = 0;
+void *MCatchGetDisplayScreen = 0;
+void *MCatchSetRectClip = 0;
+void *MCatchGetRectClip = 0;
+void *MCatchSetStyleMask = 0;
+void *MCatchGetStyleMask = 0;
+void *MCatchSetLineMask = 0;
+void *MCatchGetLineMask = 0;
+void *MCatchDisableFeature = 0;
+void *MCatchSetStyleLine = 0;
+void *MCatchPreviewColorkey = 0;
+void *MCatchGetFrameBuffer = 0;
+void *MCatchSetMutableImage = 0;
+void *MCatchSetPerPixelAlphaEq = 0;
+void *MCatchSetTransformation = 0;
+void *MCatchQueryImage = 0;
+void *MCatchEnableDoubleBuffer = 0;
+void *MCatchGradientFill = 0;
+void *MCatchUpdateScreen = 0;
+void *MCatchShowFont = 0;
+void *MCatchModifyPalette = 0;
+void *NativeGE_pauseRes = 0;
+void *NativeGE_resumeRes = 0;
+void *NativeGE_writeRecord = 0;
+void *NativeGE_readRecord = 0;
+void *NativeGE_showFPS = 0;
+void *NativeGE_gameExit = 0;
+void *NativeGE_getTPEvent = 0;
+void *NativeGE_setTPClickArea = 0;
+
 int _has_frame_pointer = -1;	/* required to find function entry points */
 int _new_emu_abi = -1;
 
@@ -391,43 +425,73 @@ void libgame_init(void)
 {
 	// setup function pointers
 	diag_printf               = FUNC(0x04);
-	gfx_init              = FUNC(0x38);
-	gfx_set_framebuffer   = FUNC(0x90);
-	gfx_set_display_screen= FUNC(0x54);
-	gfx_set_cammmode      = FUNC(0x8c);
-	gfx_set_colorrop      = FUNC(0x3c);
-	gfx_set_fgcolor       = FUNC(0x44);
-	gfx_get_fgcolor       = FUNC(0x48);
-	gfx_set_alpha         = FUNC(0x74);
-	gfx_get_alpha         = FUNC(0x78);
-	gfx_fillrect          = FUNC(0xc4);
-	gfx_enable_feature    = FUNC(0x7c);
 	gfx_flush             = FUNC(0xc);
 	gfx_paint             = FUNC(0x10);
 	gfx_load_image        = FUNC(0x14);
 	gfx_free_image        = FUNC(0x18);
+	MCatchStoreImage      = FUNC(0x1c);
+	MCatchDecodeImageFromCard = FUNC(0x28);
+	gfx_init              = FUNC(0x38);
+	gfx_set_colorrop      = FUNC(0x3c);
+	MCatchGetColorROP     = FUNC(0x40);
+	gfx_set_fgcolor       = FUNC(0x44);
+	gfx_get_fgcolor       = FUNC(0x48);
+	MCatchSetBitPlaneMask     = FUNC(0x4c);
+	MCatchGetBitPlaneMask     = FUNC(0x50);
+	gfx_set_display_screen= FUNC(0x54);
+	MCatchGetDisplayScreen    = FUNC(0x58);
+	MCatchSetRectClip         = FUNC(0x5c);
+	MCatchGetRectClip         = FUNC(0x60);
+	MCatchSetStyleMask        = FUNC(0x64);
+	MCatchGetStyleMask        = FUNC(0x68);
+	MCatchSetLineMask         = FUNC(0x6c);
+	MCatchGetLineMask         = FUNC(0x70);
+	gfx_set_alpha         = FUNC(0x74);
+	gfx_get_alpha         = FUNC(0x78);
+	gfx_enable_feature    = FUNC(0x7c);
+	MCatchDisableFeature      = FUNC(0x80);
+	MCatchSetStyleLine        = FUNC(0x84);
+	MCatchPreviewColorkey     = FUNC(0x88);
+	gfx_set_cammmode      = FUNC(0x8c);
+	gfx_set_framebuffer   = FUNC(0x90);
+	MCatchGetFrameBuffer      = FUNC(0x94);
+	MCatchSetMutableImage     = FUNC(0x98);
+	MCatchSetPerPixelAlphaEq  = FUNC(0x9c);
+	MCatchSetTransformation   = FUNC(0xa0);
+	MCatchQueryImage          = FUNC(0xa4);
+	MCatchEnableDoubleBuffer  = FUNC(0xa8);
 	gfx_bitblt            = FUNC(0xB4);
 	gfx_sprite            = FUNC(0xB8);
+	MCatchGradientFill    = FUNC(0xc0);
+	gfx_fillrect          = FUNC(0xc4);
+	MCatchUpdateScreen    = FUNC(0xc8);
+	MCatchShowFont        = FUNC(0xcc);
+	MCatchModifyPalette   = FUNC(0xd0);
 
 	res_init              = FUNC(0xD4);
 	res_get               = FUNC(0xD8);
 	res_play              = FUNC(0xDC);
-	/*
-	* res_pause           = FUNC(0xE0);
-	* res_resume          = FUNC(0xE4);
-	*/
+	NativeGE_pauseRes         = FUNC(0xE0);
+	NativeGE_resumeRes        = FUNC(0xE4);
 	res_stop              = FUNC(0xE8);
+	
+	NativeGE_writeRecord      = FUNC(0xec);
+	NativeGE_readRecord       = FUNC(0xf0);
 
+	get_keys              = FUNC(0x100);
+	NativeGE_showFPS          = FUNC(0x108);
+	cyg_thread_delay = FUNC(0x11c);
+	get_time              = FUNC(0x124);
+	NativeGE_gameExit         = FUNC(0x130);
+	NativeGE_getTPEvent       = FUNC(0x134);
+	NativeGE_setTPClickArea   = FUNC(0x138);
+	
 	fs_open               = FUNC(0x13C);
 	fs_read               = FUNC(0x140);
 	fs_write              = FUNC(0x144);
 	fs_close              = FUNC(0x148);
 	fs_seek               = FUNC(0x14C);
 
-	get_time              = FUNC(0x124);
-	get_keys              = FUNC(0x100);
-	
-	cyg_thread_delay = FUNC(0x11c);
 	
 //	heap_ending = (char*)0;
 	heap_ending = 0;
