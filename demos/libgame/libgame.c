@@ -137,29 +137,29 @@ uint32_t (*emuIfSoundInit)(sound_params_t *params);
 uint32_t (*emuIfSoundPlay)(sound_params_t *params);
 uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
 
-void *emuIfunknown0c = 0;
-void *emuIfKeyInit = 0;
-void *emuIfKeyGetInput = 0;
-void *emuIfKeyCleanup = 0;
-void *emuIfGetCurTime = 0;
-void *emuIfTimeDelay = 0;
-void *emuIfFsFileOpen = 0;
-void *emuIfFsFileGetSize = 0;
-void *emuIfFsFileWrite = 0;
-void *emuIfFsFileRead = 0;
-void *emuIfFsFileGetChar = 0;
-void *emuIfFsFileSeek = 0;
-void *emuIfFsFileCurPos = 0;
-void *emuIfFsFileClose = 0;
-void *emuIfkgbCevaLoader = 0;
-void *emuIfcevaImageUnload = 0;
-void *emuIfunknown5c = 0;
-void *emuIfunknown60 = 0;
-void *emuIfunknown64 = 0;
-void *emuIfunknown68 = 0;
-void *emuIfunknown6c = 0;
-void *emuIfunknown74 = 0;
-void *emuIfunknown78 = 0;
+int (*emuIfunknown0c)(void *) = 0;	/* sets the source buffer? */
+int (*emuIfKeyInit)(void *) = 0;
+int (*emuIfKeyGetInput)(void *) = 0;
+int (*emuIfKeyCleanup)(void *) = 0;
+uint32_t (*emuIfGetCurTime)(void) = 0; /* could be uint64_t, not sure */
+void (*emuIfTimeDelay)(uint32_t) = 0;
+int (*emuIfFsFileOpen)(const char *pathname, uint32_t flags) = 0;
+uint32_t (*emuIfFsFileGetSize)(int fd) = 0;
+int (*emuIfFsFileWrite)(int fd, const void *buf, uint32_t count) = 0;
+int (*emuIfFsFileRead)(int fd, void *buf, uint32_t count) = 0;
+int (*emuIfFsFileGetChar)(int fd) = 0;
+int (*emuIfFsFileSeek)(int fd, _ecos_off_t offset, uint8_t whence) = 0;
+_ecos_off_t (*emuIfFsFileCurPos)(int fd) = 0;
+int (*emuIfFsFileClose)(int fd) = 0;
+int (*emuIfkgbCevaLoader)(void) = 0;
+int (*emuIfcevaImageUnload)(void) = 0;
+int (*emuIfunknown5c)(void *) = 0;
+int (*emuIfunknown60)(void *) = 0;
+int (*emuIfunknown64)(void) = 0;
+void (*emuIfunknown68)(void *) = 0;
+int (*emuIfunknown6c)(int, int, int) = 0;
+void (*emuIfunknown74)(int, void *, int) = 0;
+int (*emuIfunknown78)(void) = 0;
 
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val) {

@@ -266,29 +266,29 @@ extern uint32_t (*emuIfSoundInit)(sound_params_t *params);
 extern uint32_t (*emuIfSoundPlay)(sound_params_t *params);
 extern uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
 
-extern void *emuIfunknown0c;
-extern void *emuIfKeyInit;
-extern void *emuIfKeyGetInput;
-extern void *emuIfKeyCleanup;
-extern void *emuIfGetCurTime;
-extern void *emuIfTimeDelay;
-extern void *emuIfFsFileOpen;
-extern void *emuIfFsFileGetSize;
-extern void *emuIfFsFileWrite;
-extern void *emuIfFsFileRead;
-extern void *emuIfFsFileGetChar;
-extern void *emuIfFsFileSeek;
-extern void *emuIfFsFileCurPos;
-extern void *emuIfFsFileClose;
-extern void *emuIfkgbCevaLoader;
-extern void *emuIfcevaImageUnload;
-extern void *emuIfunknown5c;
-extern void *emuIfunknown60;
-extern void *emuIfunknown64;
-extern void *emuIfunknown68;
-extern void *emuIfunknown6c;
-extern void *emuIfunknown74;
-extern void *emuIfunknown78;
+extern int (*emuIfunknown0c)(void *);	/* sets the source buffer? */
+extern int (*emuIfKeyInit)(void *);
+extern int (*emuIfKeyGetInput)(void *);
+extern int (*emuIfKeyCleanup)(void *);
+extern uint32_t (*emuIfGetCurTime)(void); /* could be uint64_t, not sure */
+extern void (*emuIfTimeDelay)(uint32_t);
+extern int (*emuIfFsFileOpen)(const char *pathname, uint32_t flags);
+extern uint32_t (*emuIfFsFileGetSize)(int fd);
+extern int (*emuIfFsFileWrite)(int fd, const void *buf, uint32_t count);
+extern int (*emuIfFsFileRead)(int fd, void *buf, uint32_t count);
+extern int (*emuIfFsFileGetChar)(int fd);
+extern int (*emuIfFsFileSeek)(int fd, _ecos_off_t offset, uint8_t whence);
+extern _ecos_off_t (*emuIfFsFileCurPos)(int fd);
+extern int (*emuIfFsFileClose)(int fd);
+extern int (*emuIfkgbCevaLoader)(void);
+extern int (*emuIfcevaImageUnload)(void);
+extern int (*emuIfunknown5c)(void *);
+extern int (*emuIfunknown60)(void *);
+extern int (*emuIfunknown64)(void);
+extern void (*emuIfunknown68)(void *);
+extern int (*emuIfunknown6c)(int, int, int);
+extern void (*emuIfunknown74)(int, void *, int);
+extern int (*emuIfunknown78)(void);
 
 #endif // __LIBGAME_H__
 
