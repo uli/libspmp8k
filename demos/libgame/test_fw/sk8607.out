@@ -3,6 +3,8 @@ MCatchInitGraph = 002f40c4
 NativeGE_fsOpen = 002f15dc
 NativeGE_fsRead = 002f16ac
 NativeGE_fsWrite = 002f170c
+MCatchPaint = 002f22d0
+NativeGE_getKeyInput4Ntv = 002f1984
 g_stEmuFuncs 0049c8ac (old ABI)
 gDisplayDev 0049b158
 compiled with frame pointer
@@ -21,4 +23,11 @@ _ecos_closedir 002c9ccc
 _ecos_stat 0029af68
 _ecos_getcwd 0029b030
 _ecos_chdir 0029addc
+_ecos_unlink 0029ab9c
+_ecos_mkdir 0029ac5c
+_ecos_rmdir 0029ad1c
+_ecos_fsync 002c9db8
 SPMP_SendSignal 002b82f8
+cache_sync 00292c60
+NativeGE_getKeyInput 002f1960
+emuIfSoundCleanup 002ef148
