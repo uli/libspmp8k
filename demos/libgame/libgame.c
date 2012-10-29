@@ -472,6 +472,24 @@ void libgame_assign_emuif(void)
 	}
 }
 
+int libgame_system_id;
+
+static void libgame_detect_system(void)
+{
+	struct _ecos_stat st;
+	if (!_ecos_stat("/Rom/IMAGE/GAME/SPDF.BIN", &st))
+		libgame_system_id = SYS_JXD_100;
+	else if (!_ecos_stat("/Rom/RESOURCE/ARECORD/DEFBTN.BMP", &st))
+		libgame_system_id = SYS_JXD_V3;
+	else if (!_ecos_stat("/Rom/RESOURCE/XML/APPHOMENOMONTH.XML", &st))
+		libgame_system_id = SYS_JXD_1000;
+	else if (!_ecos_stat("/Rom/HOME/IMAGE/EXPLORER.BMP", &st) ||
+	         !_ecos_stat("/Rom/HOME/IMAGE/HNWFNYPM_EXPLORER.BMP", &st))
+		libgame_system_id = SYS_MMM;
+	else
+		libgame_system_id = SYS_UNKNOWN;
+}
+
 void libgame_init(void)
 {
 	// setup function pointers
@@ -549,4 +567,5 @@ void libgame_init(void)
 	
 	libgame_detect_firmware_abi();
 	libgame_assign_emuif();
+	libgame_detect_system();
 }

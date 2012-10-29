@@ -291,5 +291,13 @@ extern int (*emuIfunknown6c)(int, int, int);
 extern void (*emuIfunknown74)(int, void *, int);
 extern int (*emuIfunknown78)(void);
 
-#endif // __LIBGAME_H__
+extern int libgame_system_id;
+#define SYS_UNKNOWN 0
+#define SYS_JXD_100 1
+#define SYS_JXD_1000 2
+#define SYS_JXD_A1000 3
+#define SYS_JXD_V3 4
+#define SYS_LETCOOL 5
+#define SYS_MMM 6
 
+#endif // __LIBGAME_H__
