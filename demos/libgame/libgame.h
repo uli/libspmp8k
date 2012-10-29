@@ -266,5 +266,29 @@ extern uint32_t (*emuIfSoundInit)(sound_params_t *params);
 extern uint32_t (*emuIfSoundPlay)(sound_params_t *params);
 extern uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
 
+extern void *emuIfunknown0c;
+extern void *emuIfKeyInit;
+extern void *emuIfKeyGetInput;
+extern void *emuIfKeyCleanup;
+extern void *emuIfGetCurTime;
+extern void *emuIfTimeDelay;
+extern void *emuIfFsFileOpen;
+extern void *emuIfFsFileGetSize;
+extern void *emuIfFsFileWrite;
+extern void *emuIfFsFileRead;
+extern void *emuIfFsFileGetChar;
+extern void *emuIfFsFileSeek;
+extern void *emuIfFsFileCurPos;
+extern void *emuIfFsFileClose;
+extern void *emuIfkgbCevaLoader;
+extern void *emuIfcevaImageUnload;
+extern void *emuIfunknown5c;
+extern void *emuIfunknown60;
+extern void *emuIfunknown64;
+extern void *emuIfunknown68;
+extern void *emuIfunknown6c;
+extern void *emuIfunknown74;
+extern void *emuIfunknown78;
+
 #endif // __LIBGAME_H__
 

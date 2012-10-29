@@ -137,6 +137,30 @@ uint32_t (*emuIfSoundInit)(sound_params_t *params);
 uint32_t (*emuIfSoundPlay)(sound_params_t *params);
 uint32_t (*emuIfSoundCleanup)(sound_params_t *params);
 
+void *emuIfunknown0c = 0;
+void *emuIfKeyInit = 0;
+void *emuIfKeyGetInput = 0;
+void *emuIfKeyCleanup = 0;
+void *emuIfGetCurTime = 0;
+void *emuIfTimeDelay = 0;
+void *emuIfFsFileOpen = 0;
+void *emuIfFsFileGetSize = 0;
+void *emuIfFsFileWrite = 0;
+void *emuIfFsFileRead = 0;
+void *emuIfFsFileGetChar = 0;
+void *emuIfFsFileSeek = 0;
+void *emuIfFsFileCurPos = 0;
+void *emuIfFsFileClose = 0;
+void *emuIfkgbCevaLoader = 0;
+void *emuIfcevaImageUnload = 0;
+void *emuIfunknown5c = 0;
+void *emuIfunknown60 = 0;
+void *emuIfunknown64 = 0;
+void *emuIfunknown68 = 0;
+void *emuIfunknown6c = 0;
+void *emuIfunknown74 = 0;
+void *emuIfunknown78 = 0;
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val) {
 	return (val >= FW_START && val < FW_END);
@@ -415,10 +439,37 @@ void libgame_assign_emuif(void)
 	emuIfGraphInit		= EMU_FUNC_ENTRY(0x00);
 	emuIfGraphShow		= EMU_FUNC_ENTRY(0x04);
 	emuIfGraphChgView	= EMU_FUNC_ENTRY(0x08);
+	if (_new_emu_abi)
+	  emuIfunknown0c = EMU_FUNC_ENTRY(0x0c);
 	emuIfGraphCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x10 : 0x0c);
 	emuIfSoundInit		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x14 : 0x10);
 	emuIfSoundPlay		= EMU_FUNC_ENTRY(_new_emu_abi ? 0x18 : 0x14);
 	emuIfSoundCleanup	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x1c : 0x18);
+	emuIfKeyInit     	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x20 : 0x1c);
+	emuIfKeyGetInput 	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x24 : 0x20);
+	emuIfKeyCleanup  	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x28 : 0x24);
+	emuIfGetCurTime  	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x2c : 0x28);
+	emuIfTimeDelay   	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x30 : 0x2c);
+	emuIfFsFileOpen  	= EMU_FUNC_ENTRY(_new_emu_abi ? 0x34 : 0x30);
+	emuIfFsFileGetSize      = EMU_FUNC_ENTRY(_new_emu_abi ? 0x38 : 0x34);
+	emuIfFsFileWrite        = EMU_FUNC_ENTRY(_new_emu_abi ? 0x3c : 0x38);
+	emuIfFsFileRead         = EMU_FUNC_ENTRY(_new_emu_abi ? 0x40 : 0x3c);
+	emuIfFsFileGetChar      = EMU_FUNC_ENTRY(_new_emu_abi ? 0x44 : 0x40);
+	emuIfFsFileSeek         = EMU_FUNC_ENTRY(_new_emu_abi ? 0x48 : 0x44);
+	emuIfFsFileCurPos       = EMU_FUNC_ENTRY(_new_emu_abi ? 0x4c : 0x48);
+	emuIfFsFileClose        = EMU_FUNC_ENTRY(_new_emu_abi ? 0x50 : 0x4c);
+	if (_new_emu_abi) {
+		emuIfkgbCevaLoader   = EMU_FUNC_ENTRY(0x54);
+		emuIfcevaImageUnload = EMU_FUNC_ENTRY(0x58);
+		emuIfunknown5c       = EMU_FUNC_ENTRY(0x5c);
+		emuIfunknown60       = EMU_FUNC_ENTRY(0x60);
+		emuIfunknown64       = EMU_FUNC_ENTRY(0x64);
+		emuIfunknown68       = EMU_FUNC_ENTRY(0x68);
+		emuIfunknown6c       = EMU_FUNC_ENTRY(0x6c);
+		/* diag_printf 0x70 */
+		emuIfunknown74       = EMU_FUNC_ENTRY(0x74);
+		emuIfunknown78       = EMU_FUNC_ENTRY(0x78);
+	}
 }
 
 void libgame_init(void)
