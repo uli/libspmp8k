@@ -31,7 +31,7 @@ START_O	= $(LIBGAME)/start.o
 #	c_cpu.o			guidebug.o	kidvid.o \
 #	c_cpuhand.o		sdlsrv.o	sdlvideo.o
 
-z26: z26.o
+$(TARGET).bin: z26.o
 	$(LD) $(LDFLAGS) $(START_O) z26.o $(LIBS) -o $(TARGET).1
 	$(OBJCOPY) -S -O binary $(TARGET).1 $(TARGET).2
 	$(MKBING) $(TARGET).2 $(TARGET).bin
@@ -56,7 +56,7 @@ c_catchuppixels.c: catchuppixels.m4
 c_cpu.c: cpu.m4
 	m4 cpu.m4 > c_cpu.c
 
-all: z26
+all: $(TARGET).bin
 
 clean:
 	rm -f core *.o z26 z26c z26-static z26.exe z26c.exe *~ *.bak *.1 *.2 *.bin
