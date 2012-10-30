@@ -7,7 +7,7 @@
 
 SPMP8K_BINDIR	= ./bin
 
-all: build-tools build-lib build-demos
+all: build-tools build-lib build-3rdparty build-demos
 
 clean:
 	make -C libspmp8k clean
@@ -23,3 +23,5 @@ build-demos:
 build-tools:
 	make -C tools
 
+build-3rdparty:
+	make -C 3rdparty
