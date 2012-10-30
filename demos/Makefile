@@ -13,6 +13,8 @@ clean:
 	make -C keydemo clean
 	make -C doom110 clean
 	make -C z26 clean
+	make -C audio clean
+	make -C diag clean
 
 #build-uarttest:
 #	make -C uarttest
