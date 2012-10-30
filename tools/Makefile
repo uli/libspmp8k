@@ -8,28 +8,27 @@
 all:	build-bingtools build-chksum build-el2mmp build-packboot build-romboy build-sprdump 
 
 clean:
-	make -C bingtools clean
-	make -C chksum clean
-	make -C elf2mmp clean
-	make -C packboot clean
-	make -C romboy clean
-	make -C sprdump clean
+	$(MAKE) -C bingtools clean
+	$(MAKE) -C chksum clean
+	$(MAKE) -C elf2mmp clean
+	$(MAKE) -C packboot clean
+	$(MAKE) -C romboy clean
+	$(MAKE) -C sprdump clean
 
 build-bingtools:
-	make -C bingtools
+	$(MAKE) -C bingtools
 
 build-chksum:
-	make -C chksum
+	$(MAKE) -C chksum
 
 build-el2mmp:
-	make -C elf2mmp
+	$(MAKE) -C elf2mmp
 
 build-packboot:
-	make -C packboot
+	$(MAKE) -C packboot
 
 build-romboy:
-	make -C romboy
+	$(MAKE) -C romboy
 
 build-sprdump:
-	make -C sprdump
-
+	$(MAKE) -C sprdump

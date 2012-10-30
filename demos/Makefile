@@ -8,26 +8,26 @@
 all: build-rgbgame build-keydemo build-doom110 build-z26
 
 clean:
-	make -C rgbgame clean
-#	make -C uarttest clean
-	make -C keydemo clean
-	make -C doom110 clean
-	make -C z26 clean
-	make -C audio clean
-	make -C diag clean
+	$(MAKE) -C rgbgame clean
+#	$(MAKE) -C uarttest clean
+	$(MAKE) -C keydemo clean
+	$(MAKE) -C doom110 clean
+	$(MAKE) -C z26 clean
+	$(MAKE) -C audio clean
+	$(MAKE) -C diag clean
 
 #build-uarttest:
-#	make -C uarttest
+#	$(MAKE) -C uarttest
 
 build-rgbgame:
-	make -C rgbgame
+	$(MAKE) -C rgbgame
 
 build-keydemo:
-	make -C keydemo
+	$(MAKE) -C keydemo
 
 build-doom110:
-	make -C doom110
+	$(MAKE) -C doom110
 
 build-z26:
-	make -C z26
+	$(MAKE) -C z26
 

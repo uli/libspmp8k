@@ -13,7 +13,7 @@ lib/libz.a: zlib-$(ZLIB_VERSION)/libz.a
 	cp -p zlib-$(ZLIB_VERSION)/libz.a lib
 
 zlib-$(ZLIB_VERSION)/libz.a: zlib-$(ZLIB_VERSION)/zconf.h
-	make -C zlib-$(ZLIB_VERSION) libz.a
+	$(MAKE) -C zlib-$(ZLIB_VERSION) libz.a
 
 zlib-$(ZLIB_VERSION)/zconf.h:
 	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc ./configure)
@@ -28,9 +28,9 @@ lib/libfreetype.a: freetype-flat/libfreetype.a
 	cp -p freetype-flat/include/ft2build.h include
 
 freetype-flat/libfreetype.a:
-	make -C freetype-flat CROSS=$(TOOLCHAIN)
+	$(MAKE) -C freetype-flat CROSS=$(TOOLCHAIN)
 
 clean:
-	make -C zlib-$(ZLIB_VERSION) clean
+	$(MAKE) -C zlib-$(ZLIB_VERSION) clean
 	rm -fr lib/*.a include/*
-	make -C freetype-flat clean
+	$(MAKE) -C freetype-flat clean
