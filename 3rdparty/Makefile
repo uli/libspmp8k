@@ -1,10 +1,12 @@
 ZLIB_VERSION = 1.2.7
 
-all: zlib
+include ../libgame/libgame.cfg
+
+all: zlib freetype
 
 zlib: lib/libz.a
 
-lib/libz.a:
+lib/libz.a: zlib-$(ZLIB_VERSION)/libz.a
 	mkdir -p include
 	mkdir -p lib
 	cp -p zlib-$(ZLIB_VERSION)/{zlib,zconf}.h include
@@ -14,4 +16,21 @@ zlib-$(ZLIB_VERSION)/libz.a: zlib-$(ZLIB_VERSION)/zconf.h
 	make -C zlib-$(ZLIB_VERSION) libz.a
 
 zlib-$(ZLIB_VERSION)/zconf.h:
-	(cd zlib-$(ZLIB_VERSION) ; CC=arm-eabi-gcc ./configure)
+	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc ./configure)
+
+freetype: lib/libfreetype.a
+
+lib/libfreetype.a: freetype-flat/libfreetype.a
+	mkdir -p include
+	mkdir -p lib
+	cp -p freetype-flat/libfreetype.a lib
+	cp -a freetype-flat/include/freetype include
+	cp -p freetype-flat/include/ft2build.h include
+
+freetype-flat/libfreetype.a:
+	make -C freetype-flat CROSS=$(TOOLCHAIN)
+
+clean:
+	make -C zlib-$(ZLIB_VERSION) clean
+	rm -fr lib/*.a include/*
+	make -C freetype-flat clean
