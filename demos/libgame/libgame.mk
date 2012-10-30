@@ -18,8 +18,8 @@ RM		= rm -f
 LDSCRIPT= $(LIBGAME)/libgame.ld
 
 ifdef NEWLIB
-CFLAGS	+= -O2 -Wall -Wno-format -W -g -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(LIBEMU) -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
-LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(LIBEMU) -L$(NEWLIB)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
+CFLAGS	+= -O2 -Wall -Wno-format -W -g -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -I$(3RDPARTY)/include -nostdlib -mcpu=arm926ej-s -msoft-float
+LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -L$(3RDPARTY)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
 #LIBS	= -lgcc -lgame -lc
 else
 CFLAGS	+= -O2 -c -I$(LIBGAME) -I$(LIBEMU) -nostdlib -march=armv5 -msoft-float
