@@ -1,7 +1,5 @@
 
 TARGET	= 0doom
-TOOLS_DIR = ../../bin
-
 #include ../libgame/libgame.cfg
 
 # RESOBJS	= loading.o
@@ -23,7 +21,7 @@ OBJS	= ./objs/g_game.o ./objs/am_map.o ./objs/f_wipe.o  ./objs/m_random.o \
 
 LIBS	= -lc -lgcc -lgame
 
-include ../libgame/libgame.mk
+include ../../libgame/libgame.mk
 
 CFLAGS += -DSPMP8 -DNO_SOUND
 #-DNORMALUNIX

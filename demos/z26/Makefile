@@ -2,9 +2,8 @@
 # 2011 Triple Oxygen
 
 TARGET	= z26
-TOOLS_DIR = ../../bin
 
-include ../libgame/libgame.cfg
+include ../../libgame/libgame.cfg
 
 CC		= $(TOOLCHAIN)gcc
 LD		= $(TOOLCHAIN)gcc

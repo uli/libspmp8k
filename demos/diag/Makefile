@@ -5,10 +5,6 @@
 
 TARGET	= diag
 
-TOOLS_DIR = ../../bin
-
-include ../libgame/libgame.cfg
-
 # resources
 RESOBJS	= font.o
 
@@ -20,4 +16,4 @@ endif
 
 LIBS	= -lgame -lc -lgcc
 
-include ../libgame/libgame.mk
+include ../../libgame/libgame.mk

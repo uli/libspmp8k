@@ -4,7 +4,7 @@
 #
 #
 
-include ../libgame/libgame.cfg
+include ../../libgame/libgame.cfg
 
 TARGET	= rgbgame
 
@@ -23,4 +23,4 @@ OBJS	= game.o
 
 LIBS = -lgame -lc
 
-include ../libgame/libgame.mk
+include ../../libgame/libgame.mk

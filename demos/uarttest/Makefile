@@ -3,7 +3,7 @@
 #
 #
 
-TOOLCHAIN= arm-elf-
+include ../../libgame/libgame.cfg
 TARGET	= test
 
 CC		=$(TOOLCHAIN)gcc
