@@ -1,8 +1,13 @@
-libspmp8k - Sunplus SPMP8000 SoC library & BIN Game API library
+libspmp8k - Sunplus SPMP8000 SoC library & BIN Game ABI library
 
-Fork of libspmp8k ( http://code.google.com/p/libspmp8k ) for personal tinkering.
+Fork of libspmp8k (http://code.google.com/p/libspmp8k) that provides an
+extended ABI (including the emulator ABI, direct framebuffer and button
+access, low-level file I/O, and CPU scaling) in a manner compatible with all
+SPMP8000-based devices.
 
-Original work by: alemaxx & openschemes.com
+(C) 2012 Ulrich Hecht <ulrich.hecht@gmail.com>
+
+Based on work by alemaxx, openschemes.com, Triple Oxygen, and others.
 
 
 LICENSE
