@@ -34,10 +34,9 @@ int main(int argc, char **argv)
 {
 	FILE *f = NULL;
 	FILE *fout = NULL;
-	int size, totalsize, i;
+	int size, totalsize;
 	uint8_t buff[0x400];
 	uint8_t data[0x400];
-	uint8_t data2[0x400];
 
 	if (argc < 2) ERR("to few arguments");
 	if ((f = fopen(argv[1], "rb")) == NULL) ERR("cannot open file");
@@ -48,6 +47,8 @@ int main(int argc, char **argv)
 	if (!Des_Go((char*)data, (char*)buff, 0x400, aucKey, 8, DECRYPT)) ERR("decrypt failed");
 /*	if (!Des_Go((char*)data2, (char*)data, 0x400, aucKey, 8, ENCRYPT)) ERR("encrypt failed");
 
+	int i;
+	uint8_t data2[0x400];
 	for (i=0; i<0x400; i++) {
 		if (buff[i] != data2[i]) {
 			printf("mismatch at %x\n");

@@ -66,7 +66,7 @@ void usage();
 
 int main(int argc, char **argv)
 {
-	FILE *fin, *fout;
+	FILE *fin = 0, *fout = 0;
 	uint8_t hdr[0x80];
 	char *iname = NULL;
 	char *oname = NULL;

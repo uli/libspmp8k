@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 {
 	FILE *fin  = NULL;
 	FILE *fout = NULL;
-	char header[8];
+	uint8_t header[8];
 	uint8_t *image_data = NULL;
 	png_bytep *row_pointers = NULL;
 	int i;
@@ -83,11 +83,11 @@ int main(int argc, char **argv)
 	png_init_io(png_ptr, fin);
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
-	printf("width    : %d\n", info_ptr->width);
-	printf("height   : %d\n", info_ptr->height);
+	printf("width    : %u\n", (unsigned int)info_ptr->width);
+	printf("height   : %u\n", (unsigned int)info_ptr->height);
 	printf("bpp      : %d\n", info_ptr->bit_depth);
 	printf("palette  : %d entries\n", info_ptr->num_palette);
-	printf("rowbytes : %d\n", info_ptr->rowbytes);
+	printf("rowbytes : %u\n", (unsigned int)info_ptr->rowbytes);
 /*	fclose(fin);
 	return 0;
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infop)0);
 //	png_read_end(png_ptr, NULL);
 
-i_am_done:
+//i_am_done:
 	if (image_data != NULL) free(image_data);
 	if (row_pointers != NULL) free(row_pointers);
 	if (fin != NULL) fclose(fin);
