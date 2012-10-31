@@ -3,6 +3,7 @@
 
 TARGET	= z26
 
+include ../../main.cfg
 include ../../libgame/libgame.cfg
 
 CC		= $(TOOLCHAIN)gcc

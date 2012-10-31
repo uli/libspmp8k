@@ -1,6 +1,6 @@
 ZLIB_VERSION = 1.2.7
 
-include ../libgame/libgame.cfg
+include ../main.cfg
 
 all: zlib freetype
 

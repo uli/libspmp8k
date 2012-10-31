@@ -3,7 +3,8 @@
 #
 #
 
-include $(dir $(lastword $(MAKEFILE_LIST)))/libgame.cfg
+include $(dir $(lastword $(MAKEFILE_LIST)))/../main.cfg
+include $(ROOT)/libgame/libgame.cfg
 
 CC		= $(TOOLCHAIN)gcc
 AS		= $(TOOLCHAIN)gcc

@@ -9,6 +9,7 @@
 #	build it and use it in conjunction with this libgame.
 #
 
+include ../main.cfg
 include libgame.cfg
 
 TARGET	= libgame.a
