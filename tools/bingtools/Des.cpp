@@ -196,7 +196,7 @@ void F_func(bool In[32], const bool Ki[48])
 }
 void S_func(bool Out[32], const bool In[48])
 {
-    for(char i=0,j,k; i<8; ++i,In+=6,Out+=4) {
+    for(int i=0,j,k; i<8; ++i,In+=6,Out+=4) {
         j = (In[0]<<1) + In[5];
         k = (In[1]<<3) + (In[2]<<2) + (In[3]<<1) + In[4];
 		ByteToBit(Out, &S_Box[i][j][k], 4);
