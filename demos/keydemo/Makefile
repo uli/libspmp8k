@@ -10,6 +10,6 @@ RESOBJS	= font.o
 
 OBJS	= $(RESOBJS) game.o
 
-LIBS	= -lc -lgcc -lgame
+LIBS	= -lgame -lc -lgcc
 
 include ../../libgame/libgame.mk
