@@ -20,7 +20,7 @@ build-lib:
 	$(MAKE) -C libspmp8k
 	$(MAKE) -C libgame
 
-build-demos: build-lib
+build-demos: build-lib build-tools
 	$(MAKE) -C demos
 
 build-tools:
