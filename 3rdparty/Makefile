@@ -16,7 +16,7 @@ zlib-$(ZLIB_VERSION)/libz.a: zlib-$(ZLIB_VERSION)/zconf.h
 	$(MAKE) -C zlib-$(ZLIB_VERSION) libz.a
 
 zlib-$(ZLIB_VERSION)/zconf.h:
-	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc ./configure)
+	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc CFLAGS="-O3 -Wall -W" ./configure)
 
 freetype: lib/libfreetype.a
 
@@ -32,5 +32,6 @@ freetype-flat/libfreetype.a:
 
 clean:
 	$(MAKE) -C zlib-$(ZLIB_VERSION) clean
+	rm -f zlib-$(ZLIB_VERSION)/zconf.h
 	rm -fr lib/*.a include/*
 	$(MAKE) -C freetype-flat clean
