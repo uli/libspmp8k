@@ -4,6 +4,9 @@ BINUTILS_VERSION = 2.22.90
 GCC_VERSION = 4.7.2
 NEWLIB_VERSION = 1.20.0
 
+# extra configure options for OSX
+#EXTRA_GCC_CONFIG = -with-gmp=/opt/local --with-mpfr=/opt/local --with-mpc=/opt/local --with-libiconv-prefix=/usr
+
 .PHONY: binutils gcc-1st newlib gcc-final
 all: gcc-final
 
@@ -18,7 +21,7 @@ build-binutils/binutils/readelf: build-binutils/Makefile
 
 build-binutils/Makefile: binutils-$(BINUTILS_VERSION)/.extracted
 	mkdir -p build-binutils
-	(cd build-binutils ; ../binutils-$(BINUTILS_VERSION)/configure --target=$(TARGET))
+	(cd build-binutils ; ../binutils-$(BINUTILS_VERSION)/configure --target=$(TARGET) --disable-werror)
 
 binutils-$(BINUTILS_VERSION)/.extracted: binutils-$(BINUTILS_VERSION).tar.bz2
 	tar xf binutils-$(BINUTILS_VERSION).tar.bz2
@@ -35,7 +38,7 @@ build-gcc-1st/gcc/cc1: build-gcc-1st/Makefile
 
 build-gcc-1st/Makefile: gcc-$(GCC_VERSION)/.extracted build-binutils/.installed
 	mkdir -p build-gcc-1st
-	(cd build-gcc-1st ; ../gcc-$(GCC_VERSION)/configure --target=$(TARGET) --with-gnu-as --with-gnu-ld --disable-nls --enable-languages=c --disable-libssp --disable-libgomp --disable-libmudflap --with-float=soft)
+	(cd build-gcc-1st ; ../gcc-$(GCC_VERSION)/configure --target=$(TARGET) --with-gnu-as --with-gnu-ld --disable-nls --enable-languages=c --disable-libssp --disable-libgomp --disable-libmudflap --with-float=soft $(EXTRA_GCC_CONFIG))
 
 gcc-$(GCC_VERSION)/.extracted: gcc-$(GCC_VERSION).tar.bz2
 	tar xf gcc-$(GCC_VERSION).tar.bz2
@@ -69,7 +72,7 @@ build-gcc-final/gcc/cc1: build-gcc-final/Makefile
 
 build-gcc-final/Makefile: gcc-$(GCC_VERSION)/.extracted build-newlib/.installed
 	mkdir -p build-gcc-final
-	(cd build-gcc-final ; ../gcc-$(GCC_VERSION)/configure --target=$(TARGET) --with-gnu-as --with-gnu-ld --disable-nls --enable-languages=c,c++ --disable-libssp --disable-libgomp --disable-libmudflap --with-newlib --with-float=soft)
+	(cd build-gcc-final ; ../gcc-$(GCC_VERSION)/configure --target=$(TARGET) --with-gnu-as --with-gnu-ld --disable-nls --enable-languages=c,c++ --disable-libssp --disable-libgomp --disable-libmudflap --with-newlib --with-float=soft $(EXTRA_GCC_CONFIG))
 
 clean:
 	rm -fr build-* gcc-$(GCC_VERSION) binutils-$(BINUTILS_VERSION) newlib-$(NEWLIB_VERSION)
