@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include <string.h>
 #include "libgame.h"
 
 void **ftab;
@@ -161,6 +162,9 @@ int (*emuIfunknown6c)(int, int, int) = 0;
 void (*emuIfunknown74)(int, void *, int) = 0;
 int (*emuIfunknown78)(void) = 0;
 
+int (*GetArmCoreFreq)(void) = 0;
+int (*changeARMFreq)(int mhz) = 0;
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val) {
 	return (val >= FW_START && val < FW_END);
@@ -232,6 +236,26 @@ static uint32_t *find_fs_function(int index) {
 	return 0;
 }
 
+/* Is this a PC-relative load? */
+static int is_ldr_pc(uint32_t val)
+{
+	return (val & 0xffff0000U) == 0xe59f0000U;
+}
+
+/* Get address of PC-relative load. */
+static void *ldr_pc_address(uint32_t *head)
+{
+	return (void *)(*(head + (*head & 0xfff) / 4 + 2));
+}
+
+/* Check if mem points to a given string within firmware bounds. */
+static int string_starts_with(uint32_t *mem, const char *string)
+{
+	if (mem < FW_START_P || mem > FW_END_P)
+		return 0;
+	return !strncmp((const char *)mem, string, strlen(string));
+}
+
 #ifndef TEST_BUILD
 static
 #endif
@@ -270,9 +294,8 @@ void libgame_detect_firmware_abi()
 		if ((*head & 0xff000000U) == 0xeb000000U) {
 			getGameBuffWidth_found = 1;
 		}
-		if (getGameBuffWidth_found && (*head & 0xffff0000U) ==
-		    0xe59f0000U /* LDR Rx, [PC, #...] */) {
-			gDisplayDev = (display_dev_t *)*(head + (*head & 0xfff) / 4 + 2);
+		if (getGameBuffWidth_found && is_ldr_pc(*head)) {
+			gDisplayDev = (display_dev_t *)ldr_pc_address(head);
 			break;
 		}
 	}
@@ -424,6 +447,7 @@ out:
 	if (!found_next_prolog)
 		cache_sync = 0;
 	
+	/* This does not work on MMM firmwares. */
 	uint32_t *getKeyFromQueue = next_bl_target((uint32_t *)NativeGE_getKeyInput4Ntv);
 	if (getKeyFromQueue) {
 		for (head = FW_START_P; head < FW_END_P; head++) {
@@ -436,6 +460,38 @@ out:
 			}
 		}
 	}
+
+	/* Find changeARMFreq. */
+	for (head = FW_START_P; head < FW_END_P; head++) {
+		if (is_prolog(*head)) {
+			uint32_t *subhead = next_bl(head);
+			if (!subhead)
+				continue;
+			GetArmCoreFreq = branch_address(subhead);
+			subhead = next_bl(subhead + 1);
+			if (!subhead)
+				continue;
+			if (branch_address(subhead) != GetArmCoreFreq) {
+				GetArmCoreFreq = 0;
+				continue;
+			}
+			uint32_t *subsubhead = next_bl(subhead + 1);
+			if (!subsubhead)
+				continue;
+			if (branch_address(subsubhead) != diag_printf) {
+				GetArmCoreFreq = 0;
+				continue;
+			}
+			for (; subhead < subsubhead; subhead++) {
+				if (is_ldr_pc(*subhead) && string_starts_with(ldr_pc_address(subhead), "[changeARMFreq]")) {
+					changeARMFreq = (void *)head;
+					goto out2;
+				}
+			}
+			GetArmCoreFreq = 0;
+		}
+	}
+out2:
 
 	return;
 }

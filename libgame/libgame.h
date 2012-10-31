@@ -291,6 +291,9 @@ extern int (*emuIfunknown6c)(int, int, int);
 extern void (*emuIfunknown74)(int, void *, int);
 extern int (*emuIfunknown78)(void);
 
+extern int (*GetArmCoreFreq)(void);
+extern int (*changeARMFreq)(int mhz);
+
 extern int libgame_system_id;
 #define SYS_UNKNOWN 0
 #define SYS_JXD_100 1
