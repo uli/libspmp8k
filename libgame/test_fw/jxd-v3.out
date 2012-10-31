@@ -31,3 +31,5 @@ SPMP_SendSignal 002d5dec
 cache_sync 0029d6c4
 NativeGE_getKeyInput 002d2210
 emuIfSoundCleanup 00468514
+changeARMFreq 002d7818
+GetArmCoreFreq 002960b4

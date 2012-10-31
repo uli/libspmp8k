@@ -83,5 +83,7 @@ int main(int argc, char **argv)
   /* We don't test every emu function, just one to make sure the right ABI
      version has been detected. */
   PP(emuIfSoundCleanup)
+  PP(changeARMFreq)
+  PP(GetArmCoreFreq)
   return 0;
 }
