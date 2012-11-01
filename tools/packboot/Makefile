@@ -6,7 +6,8 @@
 TARGET	= packboot
 CC		= gcc
 
-all:
+all: $(TARGET)
+$(TARGET): packboot.c
 	$(CC) packboot.c -o $(TARGET)
 
 clean:

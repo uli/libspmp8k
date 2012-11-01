@@ -6,7 +6,8 @@
 TARGET	= sprdump
 CC		= gcc
 
-all:
+all: $(TARGET)
+$(TARGET): sprdump.c
 	$(CC) sprdump.c -o $(TARGET)
 
 clean:

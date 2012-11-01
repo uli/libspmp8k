@@ -6,7 +6,8 @@
 TARGET	= romboy
 CC		= gcc
 
-all:
+all: $(TARGET)
+$(TARGET): romboy.c
 	$(CC) -lusb romboy.c -o $(TARGET)
 	cp romboy ../../bin
 

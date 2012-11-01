@@ -6,7 +6,8 @@
 TARGET	= chksum
 CC		= gcc
 
-all:
+all: $(TARGET)
+$(TARGET): chksum.c
 	$(CC) chksum.c -o $(TARGET)
 
 clean:

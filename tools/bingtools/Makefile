@@ -5,8 +5,8 @@
 
 CC		= gcc
 CXX		= g++
-CXXFLAGS= -O2 -c -Wall -g
-CFLAGS	= -O2 -Wall -g
+CFLAGS	= -O2 -c -Wall -g
+CXXFLAGS= $(CFLAGS)
 
 MKBOBJS	= Des.o mkbing.o
 UNBOBJS = Des.o unbing.o
