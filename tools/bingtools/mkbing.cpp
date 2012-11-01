@@ -84,6 +84,7 @@ int main(int argc, char **argv)
 
 	// init the header
 	memcpy(hdr, g_header, 0x80);
+	// endianness-neutral, surprisingly :)
 	uint32_t *icon_size = (uint32_t*)&hdr[GAME_SZICON];
 	*icon_size = 0;
 
@@ -147,7 +148,7 @@ int main(int argc, char **argv)
 	// read input
 	if ((fin = fopen(iname, "rb")) == NULL)   ERR("cannot open input file");
 	memset(ibuff, 0, 0x400);
-	if (fread(ibuff, 1, 0x400, fin) < 0x400) printf("its tiny! ;-)\n");
+	if (fread(ibuff, 1, 0x400, fin) < 0x400) printf("It's tiny! ;-)\n");
 
 	// encrypt the 1st k
 	if (!Des_Go((char*)obuff, (char*)ibuff, 0x400, aucKey, 8, ENCRYPT)) ERR("encryping failed");

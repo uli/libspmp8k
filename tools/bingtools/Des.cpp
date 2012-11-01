@@ -101,25 +101,25 @@ const static char S_Box[8][4][16] = {
 
 //////////////////////////////////////////////////////////////////////////
 
-typedef bool    (*PSubKey)[16][48];
+typedef uint8_t    (*PSubKey)[16][48];
 
 //////////////////////////////////////////////////////////////////////////
 
-static void DES(char Out[8], char In[8], const PSubKey pSubKey, bool Type);//标准DES加/解密
+static void DES(char Out[8], char In[8], const PSubKey pSubKey, uint8_t Type);//标准DES加/解密
 static void SetKey(const char* Key, int len);// 设置密钥
 static void SetSubKey(PSubKey pSubKey, const char Key[8]);// 设置子密钥
-static void F_func(bool In[32], const bool Ki[48]);// f 函数
-static void S_func(bool Out[32], const bool In[48]);// S 盒代替
-static void Transform(bool *Out, bool *In, const char *Table, int len);// 变换
-static void Xor(bool *InA, const bool *InB, int len);// 异或
-static void RotateL(bool *In, int len, int loop);// 循环左移
-static void ByteToBit(bool *Out, const char *In, int bits);// 字节组转换成位组
-static void BitToByte(char *Out, const bool *In, int bits);// 位组转换成字节组
+static void F_func(uint8_t In[32], const uint8_t Ki[48]);// f 函数
+static void S_func(uint8_t Out[32], const uint8_t In[48]);// S 盒代替
+static void Transform(uint8_t *Out, uint8_t *In, const char *Table, int len);// 变换
+static void Xor(uint8_t *InA, const uint8_t *InB, int len);// 异或
+static void RotateL(uint8_t *In, int len, int loop);// 循环左移
+static void ByteToBit(uint8_t *Out, const char *In, int bits);// 字节组转换成位组
+static void BitToByte(char *Out, const uint8_t *In, int bits);// 位组转换成字节组
 
 //////////////////////////////////////////////////////////////////////////
 
-static bool SubKey[2][16][48];// 16圈子密钥
-static bool Is3DES;// 3次DES标志
+static uint8_t SubKey[2][16][48];// 16圈子密钥
+static uint8_t Is3DES;// 3次DES标志
 static char Tmp[256], deskey[16];
 
 //////////////////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ static char Tmp[256], deskey[16];
 //////////////////////////////////////////////////////////////////////////
 // Code starts from Line 130
 //////////////////////////////////////////////////////////////////////////
-bool Des_Go(char *Out, char *In, long datalen, const char *Key, int keylen, bool Type)
+int Des_Go(char *Out, char *In, long datalen, const char *Key, int keylen, uint8_t Type)
 {
     if( !( Out && In && Key && (datalen=(datalen+7)&0xfffffff8) ) ) 
 		return false;
@@ -151,9 +151,9 @@ void SetKey(const char* Key, int len)
 	SetSubKey(&SubKey[0], &deskey[0]);
 	Is3DES = len>8 ? (SetSubKey(&SubKey[1], &deskey[8]), true) : false;
 }
-void DES(char Out[8], char In[8], const PSubKey pSubKey, bool Type)
+void DES(char Out[8], char In[8], const PSubKey pSubKey, uint8_t Type)
 {
-    static bool M[64], tmp[32], *Li=&M[0], *Ri=&M[32];
+    static uint8_t M[64], tmp[32], *Li=&M[0], *Ri=&M[32];
     ByteToBit(M, In, 64);
     Transform(M, M, IP_Table, 64);
     if( Type == ENCRYPT ){
@@ -177,7 +177,7 @@ void DES(char Out[8], char In[8], const PSubKey pSubKey, bool Type)
 }
 void SetSubKey(PSubKey pSubKey, const char Key[8])
 {
-    static bool K[64], *KL=&K[0], *KR=&K[28];
+    static uint8_t K[64], *KL=&K[0], *KR=&K[28];
     ByteToBit(K, Key, 64);
     Transform(K, K, PC1_Table, 56);
     for(int i=0; i<16; ++i) {
@@ -186,15 +186,15 @@ void SetSubKey(PSubKey pSubKey, const char Key[8])
         Transform((*pSubKey)[i], K, PC2_Table, 48);
     }
 }
-void F_func(bool In[32], const bool Ki[48])
+void F_func(uint8_t In[32], const uint8_t Ki[48])
 {
-    static bool MR[48];
+    static uint8_t MR[48];
     Transform(MR, In, E_Table, 48);
     Xor(MR, Ki, 48);
     S_func(In, MR);
     Transform(In, In, P_Table, 32);
 }
-void S_func(bool Out[32], const bool In[48])
+void S_func(uint8_t Out[32], const uint8_t In[48])
 {
     for(int i=0,j,k; i<8; ++i,In+=6,Out+=4) {
         j = (In[0]<<1) + In[5];
@@ -202,29 +202,29 @@ void S_func(bool Out[32], const bool In[48])
 		ByteToBit(Out, &S_Box[i][j][k], 4);
     }
 }
-void Transform(bool *Out, bool *In, const char *Table, int len)
+void Transform(uint8_t *Out, uint8_t *In, const char *Table, int len)
 {
     for(int i=0; i<len; ++i)
         Tmp[i] = In[ Table[i]-1 ];
     memcpy(Out, Tmp, len);
 }
-void Xor(bool *InA, const bool *InB, int len)
+void Xor(uint8_t *InA, const uint8_t *InB, int len)
 {
     for(int i=0; i<len; ++i)
         InA[i] ^= InB[i];
 }
-void RotateL(bool *In, int len, int loop)
+void RotateL(uint8_t *In, int len, int loop)
 {
     memcpy(Tmp, In, loop);
     memcpy(In, In+loop, len-loop);
     memcpy(In+len-loop, Tmp, loop);
 }
-void ByteToBit(bool *Out, const char *In, int bits)
+void ByteToBit(uint8_t *Out, const char *In, int bits)
 {
     for(int i=0; i<bits; ++i)
         Out[i] = (In[i>>3]>>(i&7)) & 1;
 }
-void BitToByte(char *Out, const bool *In, int bits)
+void BitToByte(char *Out, const uint8_t *In, int bits)
 {
     memset(Out, 0, bits>>3);
     for(int i=0; i<bits; ++i)
