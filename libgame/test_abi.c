@@ -22,14 +22,14 @@ int main(int argc, char **argv)
      are provided by the OS in a well-defined table. We don't have such
      a table when working with firmware images, so we require the user
      to specify a couple of addresses manually. */
-#define SETFUN(n, x)  printf(#x " = %08x\n", (uint32_t)(x = (void *)strtoul(argv[n + 2], NULL, 0)));
-  SETFUN(0, diag_printf)
-  SETFUN(1, MCatchInitGraph)
-  SETFUN(2, NativeGE_fsOpen)
-  SETFUN(3, NativeGE_fsRead)
-  SETFUN(4, NativeGE_fsWrite)
-  SETFUN(5, MCatchPaint)
-  SETFUN(6, NativeGE_getKeyInput4Ntv)
+#define SETFUN(n, x)  printf(#x " = %08x\n", (uint32_t)(x = (void *)strtoul(argv[n + 2], NULL, 0)))
+  SETFUN(0, diag_printf);
+  SETFUN(1, MCatchInitGraph);
+  SETFUN(2, NativeGE_fsOpen);
+  SETFUN(3, NativeGE_fsRead);
+  SETFUN(4, NativeGE_fsWrite);
+  SETFUN(5, MCatchPaint);
+  SETFUN(6, NativeGE_getKeyInput4Ntv);
 
   /* Load the firmware image to memory at 0x280000. We assume that the
      code in the firmware file starts at offset 0x4c. */
@@ -53,37 +53,37 @@ int main(int argc, char **argv)
   libgame_detect_firmware_abi();
   libgame_assign_emuif();
 
-#define PP(x) printf(#x " %08x\n", (uint32_t)x);
+#define PP(x) printf(#x " %08x\n", (uint32_t)x)
 
   printf("g_stEmuFuncs %08x (%s ABI)\n", (uint32_t)g_stEmuFuncs, _new_emu_abi ? "new" : "old");
-  PP(gDisplayDev)
+  PP(gDisplayDev);
   printf("compiled %s frame pointer\n", _has_frame_pointer ? "with" : "without");
-  PP(_ecos_close)
-  PP(_ecos_read)
-  PP(_ecos_write)
-  PP(_ecos_lseek)
-  PP(_ecos_fstat)
-  PP(_ecos_open)
-  PP(_ecos_opendir)
-  PP(_ecos_cyg_error_get_errno_p)
-  PP(_ecos_cyg_fd_alloc)
-  PP(_ecos_readdir_r)
-  PP(_ecos_readdir)
-  PP(_ecos_closedir)
-  PP(_ecos_stat)
-  PP(_ecos_getcwd)
-  PP(_ecos_chdir)
-  PP(_ecos_unlink)
-  PP(_ecos_mkdir)
-  PP(_ecos_rmdir)
-  PP(_ecos_fsync)
-  PP(SPMP_SendSignal)
-  PP(cache_sync)
-  PP(NativeGE_getKeyInput)
+  PP(_ecos_close);
+  PP(_ecos_read);
+  PP(_ecos_write);
+  PP(_ecos_lseek);
+  PP(_ecos_fstat);
+  PP(_ecos_open);
+  PP(_ecos_opendir);
+  PP(_ecos_cyg_error_get_errno_p);
+  PP(_ecos_cyg_fd_alloc);
+  PP(_ecos_readdir_r);
+  PP(_ecos_readdir);
+  PP(_ecos_closedir);
+  PP(_ecos_stat);
+  PP(_ecos_getcwd);
+  PP(_ecos_chdir);
+  PP(_ecos_unlink);
+  PP(_ecos_mkdir);
+  PP(_ecos_rmdir);
+  PP(_ecos_fsync);
+  PP(SPMP_SendSignal);
+  PP(cache_sync);
+  PP(NativeGE_getKeyInput);
   /* We don't test every emu function, just one to make sure the right ABI
      version has been detected. */
-  PP(emuIfSoundCleanup)
-  PP(changeARMFreq)
-  PP(GetArmCoreFreq)
+  PP(emuIfSoundCleanup);
+  PP(changeARMFreq);
+  PP(GetArmCoreFreq);
   return 0;
 }
