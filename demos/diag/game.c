@@ -55,9 +55,10 @@ int main()
 	NativeGE_fsWrite(fd, (void *)FW_START, FW_END - FW_START, &res);
 	NativeGE_fsClose(fd);
 	
-#define PP(x) fs_fprintf(fd, #x " %08x (%svalid)\n", (uint32_t)x, (is_fw_pointer(x) && is_valid_arm_insn(*((uint32_t *)(x)), 1)) ? "" : "in")
-
 	NativeGE_fsOpen("diag.txt", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
+	fs_fprintf(fd, "system ID %d\n", libgame_system_id);
+
+#define PP(x) fs_fprintf(fd, #x " %08x (%svalid)\n", (uint32_t)x, (is_fw_pointer(x) && is_valid_arm_insn(*((uint32_t *)(x)), 1)) ? "" : "in")
         fs_fprintf(fd, "g_stEmuFuncs %08x (%s ABI)\n", (uint32_t)g_stEmuFuncs, _new_emu_abi ? "new" : "old");
         fs_fprintf(fd, "gDisplayDev %08x\n", (uint32_t)gDisplayDev);
         fs_fprintf(fd, "compiled %s frame pointer\n", _has_frame_pointer ? "with" : "without");
