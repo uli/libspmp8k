@@ -6,18 +6,11 @@
 #include "font.h"
 
 extern void **ftab;
-uint16_t fbuff[320*240];
-uint16_t *(*int_get_framebuffer)(void);
-uint16_t *(*int_get_shadowbuffer)(void);
-void (*set_lcd_fb_format)(int);
-int (*getLCDBuffFormat)(void);
-int (*getLCDWidth)(void);
-int (*getLCDHeight)(void);
-uint16_t *(*getLCDShadowBuffer)(void);
-uint16_t *(*getLCDFrameBuffer)(void);
-void (*setLCDFrameBuffer)(uint16_t *fb); // educated guess
-void (*lcd_flip)(void);
-void (*lcd_clear)(void); // actually returns BitBlt_hw retval, but that is always 0
+extern int _has_frame_pointer;
+extern int _new_emu_abi;
+
+#define FW_START 0x280000
+#define FW_END 0xa00000
 
 #define fs_fprintf(fd, x...) { \
   char buf[256]; int res; \
@@ -25,7 +18,11 @@ void (*lcd_clear)(void); // actually returns BitBlt_hw retval, but that is alway
   NativeGE_fsWrite(fd, buf, strlen(buf), &res); \
 }
 
-int is_valid_arm_insn(uint32_t insn, int unconditional_only)
+static int is_fw_pointer(void *addr) {
+  return (addr > (void *)FW_START && addr < (void *)FW_END);
+}
+
+static int is_valid_arm_insn(uint32_t insn, int unconditional_only)
 {
 	if (insn == 0xe12fff1e) /* BX LR */
 	  return 1;
@@ -49,66 +46,111 @@ int is_valid_arm_insn(uint32_t insn, int unconditional_only)
 
 int main()
 {
-	// initialize the game api
 	libgame_init();
-	int fd;
 
-#if 0
+	int fd;
 	int res;
+
 	NativeGE_fsOpen("dump.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
-	//NativeGE_fsWrite(fd, "Huhu!\n", 6, &res);
-	NativeGE_fsWrite(fd, (void *)0x280000, 0x480000, &res);
+	NativeGE_fsWrite(fd, (void *)FW_START, FW_END - FW_START, &res);
 	NativeGE_fsClose(fd);
-	NativeGE_fsOpen("ftab.bin", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
-	NativeGE_fsWrite(fd, (void *)ftab, 0x150, &res);
-	NativeGE_fsClose(fd);
-#endif
 	
+#define PP(x) fs_fprintf(fd, #x " %08x (%svalid)\n", (uint32_t)x, (is_fw_pointer(x) && is_valid_arm_insn(*((uint32_t *)(x)), 1)) ? "" : "in")
+
 	NativeGE_fsOpen("diag.txt", FS_O_CREAT|FS_O_WRONLY|FS_O_TRUNC, &fd);
-	//fs_fprintf(fd, "Framebuffer %08x, shadow buffer %08x\n", getLCDFrameBuffer(), getLCDShadowBuffer());
-	//fs_fprintf(fd, "Width %d, Height %d\n", getLCDWidth(), getLCDHeight());
-	//fs_fprintf(fd, "LCD format %08x\n", getLCDBuffFormat());
-	fs_fprintf(fd, "g_stEmuFuncs %08x\n", (uint32_t)g_stEmuFuncs);
-	fs_fprintf(fd, "gDisplayDev %08x\n", (uint32_t)gDisplayDev);
-	fs_fprintf(fd, "_ecos_close %08x\n", (uint32_t)_ecos_close);
-	fs_fprintf(fd, "_ecos_read %08x\n", (uint32_t)_ecos_read);
-	fs_fprintf(fd, "_ecos_write %08x\n", (uint32_t)_ecos_write);
-	fs_fprintf(fd, "_ecos_lseek %08x\n", (uint32_t)_ecos_lseek);
-	fs_fprintf(fd, "_ecos_fstat %08x\n", (uint32_t)_ecos_fstat);
-	fs_fprintf(fd, "_ecos_open %08x\n", (uint32_t)_ecos_open);
-	fs_fprintf(fd, "_ecos_opendir %08x\n", (uint32_t)_ecos_opendir);
-	fs_fprintf(fd, "_ecos_cyg_error_get_errno_p %08x\n", (uint32_t)_ecos_cyg_error_get_errno_p);
-	fs_fprintf(fd, "_ecos_cyg_fd_alloc %08x\n", (uint32_t)_ecos_cyg_fd_alloc);
-	fs_fprintf(fd, "_ecos_readdir_r %08x\n", (uint32_t)_ecos_readdir_r);
-	fs_fprintf(fd, "_ecos_readdir %08x\n", (uint32_t)_ecos_readdir);
-	fs_fprintf(fd, "_ecos_stat %08x\n", (uint32_t)_ecos_stat);
-	fs_fprintf(fd, "SPMP_SendSignal %08x\n", (uint32_t)SPMP_SendSignal);
+        fs_fprintf(fd, "g_stEmuFuncs %08x (%s ABI)\n", (uint32_t)g_stEmuFuncs, _new_emu_abi ? "new" : "old");
+        fs_fprintf(fd, "gDisplayDev %08x\n", (uint32_t)gDisplayDev);
+        fs_fprintf(fd, "compiled %s frame pointer\n", _has_frame_pointer ? "with" : "without");
+        PP(_ecos_close);
+        PP(_ecos_read);
+        PP(_ecos_write);
+        PP(_ecos_lseek);
+        PP(_ecos_fstat);
+        PP(_ecos_open);
+        PP(_ecos_opendir);
+        PP(_ecos_cyg_error_get_errno_p);
+        PP(_ecos_cyg_fd_alloc);
+        PP(_ecos_readdir_r);
+        PP(_ecos_readdir);
+        PP(_ecos_closedir);
+        PP(_ecos_stat);
+        PP(_ecos_getcwd);
+        PP(_ecos_chdir);
+        PP(_ecos_unlink);
+        PP(_ecos_mkdir);
+        PP(_ecos_rmdir);
+        PP(_ecos_fsync);
+        PP(SPMP_SendSignal);
+        PP(cache_sync);
+        PP(NativeGE_getKeyInput);
+        /* We don't test every emu function, just one to make sure the right ABI
+           version has been detected. */
+        PP(emuIfSoundCleanup);
+        PP(changeARMFreq);
+        PP(GetArmCoreFreq);
 	//NativeGE_fsClose(fd);
 	
-	DIR *dp = _ecos_opendir(".");
-	if (!dp) {
-	  fs_fprintf(fd, "opendir failed\n");
-	  NativeGE_fsClose(fd);
-	  return 0;
-        }
-        struct dirent *de;
-        while ((de = _ecos_readdir(dp))) {
-          fs_fprintf(fd, "file %s\n", de->d_name);
-          struct _ecos_stat st;
-          if (_ecos_stat(de->d_name, &st) < 0) {
-            fs_fprintf(fd, "stat failed\n");
+	if (_ecos_fsync)
+	  _ecos_fsync(fd);
+
+        /* test opendir()/readdir()/closedir() */
+        if (_ecos_opendir && _ecos_readdir && _ecos_closedir) {
+          _ecos_DIR *dp = _ecos_opendir(".");
+          if (!dp) {
+            fs_fprintf(fd, "opendir failed\n");
             NativeGE_fsClose(fd);
             return 0;
           }
-          fs_fprintf(fd, "size %d dir %d reg %d\n", st.st_size, _ECOS_S_ISDIR(st.st_mode), _ECOS_S_ISREG(st.st_mode));
+          struct _ecos_dirent *de;
+          while ((de = _ecos_readdir(dp))) {
+            fs_fprintf(fd, "file %s", de->d_name);
+            struct _ecos_stat st;
+            if (!_ecos_stat) {
+              fs_fprintf(fd, "stat() not available\n");
+            }
+            else if (_ecos_stat(de->d_name, &st) < 0) {
+              fs_fprintf(fd, "stat() failed\n");
+              //NativeGE_fsClose(fd);
+              //return 0;
+            }
+            else
+              fs_fprintf(fd, " size %d dir %d reg %d\n", st.st_size, _ECOS_S_ISDIR(st.st_mode), _ECOS_S_ISREG(st.st_mode));
+          }
+          _ecos_closedir(dp);
         }
-        _ecos_closedir(dp);
+        
+	if (_ecos_fsync)
+	  _ecos_fsync(fd);
+
+        /* test getcwd() */
         char dir[256];
-        _ecos_getcwd(dir, 256);
-        fs_fprintf(fd, "cwd %s\n", dir);
-        _ecos_chdir("..");
-        _ecos_getcwd(dir, 256);
-        fs_fprintf(fd, "cwd afer chdir %s\n", dir);
+        if (_ecos_getcwd) {
+          _ecos_getcwd(dir, 256);
+          fs_fprintf(fd, "cwd %s\n", dir);
+        }
+        if (_ecos_chdir) {
+          _ecos_chdir("..");
+          _ecos_getcwd(dir, 256);
+          fs_fprintf(fd, "cwd after chdir %s\n", dir);
+        }
+
+	if (_ecos_fsync)
+	  _ecos_fsync(fd);
+
+        if (gDisplayDev) {
+          fs_fprintf(fd, "Framebuffer %08x, shadow buffer %08x\n",
+                     gDisplayDev->getFrameBuffer(), gDisplayDev->getShadowBuffer());
+          fs_fprintf(fd, "Width %d, Height %d\n", gDisplayDev->getWidth(), gDisplayDev->getHeight());
+          fs_fprintf(fd, "LCD format %08x\n", gDisplayDev->getBuffFormat());
+        }
+        
+	if (_ecos_fsync)
+	  _ecos_fsync(fd);
+
+        if (GetArmCoreFreq) {
+          fs_fprintf(fd, "ARM frequency %d\n", GetArmCoreFreq());
+        }
+        
         NativeGE_fsClose(fd);
 	return 0;
 }
