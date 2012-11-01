@@ -1,0 +1,5 @@
+Run "make" here to build an arm-eabi toolchain that you can use to build the
+libraries and demos. The build can be interrupted and resumed at any time.
+Be sure to have the necessary libraries and tools installed. The ones you
+are most likely to miss are the development packages for gmp, mpfr, and mpc,
+as well as "makeinfo".
