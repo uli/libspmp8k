@@ -5,9 +5,6 @@
 
 TARGET	= diag
 
-# resources
-RESOBJS	= font.o
-
 OBJS	= $(RESOBJS) game.o
 
 LIBS	= -lgame -lc -lgcc

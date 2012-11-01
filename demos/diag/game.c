@@ -2,8 +2,6 @@
 #include <string.h>
 
 #include "libgame.h"
-#include "gfx_types.h"
-#include "font.h"
 
 extern void **ftab;
 extern int _has_frame_pointer;
