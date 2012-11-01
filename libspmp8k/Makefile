@@ -4,8 +4,7 @@
 #
 #
 
-TOOLCHAIN_PATH=/usr/local/bin
-TOOLCHAIN=$(TOOLCHAIN_PATH)/arm-elf-
+include ../main.cfg
 
 TARGET	= libspmp8k.a
 

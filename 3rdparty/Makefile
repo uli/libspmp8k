@@ -16,7 +16,7 @@ zlib-$(ZLIB_VERSION)/libz.a: zlib-$(ZLIB_VERSION)/zconf.h
 	$(MAKE) -C zlib-$(ZLIB_VERSION) libz.a
 
 zlib-$(ZLIB_VERSION)/zconf.h:
-	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc CFLAGS="-O3 -Wall -W" ./configure)
+	(cd zlib-$(ZLIB_VERSION) ; CC=$(TOOLCHAIN)gcc CFLAGS="-O3 -Wall -W" CHOST="$(TOOLCHAIN_TARGET)" ./configure)
 
 freetype: lib/libfreetype.a
 
@@ -24,7 +24,7 @@ lib/libfreetype.a: freetype-flat/libfreetype.a
 	mkdir -p include
 	mkdir -p lib
 	cp -p freetype-flat/libfreetype.a lib
-	cp -a freetype-flat/include/freetype include
+	cp -pr freetype-flat/include/freetype include
 	cp -p freetype-flat/include/ft2build.h include
 
 freetype-flat/libfreetype.a:
