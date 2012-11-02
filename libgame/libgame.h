@@ -9,17 +9,18 @@
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((b & 0xf8) << 8) | ((g & 0xfc) << 3) | (r >> 3))
 
-#define	KEY_UP		1
-#define	KEY_DOWN	2
-#define	KEY_LEFT	4
-#define	KEY_RIGHT	8
-#define	KEY_O		(1 << 16)
-#define	KEY_X		(2 << 16)
-#define	KEY_START	(1 << 13)
+/* key bits for cooked (NativeGE_getKeys()) interface */
+#define	GE_KEY_UP	1
+#define	GE_KEY_DOWN	2
+#define	GE_KEY_LEFT	4
+#define	GE_KEY_RIGHT	8
+#define	GE_KEY_O	(1 << 16)
+#define	GE_KEY_X	(2 << 16)
+#define	GE_KEY_START	(1 << 13)
 
 /* Cybergame Joystick mapping */
-#define	KEY_2		KEY_O
-#define	KEY_3		KEY_X
+#define	CYBER_KEY_2		KEY_O
+#define	CYBER_KEY_3		KEY_X
 
 typedef struct res_entry {
     char filename[16];

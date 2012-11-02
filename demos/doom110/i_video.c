@@ -211,90 +211,90 @@ void I_StartTic (void)
 	NativeGE_getKeyInput4Ntv(&keys);
 	
 	// UP
-	key = keys.key2 & KEY_UP;
-	prev_key = prev_keys.key2 & KEY_UP;
+	key = keys.key2 & GE_KEY_UP;
+	prev_key = prev_keys.key2 & GE_KEY_UP;
 	event.data1 = KEY_UPARROW;
-	if ((key == KEY_UP) && (prev_key == 0)) {
+	if ((key == GE_KEY_UP) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("U");
 	}
-	else if ((key == 0) && (prev_key == KEY_UP)) {
+	else if ((key == 0) && (prev_key == GE_KEY_UP)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("u");
 	}
 	
 	// DOWN
-	key = keys.key2 & KEY_DOWN;
-	prev_key = prev_keys.key2 & KEY_DOWN;
+	key = keys.key2 & GE_KEY_DOWN;
+	prev_key = prev_keys.key2 & GE_KEY_DOWN;
 	event.data1 = KEY_DOWNARROW;
-	if ((key == KEY_DOWN) && (prev_key == 0)) {
+	if ((key == GE_KEY_DOWN) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("D");
 	}
-	else if ((key == 0) && (prev_key == KEY_DOWN)) {
+	else if ((key == 0) && (prev_key == GE_KEY_DOWN)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("d");
 	}
 	
 	// LEFT
-	key = keys.key2 & KEY_LEFT;
-	prev_key = prev_keys.key2 & KEY_LEFT;
+	key = keys.key2 & GE_KEY_LEFT;
+	prev_key = prev_keys.key2 & GE_KEY_LEFT;
 	event.data1 = KEY_LEFTARROW;
-	if ((key == KEY_LEFT) && (prev_key == 0)) {
+	if ((key == GE_KEY_LEFT) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("L");
 	}
-	else if ((key == 0) && (prev_key == KEY_LEFT)) {
+	else if ((key == 0) && (prev_key == GE_KEY_LEFT)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("l");
 	}
 	
 	// RIGHT
-	key = keys.key2 & KEY_RIGHT;
-	prev_key = prev_keys.key2 & KEY_RIGHT;
+	key = keys.key2 & GE_KEY_RIGHT;
+	prev_key = prev_keys.key2 & GE_KEY_RIGHT;
 	event.data1 = KEY_RIGHTARROW;
-	if ((key == KEY_RIGHT) && (prev_key == 0)) {
+	if ((key == GE_KEY_RIGHT) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("R");
 	}
-	else if ((key == 0) && (prev_key == KEY_RIGHT)) {
+	else if ((key == 0) && (prev_key == GE_KEY_RIGHT)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("r");
 	}
 	
 	// X (ENTER)
-	key = keys.key2 & KEY_X;
-	prev_key = prev_keys.key2 & KEY_X;
+	key = keys.key2 & GE_KEY_X;
+	prev_key = prev_keys.key2 & GE_KEY_X;
 	event.data1 = KEY_RCTRL;
-	if ((key == KEY_X) && (prev_key == 0)) {
+	if ((key == GE_KEY_X) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("X");
 	}
-	else if ((key == 0) && (prev_key == KEY_X)) {
+	else if ((key == 0) && (prev_key == GE_KEY_X)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("x");
 	}
 	
 	// O (USE)
-	key = keys.key2 & KEY_O;
-	prev_key = prev_keys.key2 & KEY_O;
+	key = keys.key2 & GE_KEY_O;
+	prev_key = prev_keys.key2 & GE_KEY_O;
 	event.data1 = 0x20;
-	if ((key == KEY_O) && (prev_key == 0)) {
+	if ((key == GE_KEY_O) && (prev_key == 0)) {
 		event.type = ev_keydown;
 		D_PostEvent(&event);
 	//	dmsg_puts("O");
 	}
-	else if ((key == 0) && (prev_key == KEY_O)) {
+	else if ((key == 0) && (prev_key == GE_KEY_O)) {
 		event.type = ev_keyup;
 		D_PostEvent(&event);
 	//	dmsg_puts("o");

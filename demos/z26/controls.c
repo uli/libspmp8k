@@ -261,11 +261,11 @@ void DoJoystick_L()
 #endif
 	if (KeyboardEnabled)
 	{
-		if (keys.key2 & KEY_RIGHT) IOPortA = IOPortA & 0x7f;
-		if (keys.key2 & KEY_LEFT) IOPortA = IOPortA & 0xbf;
-		if (keys.key2 & KEY_DOWN) IOPortA = IOPortA & 0xdf;
-		if (keys.key2 & KEY_UP) IOPortA = IOPortA & 0xef;
-		if (keys.key2 & KEY_X) InputLatch[0] = 0x00;
+		if (keys.key2 & GE_KEY_RIGHT) IOPortA = IOPortA & 0x7f;
+		if (keys.key2 & GE_KEY_LEFT) IOPortA = IOPortA & 0xbf;
+		if (keys.key2 & GE_KEY_DOWN) IOPortA = IOPortA & 0xdf;
+		if (keys.key2 & GE_KEY_UP) IOPortA = IOPortA & 0xef;
+		if (keys.key2 & GE_KEY_X) InputLatch[0] = 0x00;
 
 /* for OLPC XO-1
 
@@ -1871,7 +1871,7 @@ void Controls()
 
 /* handle VCS console switches */	
 	IOPortB = IOPortB | 0x03;	/* turn on Select and Reset bits */
-	if (keys.key2 & KEY_START)
+	if (keys.key2 & GE_KEY_START)
 	{
 		IOPortB = IOPortB & 0xfe;	/* bit 0 = RESET */
 		set_status("RESET");
