@@ -23,7 +23,7 @@ LIBS	= -lc -lgcc -lgame
 
 include ../../libgame/libgame.mk
 
-CFLAGS += -DSPMP8 -DNO_SOUND
+CFLAGS += -DSPMP8 -DNO_SOUND -fno-strict-aliasing -Wno-unused -Wno-implicit-int -Wno-missing-field-initializers
 #-DNORMALUNIX
 
 objs/%.o: %.c
