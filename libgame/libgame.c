@@ -27,7 +27,7 @@ extern int heap_ending;
 
 void (*diag_printf) (char *fmt, ...);
 
-int (*MCatchInitGraph) (void *buffer, int buffsize);
+int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
 int (*MCatchSetDisplayScreen) (gfx_rect_t * rect);
 int (*MCatchSetCameraMode) (int mode);

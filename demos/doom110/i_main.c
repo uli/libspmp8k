@@ -58,7 +58,7 @@ main
 	
 	// initialize the game api
 	libgame_init();
-	MCatchInitGraph(NULL, 0);
+	MCatchInitGraph();
 
 	rect.x = 0;
 	rect.y = 0;

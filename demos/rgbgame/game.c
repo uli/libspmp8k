@@ -11,11 +11,10 @@ int main()
 	int i;
 	gfx_rect_t rect;
 	uint32_t color;
-	uint16_t fbuff[320*240];
 	key_data_t keys, no_keys;
 
 //	diag_printf("Hello World!\n");
-	MCatchInitGraph(fbuff, sizeof(fbuff));
+	MCatchInitGraph();
 
 	rect.x = 0;
 	rect.y = 0;
@@ -51,10 +50,6 @@ int main()
 	MCatchSetFGColor(&color);
 	MCatchSetColorROP(COLOR_ROP_NOP);
 	MCatchFillRect(&rect);
-///*
-	// is it used at all ?
-	for (i=0; i<320; i++) fbuff[(100*320)+i] = 0;
-//*/
 	MCatchSetColorROP(COLOR_ROP_NOP);
 	MCatchFlush();
 	MCatchPaint();

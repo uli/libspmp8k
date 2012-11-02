@@ -14,8 +14,6 @@ extern int sprintf(char *__s, const char *format, ...);
 
 void draw_string(uint8_t font_id, uint16_t x, uint16_t y, char *str);
 void draw_string_centered(uint8_t font_id, uint16_t y, char *str);
-extern void **ftab;
-uint16_t fbuff[320*240];
 uint16_t *(*int_get_framebuffer)(void);
 uint16_t *(*int_get_shadowbuffer)(void);
 void **itab = (void **)0x5a1e48;
@@ -39,7 +37,7 @@ int main()
 	libgame_init();
 	int_get_shadowbuffer = itab[0];
 	int_get_framebuffer = itab[1];
-	MCatchInitGraph(fbuff, sizeof(fbuff));
+	MCatchInitGraph();
 
 	rect.x = 0;
 	rect.y = 0;

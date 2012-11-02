@@ -35,7 +35,7 @@ typedef struct key_data {
 extern void (*diag_printf) (char *fmt, ...);
 
 // graphics stuff
-extern int (*MCatchInitGraph) (void *buffer, int buffsize);
+extern int (*MCatchInitGraph) (void);
 extern int (*MCatchSetFrameBuffer) (int width, int height);
 extern int (*MCatchSetDisplayScreen) (gfx_rect_t * rect);
 extern int (*MCatchSetCameraMode) (int mode);

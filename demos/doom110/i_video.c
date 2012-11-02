@@ -423,7 +423,7 @@ void I_InitGraphics(void)
 
 	old_time = NativeGE_getTime();
 	// initialize graphics
-/*	MCatchInitGraph(NULL, 0);
+/*	MCatchInitGraph();
 	MCatchSetFrameBuffer(SCREENWIDTH, SCREENHEIGHT);
 
 	rect.x = 0;

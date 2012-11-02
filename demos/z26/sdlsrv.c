@@ -47,7 +47,7 @@ void Init_SDL()
 
 	printf("Init_SDL()\n");
 
-	MCatchInitGraph(NULL, 0);
+	MCatchInitGraph();
 
 	rect.x = 0;
 	rect.y = 0;
