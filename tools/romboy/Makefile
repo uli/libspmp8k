@@ -9,8 +9,7 @@ CC		= gcc
 all: $(TARGET)
 $(TARGET): romboy.c
 	$(CC) -lusb romboy.c -o $(TARGET)
-	cp romboy ../../bin
+	cp $(TARGET) ../../bin
 
 clean:
-	rm -f $(TARGET)
-
+	rm -f $(TARGET) ../../bin/$(TARGET)
