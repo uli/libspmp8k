@@ -24,6 +24,8 @@
 
 #include <libgame.h>
 
+//#define TEST_FREQ
+
 extern int _has_frame_pointer;
 extern int _new_emu_abi;
 
@@ -173,6 +175,18 @@ int main()
     if (GetArmCoreFreq) {
         fs_fprintf(fd, "ARM frequency %d\n", GetArmCoreFreq());
     }
+#ifdef TEST_FREQ
+    if (GetArmCoreFreq && changeARMFreq) {
+        int i;
+        for (i = 5; i < 600; i++) {
+            fs_fprintf(fd, "Trying %d MHz... ", i);
+            if (_ecos_fsync)
+                _ecos_fsync(fd);
+            changeARMFreq(i);
+            fs_fprintf(fd, "%d\n", GetArmCoreFreq());
+        }
+    }    
+#endif
 
     NativeGE_fsClose(fd);
     return 0;
