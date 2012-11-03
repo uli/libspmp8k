@@ -588,7 +588,7 @@ static void libgame_detect_system(void)
         else if (!_ecos_stat("/Rom/RESOURCE/ARECORD/DEFBTN.BMP", &st))
             libgame_system_id = SYS_JXD_V3;
         else if (!_ecos_stat("/Rom/RESOURCE/XML/APPHOMENOMONTH.XML", &st))
-            libgame_system_id = SYS_JXD_1000;
+            libgame_system_id = SYS_JXD_1000;	/* XXX: also A1000, need to come up with sth better */
         else if (!_ecos_stat("/Rom/HOME/IMAGE/EXPLORER.BMP", &st) ||
                  !_ecos_stat("/Rom/HOME/IMAGE/HNWFNYPM_EXPLORER.BMP", &st))
             libgame_system_id = SYS_MMM;
