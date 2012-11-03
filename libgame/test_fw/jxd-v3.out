@@ -33,3 +33,5 @@ NativeGE_getKeyInput 002d2210
 emuIfSoundCleanup 00468514
 changeARMFreq 002d7818
 GetArmCoreFreq 002960b4
+hal_clock_read 00298fc8
+cyg_current_time 0033a630

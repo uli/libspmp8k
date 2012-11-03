@@ -108,5 +108,7 @@ int main(int argc, char **argv)
     PP(emuIfSoundCleanup);
     PP(changeARMFreq);
     PP(GetArmCoreFreq);
+    PP(hal_clock_read);
+    PP(cyg_current_time);
     return 0;
 }
