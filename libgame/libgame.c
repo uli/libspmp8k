@@ -168,6 +168,9 @@ int (*emuIfunknown78) (void) = 0;
 int (*GetArmCoreFreq) (void) = 0;
 int (*changeARMFreq) (int mhz) = 0;     /* A1000 accepts 5 - 297 MHz */
 
+void (*hal_clock_read) (uint32_t *us) = 0;
+uint64_t (*cyg_current_time) (void) = 0;
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val)
 {
@@ -533,7 +536,45 @@ out:
     }
 out2:
 
+    if (g_stEmuFuncs)
+        cyg_current_time = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x2c : 0x28) / 4]);
+    
+    /* Find hal_clock_read(). We search for the function that calls
+       getTimerVLR_WDT(), which is a very small function, so we match
+       for the first two instructions. This is far from perfect, but so
+       far only two varieties have been sighted. */
+    if (_has_frame_pointer != -1) {
+        for (head = FW_START_P; head < FW_END_P; head++) {
+            if (is_prolog(*head)) {
+                uint32_t *subhead = next_bl_target(head);
+                if (subhead &&
+                    (/* MOV R3, #0x1000; ADD R3, R3, #0x9000000c */
+                     (subhead[0] == 0xe3a03a01 && subhead[1] == 0xe28332c9) ||
+                     /* MOV R0, R0, LSL#5; LDR R3, =0x9000100c */
+                     (subhead[0] == 0xe1a00280 && is_ldr_pc(subhead[1]) &&
+                      ldr_pc_address(subhead + 1) == (void *)0x9000100c))) {
+                    hal_clock_read = (void *)head;
+                    break;
+                }
+            }
+        }
+    }
     return;
+}
+
+uint64_t libgame_utime(void)
+{
+    uint64_t t;
+    uint32_t u;
+    if (hal_clock_read) {
+        do {
+            t = cyg_current_time();
+            hal_clock_read(&u);
+        } while (t != cyg_current_time());
+        return t * 10000 + u;
+    }
+    else
+        return cyg_current_time() * 10000;
 }
 
 #ifndef TEST_BUILD

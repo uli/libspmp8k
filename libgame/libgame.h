@@ -337,6 +337,11 @@ extern int (*emuIfunknown78) (void);
 extern int (*GetArmCoreFreq) (void);
 extern int (*changeARMFreq) (int mhz);
 
+extern void (*hal_clock_read) (uint32_t *us);
+extern uint64_t (*cyg_current_time) (void);
+
+extern uint64_t libgame_utime(void);
+
 extern int libgame_system_id;
 #define SYS_UNKNOWN 0
 #define SYS_JXD_100 1
