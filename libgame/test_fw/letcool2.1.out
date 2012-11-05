@@ -1,0 +1,38 @@
+diag_printf = 00298b64
+MCatchInitGraph = 002df010
+NativeGE_fsOpen = 00462a58
+NativeGE_fsRead = 00462b2c
+NativeGE_fsWrite = 00462b94
+MCatchPaint = 002dd21c
+NativeGE_getKeyInput4Ntv = 002d2f7c
+g_stEmuFuncs 0056413c (new ABI)
+gDisplayDev 00557670
+compiled with frame pointer
+_ecos_close 002eb650
+_ecos_read 002eb5f0
+_ecos_write 002eb620
+_ecos_lseek 002eb6ac
+_ecos_fstat 002eb7c0
+_ecos_open 002a5ed4
+_ecos_opendir 002a69bc
+_ecos_cyg_error_get_errno_p 00299a14
+_ecos_cyg_fd_alloc 002a5bf0
+_ecos_readdir_r 002a6b8c
+_ecos_readdir 002a6b50
+_ecos_closedir 002eb650
+_ecos_stat 002a6504
+_ecos_getcwd 002a6660
+_ecos_chdir 002a6340
+_ecos_unlink 002a607c
+_ecos_mkdir 002a6168
+_ecos_rmdir 002a6254
+_ecos_fsync 002eb73c
+SPMP_SendSignal 002d6d70
+cache_sync 0029e450
+NativeGE_getKeyInput 002d2f58
+emuIfSoundCleanup 0045fa40
+changeARMFreq 002d879c
+GetArmCoreFreq 00296e24
+hal_clock_read 00299d54
+cyg_current_time 00339d28
+g_onoff_p 0051425c
