@@ -19,6 +19,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+/* This program will only work on little-endian systems that allow mapping
+   memory to fixed address 0x280000.  This does not include, for instance,
+   Linux/AMD64 systems, which is why the run_test script compiles this with
+   "-m32".  */
 
 #include <stdint.h>
 #include <fcntl.h>
