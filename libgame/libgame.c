@@ -486,18 +486,36 @@ out:
             cache_sync = 0;
     }
 
-    /* This does not work on MMM firmwares. */
+    /* Find NativeGE_getKeyInput which provides unfiltered input. */
     if (_has_frame_pointer != -1) {
-        uint32_t *getKeyFromQueue = next_bl_target((uint32_t *)NativeGE_getKeyInput4Ntv);
-        if (getKeyFromQueue) {
-            for (head = FW_START_P; head < FW_END_P; head++) {
-                if (is_prolog(*head)) {
-                    if (next_bl_target(head) == getKeyFromQueue &&
-                        head != (void *)NativeGE_getKeyInput4Ntv) {
-                        NativeGE_getKeyInput = (void *)head;
-                        break;
+        start = (uint32_t *)NativeGE_getKeyInput4Ntv;
+next:
+        for (head = start; head < start + 100; head++) {
+            if (is_ldr_pc(*head)) {
+                /* This is an MMM (perhaps Letcool) firmware. The
+                   NativeGE_getKeyInput4Ntv hook points to a wrapper that
+                   calls another one of two functions if there is no input
+                   from the "real" NativeGE_getKeyInput4Ntv, so we have
+                   to go one deeper to get to getKeyFromQueue. */
+                start = next_bl_target(head);
+                if (start)
+                    goto next;
+                else
+                    break;
+            }
+            else if (is_branch_link(*head)) {
+                /* Find the other function that calls getKeyFromQueue. */
+                uint32_t *getKeyFromQueue = branch_address(head);
+                for (head = FW_START_P; head < FW_END_P; head++) {
+                    if (is_prolog(*head)) {
+                        if (next_bl_target(head) == getKeyFromQueue &&
+                            head != (void *)NativeGE_getKeyInput4Ntv) {
+                            NativeGE_getKeyInput = (void *)head;
+                            break;
+                        }
                     }
                 }
+                break;
             }
         }
     }
