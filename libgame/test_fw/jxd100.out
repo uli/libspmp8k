@@ -35,3 +35,4 @@ changeARMFreq 002c94c4
 GetArmCoreFreq 00295ae4
 hal_clock_read 00298ff4
 cyg_current_time 00333bc4
+g_onoff_p 004df550
