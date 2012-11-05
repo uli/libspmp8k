@@ -61,6 +61,7 @@ typedef struct key_data {
 
 // the printf (to serial)
 extern void (*diag_printf) (char *fmt, ...);
+extern int *g_onoff_p;
 
 // graphics stuff
 extern int (*MCatchInitGraph) (void);

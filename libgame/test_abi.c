@@ -110,5 +110,6 @@ int main(int argc, char **argv)
     PP(GetArmCoreFreq);
     PP(hal_clock_read);
     PP(cyg_current_time);
+    PP(g_onoff_p);
     return 0;
 }

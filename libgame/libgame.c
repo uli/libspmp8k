@@ -26,6 +26,7 @@ void **ftab;
 extern int heap_ending;
 
 void (*diag_printf) (char *fmt, ...);
+int *g_onoff_p;
 
 int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
@@ -559,6 +560,15 @@ out2:
             }
         }
     }
+    
+    start = (uint32_t *)diag_printf;
+    for (head = start; head < start + 50; head++) {
+        if (is_ldr_pc(*head)) {
+            g_onoff_p = ldr_pc_address(head);
+            break;
+        }
+    }
+
     return;
 }
 
