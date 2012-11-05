@@ -300,6 +300,11 @@ typedef struct graph_params {
     uint32_t src_clip_h;
 } graph_params_t;
 
+typedef struct keymap {
+    uint32_t _unknown;
+    uint32_t scancode[20];
+} keymap_t ;
+
 #define EMU_FUNC_ENTRY(n)	(g_stEmuFuncs[(n) / 4])
 
 extern int (*emuIfGraphInit) (graph_params_t *);
@@ -311,9 +316,9 @@ extern uint32_t (*emuIfSoundPlay) (sound_params_t * params);
 extern uint32_t (*emuIfSoundCleanup) (sound_params_t * params);
 
 extern int (*emuIfunknown0c) (void *);  /* sets the source buffer? */
-extern int (*emuIfKeyInit) (void *);
-extern int (*emuIfKeyGetInput) (void *);
-extern int (*emuIfKeyCleanup) (void *);
+extern int (*emuIfKeyInit) (keymap_t *map);
+extern uint32_t (*emuIfKeyGetInput) (keymap_t *map);
+extern int (*emuIfKeyCleanup) (keymap_t *map);
 extern uint32_t (*emuIfGetCurTime) (void);  /* could be uint64_t, not sure */
 extern void (*emuIfTimeDelay) (uint32_t);
 extern int (*emuIfFsFileOpen) (const char *pathname, uint32_t flags);

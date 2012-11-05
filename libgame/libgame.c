@@ -142,9 +142,9 @@ uint32_t (*emuIfSoundPlay) (sound_params_t * params);
 uint32_t (*emuIfSoundCleanup) (sound_params_t * params);
 
 int (*emuIfunknown0c) (void *) = 0;     /* sets the source buffer? */
-int (*emuIfKeyInit) (void *) = 0;
-int (*emuIfKeyGetInput) (void *) = 0;
-int (*emuIfKeyCleanup) (void *) = 0;
+int (*emuIfKeyInit) (keymap_t *) = 0;
+uint32_t (*emuIfKeyGetInput) (keymap_t *) = 0;
+int (*emuIfKeyCleanup) (keymap_t *) = 0;
 uint32_t (*emuIfGetCurTime) (void) = 0; /* could be uint64_t, not sure */
 void (*emuIfTimeDelay) (uint32_t) = 0;
 int (*emuIfFsFileOpen) (const char *pathname, uint32_t flags) = 0;
