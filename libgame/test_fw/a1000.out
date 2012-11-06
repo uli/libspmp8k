@@ -29,7 +29,6 @@ _ecos_rmdir 002a6a24
 _ecos_fsync 002a727c
 SPMP_SendSignal 002e01a4
 cache_sync 0029d2a4
-NativeGE_getKeyInput 00326cf4
 emuIfSoundCleanup 0042767c
 changeARMFreq 002e1fe8
 GetArmCoreFreq 00295e90
