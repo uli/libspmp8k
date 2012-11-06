@@ -29,7 +29,7 @@
 #define RAW_A1000_KEY_RIGHT	8
 #define RAW_A1000_KEY_O		16
 #define RAW_A1000_KEY_X		32
-#define RAW_A1000_KEY_SQUARE	64 /* guess */
+#define RAW_A1000_KEY_SQUARE	64      /* guess */
 #define RAW_A1000_KEY_TRIANGLE	128
 #define RAW_A1000_KEY_R		256
 #define RAW_A1000_KEY_L		512
@@ -66,21 +66,21 @@ extern int *g_onoff_p;
 // graphics stuff
 extern int (*MCatchInitGraph) (void);
 extern int (*MCatchSetFrameBuffer) (int width, int height);
-extern int (*MCatchSetDisplayScreen) (gfx_rect_t * rect);
+extern int (*MCatchSetDisplayScreen) (gfx_rect_t *rect);
 extern int (*MCatchSetCameraMode) (int mode);
 extern int (*MCatchSetFGColor) (uint32_t *color);
 extern uint32_t (*MCatchGetFGColor) ();
 extern int (*MCatchSetColorROP) (uint32_t rop);
 extern int (*MCatchSetAlphaBld) (uint8_t src_alpha, uint8_t dest_alpha);
 extern int (*MCatchGetAlphaBld) (uint8_t *src_alpha, uint8_t *dest_alpha);
-extern int (*MCatchFillRect) (gfx_rect_t * rect);
+extern int (*MCatchFillRect) (gfx_rect_t *rect);
 extern int (*MCatchEnableFeature) (uint32_t feature);
 extern int (*MCatchFlush) (void);
 extern int (*MCatchPaint) (void);
-extern int (*MCatchLoadImage) (gfx_loadimg_t * loadimg, uint8_t *imgid);
+extern int (*MCatchLoadImage) (gfx_loadimg_t *loadimg, uint8_t *imgid);
 extern int (*MCatchFreeImage) (uint8_t img_id);
-extern int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t * rect, gfx_point2d_t * at);
-extern int (*MCatchSprite) (uint8_t img_id, gfx_rect_t * rect, gfx_point2d_t * at);
+extern int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+extern int (*MCatchSprite) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
 
 // music & sound (has some problems)
 extern int (*NativeGE_initRes) (int val, void *res_table);
@@ -117,7 +117,8 @@ extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
 #define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
 
 // misc.
-extern uint32_t (*NativeGE_getTime) (void);     // returns system ticks equivalent
+extern uint32_t (*NativeGE_getTime) (void);     // returns system ticks
+                                                // equivalent
 extern void (*NativeGE_getKeyInput4Ntv) (key_data_t * keys);
 
 // ### initializes the function pointers
@@ -304,7 +305,7 @@ typedef struct graph_params {
 typedef struct keymap {
     uint32_t _unknown;
     uint32_t scancode[20];
-} keymap_t ;
+} keymap_t;
 
 #define EMU_FUNC_ENTRY(n)	(g_stEmuFuncs[(n) / 4])
 
@@ -312,9 +313,9 @@ extern int (*emuIfGraphInit) (graph_params_t *);
 extern int (*emuIfGraphShow) (void);
 extern int (*emuIfGraphChgView) (graph_params_t *);
 extern int (*emuIfGraphCleanup) (void);
-extern uint32_t (*emuIfSoundInit) (sound_params_t * params);
-extern uint32_t (*emuIfSoundPlay) (sound_params_t * params);
-extern uint32_t (*emuIfSoundCleanup) (sound_params_t * params);
+extern uint32_t (*emuIfSoundInit) (sound_params_t *params);
+extern uint32_t (*emuIfSoundPlay) (sound_params_t *params);
+extern uint32_t (*emuIfSoundCleanup) (sound_params_t *params);
 
 extern int (*emuIfunknown0c) (void *);  /* sets the source buffer? */
 extern int (*emuIfKeyInit) (keymap_t *map);

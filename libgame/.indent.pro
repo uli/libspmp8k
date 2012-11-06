@@ -22,3 +22,10 @@
 -T int16_t
 -T int32_t
 -T int64_t
+-T keymap_t
+-T graph_params_t
+-T sound_params_t
+-T gfx_point2d_t
+-T gfx_rect_t
+-T gfx_loadimg_t
+-T gfx_pal_t

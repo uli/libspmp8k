@@ -30,21 +30,21 @@ int *g_onoff_p;
 
 int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
-int (*MCatchSetDisplayScreen) (gfx_rect_t * rect);
+int (*MCatchSetDisplayScreen) (gfx_rect_t *rect);
 int (*MCatchSetCameraMode) (int mode);
 int (*MCatchSetFGColor) (uint32_t *color);
 uint32_t (*MCatchGetFGColor) ();
 int (*MCatchSetColorROP) (uint32_t rop);
 int (*MCatchSetAlphaBld) (uint8_t src_alpha, uint8_t dest_alpha);
 int (*MCatchGetAlphaBld) (uint8_t *src_alpha, uint8_t *dest_alpha);
-int (*MCatchFillRect) (gfx_rect_t * rect);
+int (*MCatchFillRect) (gfx_rect_t *rect);
 int (*MCatchEnableFeature) (uint32_t feature);
 int (*MCatchFlush) ();
 int (*MCatchPaint) ();
-int (*MCatchLoadImage) (gfx_loadimg_t * loadimg, uint8_t *imgid);
+int (*MCatchLoadImage) (gfx_loadimg_t *loadimg, uint8_t *imgid);
 int (*MCatchFreeImage) (uint8_t img_id);
-int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t * rect, gfx_point2d_t * at);
-int (*MCatchSprite) (uint8_t img_id, gfx_rect_t * rect, gfx_point2d_t * at);
+int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+int (*MCatchSprite) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
 
 int (*NativeGE_initRes) (int val, void *res_table);
 int (*NativeGE_getRes) (char *filename, void *res_info);
@@ -138,9 +138,9 @@ int (*emuIfGraphInit) (graph_params_t *);
 int (*emuIfGraphShow) (void);
 int (*emuIfGraphChgView) (graph_params_t *);
 int (*emuIfGraphCleanup) (void);
-uint32_t (*emuIfSoundInit) (sound_params_t * params);
-uint32_t (*emuIfSoundPlay) (sound_params_t * params);
-uint32_t (*emuIfSoundCleanup) (sound_params_t * params);
+uint32_t (*emuIfSoundInit) (sound_params_t *params);
+uint32_t (*emuIfSoundPlay) (sound_params_t *params);
+uint32_t (*emuIfSoundCleanup) (sound_params_t *params);
 
 int (*emuIfunknown0c) (void *) = 0;     /* sets the source buffer? */
 int (*emuIfKeyInit) (keymap_t *) = 0;
@@ -411,8 +411,8 @@ void libgame_detect_firmware_abi()
     }
 
     if (_has_frame_pointer != -1 && _ecos_read) {
-        /* Find readdir_r() on the assumption that it's the only function reading 
-           a block of 0x104 bytes. */
+        /* Find readdir_r() on the assumption that it's the only function
+           reading a block of 0x104 bytes. */
         for (head = FW_START_P; head < FW_END_P; head++) {
             if (is_prolog(*head)) {
                 uint32_t *subhead;
@@ -557,11 +557,11 @@ out2:
 
     if (g_stEmuFuncs)
         cyg_current_time = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x2c : 0x28) / 4]);
-    
+
     /* Find hal_clock_read(). We search for the function that calls
-       getTimerVLR_WDT(), which is a very small function, so we match
-       for the first two instructions. This is far from perfect, but so
-       far only two varieties have been sighted. */
+       getTimerVLR_WDT(), which is a very small function, so we match for the 
+       first two instructions. This is far from perfect, but so far only two
+       varieties have been sighted. */
     if (_has_frame_pointer != -1) {
         for (head = FW_START_P; head < FW_END_P; head++) {
             if (is_prolog(*head)) {
@@ -657,7 +657,8 @@ static void libgame_detect_system(void)
         else if (!_ecos_stat("/Rom/RESOURCE/ARECORD/DEFBTN.BMP", &st))
             libgame_system_id = SYS_JXD_V3;
         else if (!_ecos_stat("/Rom/RESOURCE/XML/APPHOMENOMONTH.XML", &st))
-            libgame_system_id = SYS_JXD_1000;	/* XXX: also A1000, need to come up with sth better */
+            libgame_system_id = SYS_JXD_1000;   /* XXX: also A1000, need to
+                                                   come up with sth better */
         else if (!_ecos_stat("/Rom/HOME/IMAGE/EXPLORER.BMP", &st) ||
                  !_ecos_stat("/Rom/HOME/IMAGE/HNWFNYPM_EXPLORER.BMP", &st))
             libgame_system_id = SYS_MMM;
