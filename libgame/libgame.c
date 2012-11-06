@@ -68,6 +68,7 @@ void (*NativeGE_getKeyInput4Ntv) (key_data_t * keys);   // uint64_t *keys);
 #define FW_END_P ((uint32_t *)FW_END)
 
 void **g_stEmuFuncs = 0;
+emu_apis_t *g_stEmuAPIs = 0;
 display_dev_t *gDisplayDev = 0;
 int (*_ecos_close) (int fd) = 0;
 int (*_ecos_read) (int fd, void *buf, unsigned int count) = 0;
@@ -129,6 +130,9 @@ int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flags, _eco
 int (*NativeGE_gameExit) (void) = 0;
 /* int (*NativeGE_getTPEvent) (void) = 0; doesn't do anything */
 /* char (*NativeGE_setTPClickArea) (void) = 0; doesn't do anything */
+
+int (*NativeGE_gamePause) (void) = 0;
+int (*NativeGE_gameResume) (void) = 0;
 
 int _has_frame_pointer = -1;    /* required to find function entry points */
 int _new_emu_abi = -1;
@@ -544,12 +548,31 @@ out2:
         }
     }
     
+    /* Find g_onoff (debug flag). */
     start = (uint32_t *)diag_printf;
     for (head = start; head < start + 50; head++) {
         if (is_ldr_pc(*head)) {
             g_onoff_p = ldr_pc_address(head);
             break;
         }
+    }
+
+    /* Find g_stEmuAPIs (event callback structure). */
+    if (g_stEmuFuncs) {
+        for (head = FW_START_P; head < FW_END_P; head++) {
+            if (is_ldr_pc(*head) && ldr_pc_address(head) == g_stEmuFuncs) {
+                head++;
+                if (is_ldr_pc(*head) &&
+                    (head[1] & 0xffff0fffU) == 0xe3a0060aU /* MOV Rx, #0xa00000 */) {
+                    g_stEmuAPIs = ldr_pc_address(head);
+                    break;
+                }
+            }
+        }
+    }
+    if (g_stEmuAPIs) {
+        NativeGE_gamePause = g_stEmuAPIs->pause;
+        NativeGE_gameResume = g_stEmuAPIs->resume;
     }
 
     return;

@@ -213,7 +213,15 @@ typedef struct {
     uint16_t *(*getFrameBuffer) (void);
 } display_dev_t;
 
+typedef struct {
+    void *_unknown;
+    int (*pause) (void);
+    int (*resume) (void);
+    int (*exit) (void);
+} emu_apis_t;
+
 extern void **g_stEmuFuncs;
+extern emu_apis_t *g_stEmuAPIs;
 display_dev_t *gDisplayDev;
 extern int (*_ecos_close) (int fd);
 extern int (*_ecos_read) (int fd, void *buf, unsigned int count);
@@ -278,6 +286,9 @@ extern int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flag
 extern int (*NativeGE_gameExit) (void);
 /* extern int (*NativeGE_getTPEvent) (void); doesn't do anything */
 /* extern char (*NativeGE_setTPClickArea) (void); doesn't do anything */
+
+extern int (*NativeGE_gamePause) (void);
+extern int (*NativeGE_gameResume) (void);
 
 typedef struct sound_params {
     uint8_t *buf;               /* + 0x0 */
