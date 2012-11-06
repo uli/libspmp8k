@@ -35,3 +35,4 @@ GetArmCoreFreq 0028dec4
 hal_clock_read 0028f5a4
 cyg_current_time 002feae4
 g_onoff_p 0049af78
+g_stEmuAPIs 0049c920
