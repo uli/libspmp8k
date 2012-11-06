@@ -239,7 +239,6 @@ extern void (*cyg_thread_delay) (uint64_t /* cyg_tick_count_t */ delay);
 
 extern uint16_t (*SPMP_SendSignal) (uint16_t cmd, void *data, uint16_t size);
 extern void (*cache_sync) (void);
-extern int (*NativeGE_getKeyInput) (key_data_t *);
 
 /* extern int (*MCatchStoreImage) (void); doesn't do anything */
 /* extern int (*MCatchDecodeImageFromCard) (void); doesn't do anything */
