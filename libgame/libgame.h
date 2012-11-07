@@ -313,8 +313,23 @@ typedef struct graph_params {
     uint32_t src_clip_h;
 } graph_params_t;
 
+/* scancode indices */
+#define EMU_KEY_UP       0
+#define EMU_KEY_DOWN     1
+#define EMU_KEY_LEFT     2
+#define EMU_KEY_RIGHT    3
+#define EMU_KEY_O        4
+#define EMU_KEY_X        5
+#define EMU_KEY_SQUARE   6
+#define EMU_KEY_TRIANGLE 7
+#define EMU_KEY_R        8
+#define EMU_KEY_L        9
+#define EMU_KEY_SELECT  10
+#define EMU_KEY_START   11
+#define EMU_KEY_ESC     12	/* guess */
+
 typedef struct keymap {
-    uint32_t _unknown;
+    int controller;		/* controller ID (usually 0 or 1) */
     uint32_t scancode[20];
 } keymap_t;
 
