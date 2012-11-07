@@ -19,8 +19,8 @@
 #define	GE_KEY_START	(1 << 13)
 
 /* Cybergame Joystick mapping */
-#define	CYBER_KEY_2		KEY_O
-#define	CYBER_KEY_3		KEY_X
+#define	CYBER_KEY_2		GE_KEY_O
+#define	CYBER_KEY_3		GE_KEY_X
 
 /* JXD A1000 keys */
 #define RAW_A1000_KEY_UP	1
