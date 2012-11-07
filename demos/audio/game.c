@@ -62,16 +62,16 @@ int main(void)
 
     libgame_init();
 
-    _dprintf("\n");
-    _dprintf("Starting audio test.\n");
+    diag_printf("\n");
+    diag_printf("Starting audio test.\n");
 
     NativeGE_initRes(0, &resources);
 
     type = NativeGE_getRes("8k8bpcm.wav", &ri);
     NativeGE_playRes(type, 1, &ri);
 
-    _dprintf("Playing a mono 8 bit / 8000 Hz PCM wave file.\n");
-    _dprintf("Press any key to next sample.\n");
+    diag_printf("Playing a mono 8 bit / 8000 Hz PCM wave file.\n");
+    diag_printf("Press any key to next sample.\n");
     wait_keypress();
 
     NativeGE_stopRes(type);
