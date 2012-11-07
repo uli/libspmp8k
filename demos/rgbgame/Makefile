@@ -4,13 +4,14 @@
 #
 #
 
-include ../../libgame/libgame.cfg
+LIBSPMP8K = ../..
+include $(LIBSPMP8K)/main.cfg
 
 TARGET	= rgbgame
 
 CC		= $(TOOLCHAIN)gcc
 AS		= $(TOOLCHAIN)as
-LD		= $(TOOLCHAIN)ld
+LD		= $(TOOLCHAIN)gcc
 CPP		= $(TOOLCHAIN)cpp
 OBJCOPY	= $(TOOLCHAIN)objcopy
 MKBING	= ../../tools/bingtools/mkbing
@@ -23,4 +24,4 @@ OBJS	= game.o
 
 LIBS = -lgame -lc
 
-include ../../libgame/libgame.mk
+include $(LIBGAME)/libgame.mk

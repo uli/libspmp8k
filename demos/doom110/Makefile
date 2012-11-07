@@ -1,3 +1,4 @@
+LIBSPMP8K = ../..
 
 TARGET	= 0doom
 #include ../libgame/libgame.cfg
@@ -21,11 +22,11 @@ OBJS	= ./objs/g_game.o ./objs/am_map.o ./objs/f_wipe.o  ./objs/m_random.o \
 
 LIBS	= -lc -lgcc -lgame
 
-include ../../libgame/libgame.mk
+include $(LIBSPMP8K)/main.cfg
+include $(LIBGAME)/libgame.mk
 
 CFLAGS += -DSPMP8 -DNO_SOUND -fno-strict-aliasing -Wno-unused -Wno-implicit-int -Wno-missing-field-initializers
 #-DNORMALUNIX
 
 objs/%.o: %.c
 		$(CC) $(CFLAGS) $< -o $@
-

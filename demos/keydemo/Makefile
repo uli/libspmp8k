@@ -1,3 +1,4 @@
+LIBSPMP8K = ../..
 
 #ifdef $(NEWLIB)
 #undef $(NEWLIB)
@@ -12,4 +13,5 @@ OBJS	= $(RESOBJS) game.o
 
 LIBS	= -lgame -lc -lgcc
 
-include ../../libgame/libgame.mk
+include $(LIBSPMP8K)/main.cfg
+include $(LIBGAME)/libgame.mk

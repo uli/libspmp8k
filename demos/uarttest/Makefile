@@ -3,11 +3,13 @@
 #
 #
 
-include ../../libgame/libgame.cfg
+LIBSPMP8K = ../..
+include $(LIBSPMP8K)/main.cfg
+
 TARGET	= test
 
 CC		=$(TOOLCHAIN)gcc
-LD		=$(TOOLCHAIN)ld
+LD		=$(TOOLCHAIN)gcc
 AS		=$(TOOLCHAIN)as
 OBJCOPY	=$(TOOLCHAIN)objcopy
 RM		=rm -f
@@ -15,10 +17,10 @@ RM		=rm -f
 LDSCRIPT= spmp8k.ld
 
 CFLAGS	= -O0 -nostdlib -c -I../../libspmp8k
-LDFLAGS	= -T$(LDSCRIPT) -nostdlib
+LDFLAGS	= -T$(LDSCRIPT) -nostartfiles
 
-LIBDIR	= -L/usr/local/lib/gcc/arm-elf/4.3.3/ -L../../libspmp8k
-LIBS	= -lgcc -lspmp8k
+LIBDIR	= -L../../libspmp8k
+LIBS	= -lspmp8k
 
 # start.o comes first
 OBJS	= start.o main.o printf.o

@@ -10,7 +10,6 @@
 #
 
 include ../main.cfg
-include libgame.cfg
 
 TARGET	= libgame.a
 
@@ -35,14 +34,19 @@ $(TARGET): $(OBJS)
 
 %.o		: %.c
 		$(CC) $(CFLAGS) $< -o $@
+		@mkdir -p .deps/$(dir $*.d)
+		@$(CC) -MM $(CFLAGS) $< > .deps/$*.d
 
 %.o		: %.s
 		$(CPP) $< $<.tmp
 		$(AS) $(ASFLAGS) $<.tmp -o $@
+		@mkdir -p .deps/$(dir $*.d)
+		@$(CC) -MM $(ASFLAGS) $< > .deps/$*.d
 		$(RM) $<.tmp
 
 clean	:
 		$(RM) $(OBJS)
 		$(RM) $(TARGET)
+		$(RM) -r .deps
 
-libgame.o: libgame.h
+-include $(OBJS:%.o=.deps/%.d)

@@ -3,11 +3,10 @@
 #
 #
 
-include $(dir $(lastword $(MAKEFILE_LIST)))/../main.cfg
-include $(ROOT)/libgame/libgame.cfg
+include $(LIBSPMP8K)/main.cfg
 
 CC		= $(TOOLCHAIN)gcc
-AS		= $(TOOLCHAIN)gcc
+AS		= $(TOOLCHAIN)as
 LD		= $(TOOLCHAIN)gcc
 CPP		= $(TOOLCHAIN)cpp
 OBJCOPY	= $(TOOLCHAIN)objcopy
@@ -19,7 +18,7 @@ RM		= rm -f
 LDSCRIPT= $(LIBGAME)/libgame.ld
 
 CFLAGS	+= -O2 -Wall -Wno-format -W -g -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -I$(3RDPARTY)/include -nostdlib -mcpu=arm926ej-s -msoft-float
-LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -L$(3RDPARTY)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
+LDFLAGS	+= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -L$(3RDPARTY)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
 #LIBS	= -lgcc -lgame -lc
 
 START_O	= $(LIBGAME)/start.o
@@ -34,10 +33,14 @@ $(TARGET).bin: $(OBJS)
 
 %.o		: %.c
 		$(CC) $(CFLAGS) $< -o $@
+		@mkdir -p .deps/$(dir $*.d)
+		@$(CC) -MM $(CFLAGS) $< > .deps/$*.d
 
 %.o		: %.s
 		$(CPP) $< -o $<-tmp.s
 		$(AS) $(ASFLAGS) $<-tmp.s -o $@
+		@mkdir -p .deps/$(dir $*.d)
+		@$(CC) -MM $(ASFLAGS) $< > .deps/$*.d
 		$(RM) $<-tmp.s
 
 %.c		: %.png
@@ -54,4 +57,6 @@ clean	:
 		$(RM) $(TARGET).1
 		$(RM) $(TARGET).2
 		$(RM) $(TARGET).bin
+		$(RM) -r .deps
 
+-include $(OBJS:%.o=.deps/%.d)

@@ -1,10 +1,10 @@
 # z26 spmp8k port
 # 2011 Triple Oxygen
 
+LIBSPMP8K = ../..
 TARGET	= z26
 
-include ../../main.cfg
-include ../../libgame/libgame.cfg
+include $(LIBSPMP8K)/main.cfg
 
 CC		= $(TOOLCHAIN)gcc
 LD		= $(TOOLCHAIN)gcc
@@ -13,7 +13,7 @@ MKBING	= $(TOOLS_DIR)/mkbing
 
 LDSCRIPT= $(LIBGAME)/libgame.ld
 
-CFLAGS	= -O2 -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -nostdlib -march=armv5 -msoft-float
+CFLAGS	= -O2 -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
 LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
 LIBS	= -lc -lgcc -lgame
 START_O	= $(LIBGAME)/start.o
@@ -31,24 +31,9 @@ START_O	= $(LIBGAME)/start.o
 #	c_cpu.o			guidebug.o	kidvid.o \
 #	c_cpuhand.o		sdlsrv.o	sdlvideo.o
 
-$(TARGET).bin: z26.o
-	$(LD) $(LDFLAGS) $(START_O) z26.o $(LIBS) -o $(TARGET).1
-	$(OBJCOPY) -S -O binary $(TARGET).1 $(TARGET).2
-	$(MKBING) $(TARGET).2 $(TARGET).bin
-	
-z26.o:	z26.c \
-	2600core.c		c_cpujam.c	palette.c \
-	c_banks.c		c_soundq.c \
-	c_pitfall2.c	c_starpath.c	c_tialine.c \
-	carts.c			position.c	text.c \
-	c_catchuppixels.c	c_trace.c	c_riot.c \
-	genclr.c		guitweaks.c	c_tiasnd.c \
-	globals.c		c_tiawrite.c \
-	cli.c			\
-	controls.c		c_init.c	sdlpixcopy.c  \
-	c_cpu.c			kidvid.c	 \
-	c_cpuhand.c		sdlsrv.c	sdlvideo.c
-	$(CC) -Wall $(CFLAGS) -c z26.c
+OBJS =	z26.o
+
+include $(LIBGAME)/libgame.mk
 
 c_catchuppixels.c: catchuppixels.m4
 	m4 catchuppixels.m4 > c_catchuppixels.c
@@ -58,5 +43,3 @@ c_cpu.c: cpu.m4
 
 all: $(TARGET).bin
 
-clean:
-	rm -f core *.o z26 z26c z26-static z26.exe z26c.exe *~ *.bak *.1 *.2 *.bin
