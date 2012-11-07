@@ -105,12 +105,15 @@ int main()
     PP(_ecos_fsync);
     PP(SPMP_SendSignal);
     PP(cache_sync);
-    PP(NativeGE_getKeyInput);
     /* We don't test every emu function, just one to make sure the right ABI
        version has been detected. */
     PP(emuIfSoundCleanup);
     PP(changeARMFreq);
     PP(GetArmCoreFreq);
+    PP(hal_clock_read);
+    PP(cyg_current_time);
+    PP(g_onoff_p);
+    PP(g_stEmuAPIs);
     // NativeGE_fsClose(fd);
 
     if (_ecos_fsync)
