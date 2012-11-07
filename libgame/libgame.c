@@ -728,7 +728,6 @@ void libgame_init(void)
     NativeGE_fsClose = FUNC(0x148);
     NativeGE_fsSeek = FUNC(0x14C);
 
-//      heap_ending = (char*)0;
     heap_ending = 0;
 
     libgame_detect_firmware_abi();
