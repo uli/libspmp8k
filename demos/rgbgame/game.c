@@ -1,4 +1,5 @@
-
+#include <unistd.h>
+#include <fcntl.h>
 #include <libgame.h>
 
 #define COLOR_ROP_TRANSP	0xcc	// transparency
