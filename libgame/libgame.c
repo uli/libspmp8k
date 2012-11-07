@@ -593,6 +593,12 @@ uint64_t libgame_utime(void)
         return cyg_current_time() * 10000;
 }
 
+void libgame_set_debug(int onoff)
+{
+    if (g_onoff_p)
+        *g_onoff_p = onoff;
+}
+
 #ifndef TEST_BUILD
 static
 #endif

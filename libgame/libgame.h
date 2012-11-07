@@ -62,6 +62,7 @@ typedef struct key_data {
 // the printf (to serial)
 extern void (*diag_printf) (char *fmt, ...);
 extern int *g_onoff_p;
+extern void libgame_set_debug(int onoff);
 
 // graphics stuff
 extern int (*MCatchInitGraph) (void);
