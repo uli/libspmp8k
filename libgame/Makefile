@@ -35,13 +35,13 @@ $(TARGET): $(OBJS)
 %.o		: %.c
 		$(CC) $(CFLAGS) $< -o $@
 		@mkdir -p .deps/$(dir $*.d)
-		@$(CC) -MM $(CFLAGS) $< > .deps/$*.d
+		@$(CC) -MM -MT $@ $(CFLAGS) $< > .deps/$*.d
 
 %.o		: %.s
 		$(CPP) $< $<.tmp
 		$(AS) $(ASFLAGS) $<.tmp -o $@
 		@mkdir -p .deps/$(dir $*.d)
-		@$(CC) -MM $(ASFLAGS) $< > .deps/$*.d
+		@$(CC) -MM -MT $@ $(ASFLAGS) $< > .deps/$*.d
 		$(RM) $<.tmp
 
 clean	:

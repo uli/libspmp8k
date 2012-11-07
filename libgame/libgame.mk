@@ -34,13 +34,13 @@ $(TARGET).bin: $(OBJS)
 %.o		: %.c
 		$(CC) $(CFLAGS) $< -o $@
 		@mkdir -p .deps/$(dir $*.d)
-		@$(CC) -MM $(CFLAGS) $< > .deps/$*.d
+		@$(CC) -MM -MT $@ $(CFLAGS) $< > .deps/$*.d
 
 %.o		: %.s
 		$(CPP) $< -o $<-tmp.s
 		$(AS) $(ASFLAGS) $<-tmp.s -o $@
 		@mkdir -p .deps/$(dir $*.d)
-		@$(CC) -MM $(ASFLAGS) $< > .deps/$*.d
+		@$(CC) -MM -MT $@ $(ASFLAGS) $< > .deps/$*.d
 		$(RM) $<-tmp.s
 
 %.c		: %.png
