@@ -22,6 +22,6 @@ ASFLAGS	= -mcpu=arm9
 
 OBJS	= game.o
 
-LIBS = -lgame -lc
+LIBS = -lgame -lc -lgcc
 
 include $(LIBGAME)/libgame.mk
