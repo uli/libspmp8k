@@ -12,6 +12,7 @@
 #include <sys/unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <stdio.h>
 
 #undef errno
 extern int errno;
@@ -295,4 +296,21 @@ int _wait(int *status __attribute__ ((unused)))
 int _write(int file, char *ptr, int len)
 {
     return _ecos_write(file, ptr, len);
+}
+
+char *getcwd(char *buf, size_t size)
+{
+    /* eCos getcwd() seems to omit the mount point for FAT filesystems. */
+    char *obuf = malloc(size - 8);
+    if (!_ecos_getcwd(obuf, size - 8)) {
+        free(obuf);
+        return 0;
+    }
+    if (!strncmp("/hda", obuf, 4)) {
+        sprintf(buf, "/fat20a%c%s", obuf[4], obuf);
+    }
+    else
+        strcpy(buf, obuf);
+    free(obuf);
+    return buf;
 }
