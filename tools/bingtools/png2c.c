@@ -172,10 +172,10 @@ void write_2c(char *name, uint8_t *data, png_color *pal_data, int pal_size, int 
 	// write header file
 	strcpy(filename, name);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
-	fprintf(f, "\n#include \"gfx_types.h\"\n\n");
+	fprintf(f, "\n#include \"mcatch_types.h\"\n\n");
 	fprintf(f, "extern uint8_t %s_data[];\n", filename);
 	fprintf(f, "extern uint16_t %s_pal[];\n\n", filename);
-	fprintf(f, "extern gfx_loadimg_t %s_img;\n\n", filename);
+	fprintf(f, "extern mcatch_loadimg_t %s_img;\n\n", filename);
 	fclose(f);
 
 	// write data
@@ -190,7 +190,7 @@ void write_2c(char *name, uint8_t *data, png_color *pal_data, int pal_size, int 
 	strcpy(filename, name);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
 	fprintf(f, "\n#include \"%s.h\"\n\n", filename);
-	fprintf(f, "gfx_loadimg_t %s_img = {", filename);
+	fprintf(f, "mcatch_loadimg_t %s_img = {", filename);
 	fprintf(f, "%s_data, %d, %d, %d, 0, %s_pal, %d, 0xffffff80};\n\n",
 		filename, width, height, 1, filename, pal_size);
 
