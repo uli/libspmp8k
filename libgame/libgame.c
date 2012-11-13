@@ -131,7 +131,7 @@ int (*NativeGE_gameExit) (void) = 0;
 /* char (*NativeGE_setTPClickArea) (void) = 0; doesn't do anything */
 
 int (*NativeGE_gamePause) (void) = 0;
-int (*NativeGE_gameResume) (void) = 0;
+int (*NativeGE_gameResume) (uint32_t) = 0;
 
 int _has_frame_pointer = -1;    /* required to find function entry points */
 int _new_emu_abi = -1;

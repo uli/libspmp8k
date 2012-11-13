@@ -190,8 +190,10 @@ typedef struct {
 typedef struct {
     void *_unknown;
     int (*pause) (void);
-    int (*resume) (void);
-    int (*exit) (void);
+    int (*resume) (uint32_t);
+    int (*exit) (uint32_t);
+    int (*save) (int);
+    int (*load) (int);
 } emu_apis_t;
 
 extern void **g_stEmuFuncs;
