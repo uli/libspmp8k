@@ -22,33 +22,6 @@
 #define	CYBER_KEY_2		GE_KEY_O
 #define	CYBER_KEY_3		GE_KEY_X
 
-/* JXD A1000 keys */
-#define RAW_A1000_KEY_UP	1
-#define RAW_A1000_KEY_DOWN	2
-#define RAW_A1000_KEY_LEFT	4
-#define RAW_A1000_KEY_RIGHT	8
-#define RAW_A1000_KEY_O		16
-#define RAW_A1000_KEY_X		32
-#define RAW_A1000_KEY_SQUARE	64      /* guess */
-#define RAW_A1000_KEY_TRIANGLE	128
-#define RAW_A1000_KEY_R		256
-#define RAW_A1000_KEY_L		512
-#define RAW_A1000_KEY_SELECT	1024
-#define RAW_A1000_KEY_START	2048
-
-/* JXD 100 keys */
-#define RAW_JXD100_KEY_UP	1
-#define RAW_JXD100_KEY_DOWN	2
-#define RAW_JXD100_KEY_LEFT	4
-#define RAW_JXD100_KEY_RIGHT	8
-#define RAW_JXD100_KEY_START	16
-#define RAW_JXD100_KEY_SQUARE	32
-#define RAW_JXD100_KEY_TRIANGLE	64
-#define RAW_JXD100_KEY_SELECT	128
-#define RAW_JXD100_KEY_X	512
-#define RAW_JXD100_KEY_O	8192
-#define RAW_JXD100_KEY_POWER	524288
-
 typedef struct res_entry {
     char filename[16];
     uint8_t *res_data;
