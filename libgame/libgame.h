@@ -196,7 +196,7 @@ typedef struct {
 
 extern void **g_stEmuFuncs;
 extern emu_apis_t *g_stEmuAPIs;
-display_dev_t *gDisplayDev;
+extern disp_device_t *gDisplayDev;
 extern int (*_ecos_close) (int fd);
 extern int (*_ecos_read) (int fd, void *buf, unsigned int count);
 extern int (*_ecos_write) (int fd, const void *buf, unsigned int count);
