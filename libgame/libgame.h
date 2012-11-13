@@ -9,7 +9,7 @@
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((r & 0xf8) << 8) | ((g & 0xfc) << 3) | (b >> 3))
 
-/* key bits for cooked (NativeGE_getKeys()) interface */
+/* key bits for cooked (NativeGE_getKeyInput4Ntv()) interface */
 #define	GE_KEY_UP	1
 #define	GE_KEY_DOWN	2
 #define	GE_KEY_LEFT	4
@@ -27,12 +27,12 @@ typedef struct ge_res_entry {
     uint8_t *res_data;
 } ge_res_entry_t;
 
-typedef struct ge_keydata {
+typedef struct ge_key_data {
     uint32_t key1;
     uint32_t key2;
 } ge_key_data_t;
 
-// the printf (to serial)
+/* OS debug interface */
 extern void (*diag_printf) (char *fmt, ...);
 extern int *g_onoff_p;
 extern void libgame_set_debug(int onoff);
@@ -62,15 +62,14 @@ extern int (*NativeGE_getRes) (char *filename, void *res_info);
 extern int (*NativeGE_playRes) (uint8_t res_type, int flags, void *res_info);
 extern int (*NativeGE_stopRes) (int arg);
 
-// taken from eCos fcntl.h / unistd.h
-#define FS_O_RDONLY     (1<<0)  // Open for reading only
-#define FS_O_WRONLY     (1<<1)  // Open for writing only
-#define FS_O_RDWR       (O_RDONLY|O_WRONLY)     // Open for reading and
-                                                // writing
-#define FS_O_CREAT      (1<<3)  // Create file it it does not exist
-#define FS_O_EXCL       (1<<4)  // Exclusive use
-#define FS_O_NOCTTY     (1<<5)  // Do not assign a controlling terminal
-#define FS_O_TRUNC      (1<<6)  // Truncate
+/* eCos constants from fcntl.h, unistd.h */
+#define FS_O_RDONLY     (1<<0)
+#define FS_O_WRONLY     (1<<1)
+#define FS_O_RDWR       (O_RDONLY|O_WRONLY)
+#define FS_O_CREAT      (1<<3)
+#define FS_O_EXCL       (1<<4)
+#define FS_O_NOCTTY     (1<<5)
+#define FS_O_TRUNC      (1<<6)
 
 #define FS_SEEK_SET		0
 #define FS_SEEK_CUR		1
@@ -80,7 +79,7 @@ extern int (*NativeGE_stopRes) (int arg);
 #define	FS_STDOUT_FILENO	1
 #define	FS_STDERR_FILENO	2
 
-// filesystem
+/* "Native game" file system interface */
 extern int (*NativeGE_fsOpen) (const char *filename, int flags, int *fd);
 
 /* returns 0 (okay), 2 (error) */
@@ -90,16 +89,15 @@ extern int (*NativeGE_fsClose) (int fd);
 extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
 #define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
 
-// misc.
-extern uint32_t (*NativeGE_getTime) (void);     // returns system ticks
-                                                // equivalent
+extern uint32_t (*NativeGE_getTime) (void);     /* returns system ticks
+                                                   multiplied by 10 */
 extern void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);
 
-// ### initializes the function pointers
-// ### (must be called before everything else!)
+/* Initialization function must be called before everything else. */
+/* XXX: should be a ctor */
 void libgame_init(void);
 
-// dmsg stuff
+/* Debug console interface. */
 int dmsg_init(int x, int y, int width, int height);
 void dmsg_shutdown(void);
 void dmsg_wait(int enable);
@@ -247,11 +245,9 @@ extern int (*MCatchQueryImage) (uint8_t, uint8_t /* 1 to 3 */ );
 extern int (*MCatchEnableDoubleBuffer) (int /* 0 or 1 */ );
 extern int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]);
 /* extern int (*MCatchUpdateScreen) (void); doesn't do anything (except produce debug output) */
-extern int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t      /* < 
-                                                                                           0x18 
-                                                                                         */ );
-extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void *        /* data 
-                                                                                         */ );
+extern int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ ,
+                              uint8_t /* < 0x18 */ );
+extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void * /* data */ );
 extern void (*NativeGE_pauseRes) (uint8_t);
 extern void (*NativeGE_resumeRes) (uint8_t);
 extern int (*NativeGE_writeRecord) (const char *pathname, void *buf, uint8_t flags,
