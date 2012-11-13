@@ -76,7 +76,7 @@ int (*_ecos_lseek) (int fd, int offset, int whence) = 0;
 int (*_ecos_fstat) (int fd, struct _ecos_stat * buf) = 0;
 int (*_ecos_open) (const char *pathname, int flags, int mode) = 0;
 _ecos_DIR *(*_ecos_opendir) (const char *name) = 0;
-void *_ecos_cyg_error_get_errno_p = 0;
+int *(*_ecos_cyg_error_get_errno_p) (void) = 0;
 void *_ecos_cyg_fd_alloc = 0;
 struct _ecos_dirent *(*_ecos_readdir) (_ecos_DIR * dirp) = 0;
 int (*_ecos_readdir_r) (_ecos_DIR * dirp, struct _ecos_dirent * entry,

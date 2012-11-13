@@ -17,6 +17,26 @@
 #undef errno
 extern int errno;
 
+#include "ecos_codes.h"
+#define _ECOS_EMAX 39
+#define E(x) [_ECOS_##x] = x
+static const int errno_table[_ECOS_EMAX] = {
+    [_ECOS_ENOERR] = 0,
+    E(EPERM),  E(ENOENT),  E(ESRCH), E(EINTR),  E(EIO),     E(EBADF),  E(EAGAIN),
+    E(ENOMEM), E(EBUSY),   E(EXDEV), E(ENODEV), E(ENOTDIR), E(EISDIR), E(EINVAL),
+    E(ENFILE), E(EMFILE),  E(EFBIG), E(ENOSPC), E(ESPIPE),  E(EROFS),  E(EDOM),
+    E(ERANGE), E(EDEADLK), E(ENOSYS)
+};
+
+static void errno_from_ecos(void)
+{
+    int ecos_errno = *_ecos_cyg_error_get_errno_p();
+    if (ecos_errno < _ECOS_EMAX)
+        errno = errno_table[ecos_errno];
+    else
+        errno = ecos_errno;
+}
+
 /* environ
 **  A pointer to a list of environment variables and their values.
 **  For a minimal environment, this empty list is adequate:
@@ -42,8 +62,9 @@ void _exit(int err)
 */
 int _close(int file)
 {
-    /* XXX: translate eCos errno (likewise for all other code here) */
-    return _ecos_close(file);
+    int ret = _ecos_close(file);
+    errno_from_ecos();
+    return ret;
 }
 
 /* execve
@@ -96,6 +117,7 @@ int _fstat(int file, struct stat *st)
 {
     struct _ecos_stat est;
     int ret = _ecos_fstat(file, &est);
+    errno_from_ecos();
     if (!ret)
         _ecos_stat_to_stat(st, &est);
     return ret;
@@ -154,7 +176,9 @@ int _link(char *old __attribute__ ((unused)), char *new __attribute__ ((unused))
 */
 int _lseek(int file, int ptr, int dir)
 {
-    return _ecos_lseek(file, ptr, dir);
+    int ret = _ecos_lseek(file, ptr, dir);
+    errno_from_ecos();
+    return ret;
 }
 
 /* open
@@ -192,7 +216,9 @@ int _open(const char *name, int flags, int mode __attribute__ ((unused)))
         _ecos_flags |= _ECOS_O_SYNC;
     if (flags & O_NONBLOCK)
         _ecos_flags |= _ECOS_O_NONBLOCK;
-    return _ecos_open(name, _ecos_flags, mode);
+    int ret = _ecos_open(name, _ecos_flags, mode);
+    errno_from_ecos();
+    return ret;
 }
 
 /* read
@@ -200,7 +226,9 @@ int _open(const char *name, int flags, int mode __attribute__ ((unused)))
 */
 int _read(int file, char *ptr, int len)
 {
-    return _ecos_read(file, ptr, len);
+    int ret = _ecos_read(file, ptr, len);
+    errno_from_ecos();
+    return ret;
 }
 
 /* sbrk
@@ -211,7 +239,7 @@ int _read(int file, char *ptr, int len)
 **  it exploits the symbol end automatically defined by the GNU linker. 	
 */
 //char *heap_ending;
-int heap_ending;
+uint32_t heap_ending;
 extern uint32_t __heap_end_asm;
 
 extern caddr_t _sbrk_asm(int incr);
@@ -246,6 +274,7 @@ int _stat(const char *file __attribute__ ((unused)), struct stat *st)
 {
     struct _ecos_stat est;
     int ret = _ecos_stat(file, &est);
+    errno_from_ecos();
     if (!ret)
         _ecos_stat_to_stat(st, &est);
     return ret;
@@ -268,7 +297,9 @@ clock_t _times(struct tms * buf __attribute__ ((unused)))
 */
 int _unlink(char *name)
 {
-    return _ecos_unlink(name);
+    int ret = _ecos_unlink(name);
+    errno_from_ecos();
+    return ret;
 }
 
 /* wait
@@ -295,7 +326,9 @@ int _wait(int *status __attribute__ ((unused)))
 */
 int _write(int file, char *ptr, int len)
 {
-    return _ecos_write(file, ptr, len);
+    int ret = _ecos_write(file, ptr, len);
+    errno_from_ecos();
+    return ret;
 }
 
 char *getcwd(char *buf, size_t size)

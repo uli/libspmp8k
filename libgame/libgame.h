@@ -206,7 +206,7 @@ extern int (*_ecos_lseek) (int fd, int offset, int whence);
 extern int (*_ecos_fstat) (int fd, struct _ecos_stat * buf);
 extern int (*_ecos_open) (const char *pathname, int flags, int mode);
 extern _ecos_DIR *(*_ecos_opendir) (const char *name);
-extern void *_ecos_cyg_error_get_errno_p;
+extern int *(*_ecos_cyg_error_get_errno_p) (void);
 extern void *_ecos_cyg_fd_alloc;
 extern struct _ecos_dirent *(*_ecos_readdir) (_ecos_DIR * dirp);
 extern int (*_ecos_readdir_r) (_ecos_DIR * dirp, struct _ecos_dirent * entry,
