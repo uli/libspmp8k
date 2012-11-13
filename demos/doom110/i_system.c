@@ -182,7 +182,7 @@ void I_Error (char *error, ...)
 {
 	va_list args;
 	char str[256];
-	key_data_t keys;
+	ge_key_data_t keys;
 	
 	va_start(args, error);
 	vsnprintf(str, 255, error, args);

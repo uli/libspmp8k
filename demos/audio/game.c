@@ -44,7 +44,7 @@ res_entry_t resources[] = {
 
 void wait_keypress(void)
 {
-    key_data_t keys, no_keys;
+    ge_key_data_t keys, no_keys;
 
     NativeGE_getKeyInput4Ntv(&no_keys);
 

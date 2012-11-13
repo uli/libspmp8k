@@ -10,9 +10,9 @@
 int main()
 {
 	int i;
-	gfx_rect_t rect;
+	mcatch_rect_t rect;
 	uint32_t color;
-	key_data_t keys, no_keys;
+	ge_key_data_t keys, no_keys;
 
 //	diag_printf("Hello World!\n");
 	MCatchInitGraph();

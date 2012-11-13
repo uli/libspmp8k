@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "libgame.h"
-#include "gfx_types.h"
+#include "mcatch_types.h"
 #include "font.h"
 
 //#define	NULL	(void*)0
@@ -21,17 +21,17 @@ void **itab = (void **)0x5a1e48;
 int main()
 {
 	int i, j;
-	gfx_point2d_t at;
-	gfx_rect_t rect;
+	mcatch_point2d_t at;
+	mcatch_rect_t rect;
 	uint32_t color;
-	gfx_pal_t pal;
+	mcatch_pal_t pal;
 	uint8_t   font_id, res_type;
 	uint8_t   img_id;
 	uint32_t  res_data[12];
 	char key1[32];
 	char key2[32];
 	int fd, err;
-	key_data_t keys, okeys;
+	ge_key_data_t keys, okeys;
 
 	// initialize the game api
 	libgame_init();
@@ -145,8 +145,8 @@ void draw_string_centered(uint8_t font_id, uint16_t y, char *str)
 
 void draw_string(uint8_t font_id, uint16_t x, uint16_t y, char *str)
 {
-	gfx_point2d_t pos;
-	gfx_rect_t    rect;
+	mcatch_point2d_t pos;
+	mcatch_rect_t    rect;
 	int i, nchar;
 
 	pos.x = x;

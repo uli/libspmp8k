@@ -40,7 +40,7 @@ rcsid[] = "$Id: i_x.c,v 1.6 1997/02/03 22:45:10 b1 Exp $";
 #include "doomdef.h"
 
 // the framebuffer
-gfx_loadimg_t doom_video_img;
+mcatch_loadimg_t doom_video_img;
 unsigned short doom_video_pal[256];
 unsigned char doom_video_handle;
 uint32_t old_time;
@@ -51,7 +51,7 @@ uint32_t old_time;
 uint8_t *scr;
 #endif
 
-key_data_t prev_keys;
+ge_key_data_t prev_keys;
 
 //
 //  Translates the key 
@@ -204,7 +204,7 @@ void I_StartTic (void)
     while ( SDL_PollEvent(&Event) )
 	I_GetEvent(&Event);
 */
-	key_data_t keys;
+	ge_key_data_t keys;
 	event_t event;
 	uint32_t key, prev_key;
 	
@@ -338,8 +338,8 @@ void I_UpdateNoBlit (void)
 //
 void I_FinishUpdate (void)
 {
-	gfx_point2d_t pos;
-	gfx_rect_t    rect;
+	mcatch_point2d_t pos;
+	mcatch_rect_t    rect;
 	
 #ifdef STRETCH_SCR
 	int y, nline_s, nline, ny;
@@ -414,7 +414,7 @@ extern int	ticdup;
 void I_InitGraphics(void)
 {
     static int	firsttime=1;
-    gfx_rect_t rect;
+    mcatch_rect_t rect;
 
     if (!firsttime) return;
     firsttime = 0;

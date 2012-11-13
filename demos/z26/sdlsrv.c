@@ -43,7 +43,7 @@ dd srv_colortab_low[128];
 void Init_SDL()
 {
 	uint32_t color = 0;
-	gfx_rect_t rect;
+	mcatch_rect_t rect;
 
 	printf("Init_SDL()\n");
 

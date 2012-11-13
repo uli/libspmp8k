@@ -1226,7 +1226,7 @@ void D_DoomMain (void)
 
 	dmsg_puts("\n\n\n        Press X to enter the ...");
 
-	key_data_t keys;
+	ge_key_data_t keys;
 	while (1) {
 		NativeGE_getKeyInput4Ntv(&keys);
 		if (keys.key2 & GE_KEY_X) break;

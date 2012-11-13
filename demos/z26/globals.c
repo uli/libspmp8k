@@ -70,7 +70,7 @@ db pf_mask = 0xff;
 #define KEYTABLESIZE 512
 
 db KeyTable[KEYTABLESIZE];	/* event handler should tell z26 about keystrokes here */
-key_data_t keys;
+ge_key_data_t keys;
 
 /* SDL event handler should tell z26 about joystick states here */
 int JoystickAxis[16][6];
@@ -93,7 +93,7 @@ dd texture_buffer[1024*1024];
 */
 
 db srv_screen_fb[SCREEN_WIDTH * SCREEN_HEIGHT];
-gfx_loadimg_t srv_screen;
+mcatch_loadimg_t srv_screen;
 unsigned short srv_screen_pal[256];
 unsigned char srv_screen_handle;
 

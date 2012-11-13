@@ -50,8 +50,8 @@ main
     D_DoomMain (); 
 #else
 	uint32_t color;
-	gfx_rect_t rect;
-	key_data_t keys;
+	mcatch_rect_t rect;
+	ge_key_data_t keys;
 	
 	myargc = 0;
     myargv = NULL;
@@ -87,8 +87,8 @@ main
 	
 	if (MCatchLoadImage(&loading_img, &loading_id) != 0) return;
 	{
-		gfx_point2d_t at;
-		gfx_rect_t rect;
+		mcatch_point2d_t at;
+		mcatch_rect_t rect;
 		
 		MCatchSetColorROP(0xcc);
 		

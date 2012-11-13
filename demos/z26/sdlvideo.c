@@ -150,12 +150,12 @@ void srv_SetVideoMode() {
 	position_game(); 	/* set game's vertical position */
 }
 
-gfx_point2d_t pos = {
+mcatch_point2d_t pos = {
 	.x = 0,
 	.y = 0
 };
 
-gfx_rect_t rect = {
+mcatch_rect_t rect = {
 	.x = 0,
 	.y = 0,
 	.width = SCREEN_WIDTH,
