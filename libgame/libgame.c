@@ -22,29 +22,28 @@
 
 void **ftab;
 
-//extern char *heap_ending;
-extern int heap_ending;
+extern uint32_t heap_ending;
 
 void (*diag_printf) (char *fmt, ...);
 int *g_onoff_p;
 
 int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
-int (*MCatchSetDisplayScreen) (gfx_rect_t *rect);
+int (*MCatchSetDisplayScreen) (mcatch_rect_t *rect);
 int (*MCatchSetCameraMode) (int mode);
 int (*MCatchSetFGColor) (uint32_t *color);
 uint32_t (*MCatchGetFGColor) ();
 int (*MCatchSetColorROP) (uint32_t rop);
 int (*MCatchSetAlphaBld) (uint8_t src_alpha, uint8_t dest_alpha);
 int (*MCatchGetAlphaBld) (uint8_t *src_alpha, uint8_t *dest_alpha);
-int (*MCatchFillRect) (gfx_rect_t *rect);
+int (*MCatchFillRect) (mcatch_rect_t *rect);
 int (*MCatchEnableFeature) (uint32_t feature);
 int (*MCatchFlush) ();
 int (*MCatchPaint) ();
-int (*MCatchLoadImage) (gfx_loadimg_t *loadimg, uint8_t *imgid);
+int (*MCatchLoadImage) (mcatch_loadimg_t *loadimg, uint8_t *imgid);
 int (*MCatchFreeImage) (uint8_t img_id);
-int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
-int (*MCatchSprite) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+int (*MCatchBitblt) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
+int (*MCatchSprite) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 
 int (*NativeGE_initRes) (int val, void *res_table);
 int (*NativeGE_getRes) (char *filename, void *res_info);
@@ -58,7 +57,7 @@ int (*NativeGE_fsClose) (int fd);
 uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
 
 uint32_t (*NativeGE_getTime) ();        // returns system ticks equivalent
-void (*NativeGE_getKeyInput4Ntv) (key_data_t * keys);   // uint64_t *keys);
+void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);   // uint64_t *keys);
 
 #define	FUNC(n)		*(ftab + (n >> 2))
 
@@ -69,7 +68,7 @@ void (*NativeGE_getKeyInput4Ntv) (key_data_t * keys);   // uint64_t *keys);
 
 void **g_stEmuFuncs = 0;
 emu_apis_t *g_stEmuAPIs = 0;
-display_dev_t *gDisplayDev = 0;
+disp_device_t *gDisplayDev = 0;
 int (*_ecos_close) (int fd) = 0;
 int (*_ecos_read) (int fd, void *buf, unsigned int count) = 0;
 int (*_ecos_write) (int fd, const void *buf, unsigned int count) = 0;
@@ -100,25 +99,25 @@ void (*cache_sync) (void) = 0;
 int (*MCatchGetColorROP) (uint32_t *rop) = 0;
 int (*MCatchSetBitPlaneMask) (int read_write, uint16_t mask) = 0;
 int (*MCatchGetBitPlaneMask) (int read_write, uint16_t *mask) = 0;
-int (*MCatchGetDisplayScreen) (gfx_rect_t *) = 0;
-int (*MCatchSetRectClip) (gfx_rect_t *) = 0;
-int (*MCatchGetRectClip) (gfx_rect_t *) = 0;
-int (*MCatchSetStyleMask) (gfx_rect_t *) = 0;
-int (*MCatchGetStyleMask) (gfx_rect_t *) = 0;
-int (*MCatchSetLineMask) (gfx_rect_t *) = 0;
-int (*MCatchGetLineMask) (gfx_rect_t *) = 0;
+int (*MCatchGetDisplayScreen) (mcatch_rect_t *) = 0;
+int (*MCatchSetRectClip) (mcatch_rect_t *) = 0;
+int (*MCatchGetRectClip) (mcatch_rect_t *) = 0;
+int (*MCatchSetStyleMask) (mcatch_rect_t *) = 0;
+int (*MCatchGetStyleMask) (mcatch_rect_t *) = 0;
+int (*MCatchSetLineMask) (mcatch_rect_t *) = 0;
+int (*MCatchGetLineMask) (mcatch_rect_t *) = 0;
 int (*MCatchDisableFeature) (int) = 0;
 int (*MCatchSetStyleLine) (uint8_t, uint8_t) = 0;
 /* int (*MCatchPreviewColorkey) (void) = 0; doesn't do anything */
 int (*MCatchGetFrameBuffer) (uint16_t *width, uint16_t *height) = 0;
 int (*MCatchSetMutableImage) (uint8_t) = 0;
 int (*MCatchSetPerPixelAlphaEq) (uint8_t) = 0;  /* 0 or 1 */
-int (*MCatchSetTransformation) (gfx_point2d_t *, int /* 0 to 7 */ ) = 0;
+int (*MCatchSetTransformation) (mcatch_point2d_t *, int /* 0 to 7 */ ) = 0;
 int (*MCatchQueryImage) (uint8_t, uint8_t /* 1 to 3 */ ) = 0;
 int (*MCatchEnableDoubleBuffer) (int /* 0 or 1 */ ) = 0;
-int (*MCatchGradientFill) (gfx_rect_t *, uint16_t[6], uint32_t[2]) = 0;
+int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]) = 0;
 /* int (*MCatchUpdateScreen) (void) = 0; doesn't do anything (except produce debug output) */
-int (*MCatchShowFont) (gfx_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t /* < 0x18 */ ) = 0;
+int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t /* < 0x18 */ ) = 0;
 int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void * /* data */ ) = 0;
 void (*NativeGE_pauseRes) (uint8_t) = 0;
 void (*NativeGE_resumeRes) (uint8_t) = 0;
@@ -137,18 +136,18 @@ int (*NativeGE_gameResume) (void) = 0;
 int _has_frame_pointer = -1;    /* required to find function entry points */
 int _new_emu_abi = -1;
 
-int (*emuIfGraphInit) (graph_params_t *);
+int (*emuIfGraphInit) (emu_graph_params_t *);
 int (*emuIfGraphShow) (void);
-int (*emuIfGraphChgView) (graph_params_t *);
+int (*emuIfGraphChgView) (emu_graph_params_t *);
 int (*emuIfGraphCleanup) (void);
-uint32_t (*emuIfSoundInit) (sound_params_t *params);
-uint32_t (*emuIfSoundPlay) (sound_params_t *params);
-uint32_t (*emuIfSoundCleanup) (sound_params_t *params);
+uint32_t (*emuIfSoundInit) (emu_sound_params_t *params);
+uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
+uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
 
 int (*emuIfunknown0c) (void *) = 0;     /* sets the source buffer? */
-int (*emuIfKeyInit) (keymap_t *) = 0;
-uint32_t (*emuIfKeyGetInput) (keymap_t *) = 0;
-int (*emuIfKeyCleanup) (keymap_t *) = 0;
+int (*emuIfKeyInit) (emu_keymap_t *) = 0;
+uint32_t (*emuIfKeyGetInput) (emu_keymap_t *) = 0;
+int (*emuIfKeyCleanup) (emu_keymap_t *) = 0;
 uint32_t (*emuIfGetCurTime) (void) = 0; /* could be uint64_t, not sure */
 void (*emuIfTimeDelay) (uint32_t) = 0;
 int (*emuIfFsFileOpen) (const char *pathname, uint32_t flags) = 0;
@@ -319,7 +318,7 @@ void libgame_detect_firmware_abi()
             getGameBuffWidth_found = 1;
         }
         if (getGameBuffWidth_found && is_ldr_pc(*head)) {
-            gDisplayDev = (display_dev_t *) ldr_pc_address(head);
+            gDisplayDev = (disp_device_t *) ldr_pc_address(head);
             break;
         }
     }

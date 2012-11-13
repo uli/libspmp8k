@@ -2,7 +2,7 @@
 #ifndef __LIBGAME_H__
 #define __LIBGAME_H__
 
-#include "gfx_types.h"
+#include "mcatch_types.h"
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -22,15 +22,15 @@
 #define	CYBER_KEY_2		GE_KEY_O
 #define	CYBER_KEY_3		GE_KEY_X
 
-typedef struct res_entry {
+typedef struct ge_res_entry {
     char filename[16];
     uint8_t *res_data;
-} res_entry_t;
+} ge_res_entry_t;
 
-typedef struct key_data {
+typedef struct ge_keydata {
     uint32_t key1;
     uint32_t key2;
-} key_data_t;
+} ge_key_data_t;
 
 // the printf (to serial)
 extern void (*diag_printf) (char *fmt, ...);
@@ -40,21 +40,21 @@ extern void libgame_set_debug(int onoff);
 // graphics stuff
 extern int (*MCatchInitGraph) (void);
 extern int (*MCatchSetFrameBuffer) (int width, int height);
-extern int (*MCatchSetDisplayScreen) (gfx_rect_t *rect);
+extern int (*MCatchSetDisplayScreen) (mcatch_rect_t *rect);
 extern int (*MCatchSetCameraMode) (int mode);
 extern int (*MCatchSetFGColor) (uint32_t *color);
 extern uint32_t (*MCatchGetFGColor) ();
 extern int (*MCatchSetColorROP) (uint32_t rop);
 extern int (*MCatchSetAlphaBld) (uint8_t src_alpha, uint8_t dest_alpha);
 extern int (*MCatchGetAlphaBld) (uint8_t *src_alpha, uint8_t *dest_alpha);
-extern int (*MCatchFillRect) (gfx_rect_t *rect);
+extern int (*MCatchFillRect) (mcatch_rect_t *rect);
 extern int (*MCatchEnableFeature) (uint32_t feature);
 extern int (*MCatchFlush) (void);
 extern int (*MCatchPaint) (void);
-extern int (*MCatchLoadImage) (gfx_loadimg_t *loadimg, uint8_t *imgid);
+extern int (*MCatchLoadImage) (mcatch_loadimg_t *loadimg, uint8_t *imgid);
 extern int (*MCatchFreeImage) (uint8_t img_id);
-extern int (*MCatchBitblt) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
-extern int (*MCatchSprite) (uint8_t img_id, gfx_rect_t *rect, gfx_point2d_t *at);
+extern int (*MCatchBitblt) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
+extern int (*MCatchSprite) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 
 // music & sound (has some problems)
 extern int (*NativeGE_initRes) (int val, void *res_table);
@@ -93,7 +93,7 @@ extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
 // misc.
 extern uint32_t (*NativeGE_getTime) (void);     // returns system ticks
                                                 // equivalent
-extern void (*NativeGE_getKeyInput4Ntv) (key_data_t * keys);
+extern void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);
 
 // ### initializes the function pointers
 // ### (must be called before everything else!)
@@ -180,12 +180,12 @@ typedef struct {
     int (*getHeight) (void);
     uint16_t *(*getShadowBuffer) (void);
     void (*setFrameBuffer) (uint16_t *fb);      // educated guess
-    void (*lcdFlip) (void);
-    void (*lcdClear) (void);    // actually returns BitBlt_hw retval, but
+    void (*flip) (void);
+    void (*clear) (void);    // actually returns BitBlt_hw retval, but
                                 // that is always 0
     void (*setShadowBuffer) (uint16_t *fb);     // educated guess
     uint16_t *(*getFrameBuffer) (void);
-} display_dev_t;
+} disp_device_t;
 
 typedef struct {
     void *_unknown;
@@ -227,25 +227,25 @@ extern void (*cache_sync) (void);
 extern int (*MCatchGetColorROP) (uint32_t *rop);
 extern int (*MCatchSetBitPlaneMask) (int read_write, uint16_t mask);
 extern int (*MCatchGetBitPlaneMask) (int read_write, uint16_t *mask);
-extern int (*MCatchGetDisplayScreen) (gfx_rect_t *);
-extern int (*MCatchSetRectClip) (gfx_rect_t *);
-extern int (*MCatchGetRectClip) (gfx_rect_t *);
-extern int (*MCatchSetStyleMask) (gfx_rect_t *);
-extern int (*MCatchGetStyleMask) (gfx_rect_t *);
-extern int (*MCatchSetLineMask) (gfx_rect_t *);
-extern int (*MCatchGetLineMask) (gfx_rect_t *);
+extern int (*MCatchGetDisplayScreen) (mcatch_rect_t *);
+extern int (*MCatchSetRectClip) (mcatch_rect_t *);
+extern int (*MCatchGetRectClip) (mcatch_rect_t *);
+extern int (*MCatchSetStyleMask) (mcatch_rect_t *);
+extern int (*MCatchGetStyleMask) (mcatch_rect_t *);
+extern int (*MCatchSetLineMask) (mcatch_rect_t *);
+extern int (*MCatchGetLineMask) (mcatch_rect_t *);
 extern int (*MCatchDisableFeature) (int);
 extern int (*MCatchSetStyleLine) (uint8_t, uint8_t);
 /* extern int (*MCatchPreviewColorkey) (void); doesn't do anything */
 extern int (*MCatchGetFrameBuffer) (uint16_t *width, uint16_t *height);
 extern int (*MCatchSetMutableImage) (uint8_t);
 extern int (*MCatchSetPerPixelAlphaEq) (uint8_t);       /* 0 or 1 */
-extern int (*MCatchSetTransformation) (gfx_point2d_t *, int /* 0 to 7 */ );
+extern int (*MCatchSetTransformation) (mcatch_point2d_t *, int /* 0 to 7 */ );
 extern int (*MCatchQueryImage) (uint8_t, uint8_t /* 1 to 3 */ );
 extern int (*MCatchEnableDoubleBuffer) (int /* 0 or 1 */ );
-extern int (*MCatchGradientFill) (gfx_rect_t *, uint16_t[6], uint32_t[2]);
+extern int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]);
 /* extern int (*MCatchUpdateScreen) (void); doesn't do anything (except produce debug output) */
-extern int (*MCatchShowFont) (gfx_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t      /* < 
+extern int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t      /* < 
                                                                                            0x18 
                                                                                          */ );
 extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void *        /* data 
@@ -262,18 +262,18 @@ extern int (*NativeGE_gameExit) (void);
 /* extern char (*NativeGE_setTPClickArea) (void); doesn't do anything */
 
 extern int (*NativeGE_gamePause) (void);
-extern int (*NativeGE_gameResume) (void);
+extern int (*NativeGE_gameResume) (uint32_t);
 
-typedef struct sound_params {
+typedef struct emu_sound_params {
     uint8_t *buf;               /* + 0x0 */
     uint32_t buf_size;          /* + 0x4 */
     uint32_t rate;              /* + 0x8 */
     uint8_t depth;              /* + 0xc */
     uint8_t channels;           /* + 0xd */
     uint32_t *callback;         /* + 0x10 */ /* used only when gEmuType is 5 (flash?) */
-} sound_params_t;
+} emu_sound_params_t;
 
-typedef struct graph_params {
+typedef struct emu_graph_params {
     uint16_t *pixels;           // goes to src_ctx + 4
     uint32_t width;             // +4
     uint32_t height;            // +8
@@ -284,7 +284,7 @@ typedef struct graph_params {
     uint32_t src_clip_y;
     uint32_t src_clip_w;        // +1c
     uint32_t src_clip_h;
-} graph_params_t;
+} emu_graph_params_t;
 
 /* scancode indices */
 #define EMU_KEY_UP       0
@@ -301,25 +301,25 @@ typedef struct graph_params {
 #define EMU_KEY_START   11
 #define EMU_KEY_ESC     12	/* guess */
 
-typedef struct keymap {
+typedef struct emu_keymap {
     int controller;		/* controller ID (usually 0 or 1) */
     uint32_t scancode[20];
-} keymap_t;
+} emu_keymap_t;
 
 #define EMU_FUNC_ENTRY(n)	(g_stEmuFuncs[(n) / 4])
 
-extern int (*emuIfGraphInit) (graph_params_t *);
+extern int (*emuIfGraphInit) (emu_graph_params_t *);
 extern int (*emuIfGraphShow) (void);
-extern int (*emuIfGraphChgView) (graph_params_t *);
+extern int (*emuIfGraphChgView) (emu_graph_params_t *);
 extern int (*emuIfGraphCleanup) (void);
-extern uint32_t (*emuIfSoundInit) (sound_params_t *params);
-extern uint32_t (*emuIfSoundPlay) (sound_params_t *params);
-extern uint32_t (*emuIfSoundCleanup) (sound_params_t *params);
+extern uint32_t (*emuIfSoundInit) (emu_sound_params_t *params);
+extern uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
+extern uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
 
 extern int (*emuIfunknown0c) (void *);  /* sets the source buffer? */
-extern int (*emuIfKeyInit) (keymap_t *map);
-extern uint32_t (*emuIfKeyGetInput) (keymap_t *map);
-extern int (*emuIfKeyCleanup) (keymap_t *map);
+extern int (*emuIfKeyInit) (emu_keymap_t *map);
+extern uint32_t (*emuIfKeyGetInput) (emu_keymap_t *map);
+extern int (*emuIfKeyCleanup) (emu_keymap_t *map);
 extern uint32_t (*emuIfGetCurTime) (void);  /* could be uint64_t, not sure */
 extern void (*emuIfTimeDelay) (uint32_t);
 extern int (*emuIfFsFileOpen) (const char *pathname, uint32_t flags);

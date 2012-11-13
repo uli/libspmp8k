@@ -32,7 +32,7 @@ uint8_t *dmsg_buff = NULL;
 uint16_t dmsg_buff_pal[256];
 int dmsg_cursor_x, dmsg_cursor_y;
 
-gfx_loadimg_t dmsg_buff_img;
+mcatch_loadimg_t dmsg_buff_img;
 uint8_t dmsg_buff_id;
 
 void dmsg_clear(void)
@@ -100,8 +100,8 @@ void dmsg_shutdown(void)
 
 void dmsg_update(void)
 {
-    gfx_point2d_t pos;
-    gfx_rect_t rect;
+    mcatch_point2d_t pos;
+    mcatch_rect_t rect;
 
 //      if (do_scroll == 0) {
     pos.x = dmsg_pos_x;
@@ -187,7 +187,7 @@ int dmsg_puts(char *__s)
         }
         if (dmsg_cursor_y > (dmsg_buff_height - 8)) {
             if (wait_scroll == 1) {
-                key_data_t keys;
+                ge_key_data_t keys;
 
                 // wait for 'O' press
                 while (1) {

@@ -10,16 +10,16 @@
 
 #include <stdint.h>
 
-typedef struct gfx_point2d {
+typedef struct mcatch_point2d {
     uint16_t x, y;
-} gfx_point2d_t;
+} mcatch_point2d_t;
 
-typedef struct gfx_rect {
+typedef struct mcatch_rect {
     uint16_t x, y;
     uint16_t width, height;
-} gfx_rect_t;
+} mcatch_rect_t;
 
-typedef struct gfx_loadimg {
+typedef struct mcatch_loadimg {
     uint8_t *data;              // 0x00 - 0x2c
     uint16_t width;             // 0x04 - 0x28
     uint16_t height;            // 0x06 - 0x26
@@ -28,12 +28,12 @@ typedef struct gfx_loadimg {
     uint16_t *pal_data;         // 0x10 - 0x1c
     uint16_t pal_size;          // 0x14 - 0x18
     uint32_t unk3;              // 0x18 - 0x14
-} gfx_loadimg_t;
+} mcatch_loadimg_t;
 
-typedef struct gfx_pal {
+typedef struct mcatch_pal {
     uint16_t type;
     uint16_t entries;
     uint16_t *data;
-} gfx_pal_t;
+} mcatch_pal_t;
 
 #endif                          // __GFX_TYPES_H__
