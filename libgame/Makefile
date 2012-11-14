@@ -22,7 +22,7 @@ RM		= rm -f
 START_O	= start.o
 
 CFLAGS	= -O2 -Wall -W -c -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
-OBJS	= start.o libgame.o glue.o dmsg.o font6x8.o
+OBJS	= start.o libgame.o glue.o dmsg.o font6x8.o text.o
 
 ASFLAGS	= -mcpu=arm9
 
@@ -44,9 +44,14 @@ $(TARGET): $(OBJS)
 		@$(CC) -MM -MT $@ $(ASFLAGS) $< > .deps/$*.d
 		$(RM) $<.tmp
 
+text.o: hzktable.c
+hzktable.c: chinese/BG2UBG.KU chinese/big5.py
+	python chinese/big5.py chinese/BG2UBG.KU >hzktable.c
+
 clean	:
 		$(RM) $(OBJS)
 		$(RM) $(TARGET)
 		$(RM) -r .deps
+		$(RM) hzktable.c
 
 -include $(OBJS:%.o=.deps/%.d)
