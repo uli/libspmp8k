@@ -58,5 +58,6 @@ clean	:
 		$(RM) $(TARGET).2
 		$(RM) $(TARGET).bin
 		$(RM) -r .deps
+		$(RM) $(EXTRA_CLEAN)
 
 -include $(OBJS:%.o=.deps/%.d)
