@@ -72,3 +72,7 @@ _exit:
 	ldr		r1,=_save_stack
 	ldr		sp, [r1]
 	ldmia	sp!,{r0-r12, pc}
+
+.global __aeabi_unwind_cpp_pr0
+__aeabi_unwind_cpp_pr0:
+	bx lr
