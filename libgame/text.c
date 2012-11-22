@@ -220,6 +220,7 @@ int text_draw_character_ex(uint16_t *buf, int width, uint32_t codepoint, int x, 
     int hzx_double_width = 0;
     int char_width;
     
+retry_with_hzx:
     if (codepoint >= 0x4e00 && codepoint < 0x10000) {
         hzx_double_width = 1;
         if (font_size == FONT_SIZE_12 || font_face == FONT_FACE_HZX) {
@@ -261,7 +262,12 @@ int text_draw_character_ex(uint16_t *buf, int width, uint32_t codepoint, int x, 
                     char_width = 8;
             }
             else {
-                load_sunplus_font(font_face);
+                if (load_sunplus_font(font_face) < 0) {
+                    /* fall back to HZX font (required for hacked firmwares
+                       without Sunplus fonts) */
+                    font_face = FONT_FACE_HZX;
+                    goto retry_with_hzx;
+                }
                 struct sunplus_font *fnt = &sunplus_fonts[font_face];
                 struct sunplus_font_header *sp = fnt->header;
                 fseek(fnt->face, (codepoint - sp->glyph_offset) * sp->glyph_bytes + sp->glyph_start, SEEK_SET);
