@@ -6,7 +6,7 @@ import sys
 
 table = open(sys.argv[1]).read()
 
-done = []
+done = set()
 print 'uint16_t hzk2uni[] = {'
 
 for i in range(0, len(table) / 4 - 1):
@@ -28,6 +28,6 @@ for i in range(0, len(table) / 4 - 1):
 
   if not seq in done:
     print '    [0x%04x] = 0x%04x,' % (seq, unicode)
-    done += [seq]
+    done.add(seq)
 
 print '};'
