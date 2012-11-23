@@ -5,6 +5,8 @@ NativeGE_fsRead = 0044787c
 NativeGE_fsWrite = 00447900
 MCatchPaint = 002cd248
 NativeGE_getKeyInput4Ntv = 002c3144
+_gFunTable = 005d21c8
+gFunTable length 88
 g_stEmuFuncs 005580fc (new ABI)
 gDisplayDev 0054b550
 compiled with frame pointer

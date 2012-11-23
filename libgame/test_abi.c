@@ -37,6 +37,9 @@ extern int _new_emu_abi;
 extern int _has_frame_pointer;
 char *heap_ending;
 
+extern int ftab_length;
+void **_gFunTable;
+
 int main(int argc, char **argv)
 {
     if (argc < 7)
@@ -56,6 +59,7 @@ int main(int argc, char **argv)
     SETFUN(4, NativeGE_fsWrite);
     SETFUN(5, MCatchPaint);
     SETFUN(6, NativeGE_getKeyInput4Ntv);
+    SETFUN(7, _gFunTable);
 
     /* Load the firmware image to memory at 0x280000. We assume that the code 
        in the firmware file starts at offset 0x4c. */
@@ -82,6 +86,7 @@ int main(int argc, char **argv)
 
 #define PP(x) printf(#x " %08x\n", (uint32_t)x)
 
+    printf("gFunTable length %d\n", ftab_length);
     printf("g_stEmuFuncs %08x (%s ABI)\n", (uint32_t)g_stEmuFuncs, _new_emu_abi ? "new" : "old");
     PP(gDisplayDev);
     printf("compiled %s frame pointer\n", _has_frame_pointer ? "with" : "without");
