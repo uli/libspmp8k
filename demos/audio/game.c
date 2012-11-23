@@ -31,7 +31,7 @@ typedef struct {
     int     audio_size;
 } audio_data_desc;
 
-res_entry_t resources[] = {
+ge_res_entry_t resources[] = {
     {
         .filename = "8k8bpcm.wav",
         .res_data = _8k8bpcm_data
