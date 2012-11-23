@@ -269,6 +269,8 @@ extern int (*NativeGE_getTPEvent) (ge_tp_event_t *);
 extern int (*NativeGE_gamePause) (void);
 extern int (*NativeGE_gameResume) (uint32_t);
 
+extern uint16_t (*NativeGE_SPUCommand) (uint16_t, uint32_t);
+
 typedef struct emu_sound_params {
     uint8_t *buf;               /* + 0x0 */
     uint32_t buf_size;          /* + 0x4 */

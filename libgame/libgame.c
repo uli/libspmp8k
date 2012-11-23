@@ -137,6 +137,8 @@ int (*NativeGE_getTPEvent) (ge_tp_event_t *) = 0;
 int (*NativeGE_gamePause) (void) = 0;
 int (*NativeGE_gameResume) (uint32_t) = 0;
 
+uint16_t (*NativeGE_SPUCommand) (uint16_t cmd, uint32_t param) = 0;
+
 int _has_frame_pointer = -1;    /* required to find function entry points */
 int _new_emu_abi = -1;
 
@@ -769,6 +771,10 @@ void libgame_init(void)
     NativeGE_fsWrite = FUNC(0x144);
     NativeGE_fsClose = FUNC(0x148);
     NativeGE_fsSeek = FUNC(0x14C);
+
+    if (ftab_length > 85) {
+        NativeGE_SPUCommand = FUNC(0x154);
+    }
 
     heap_ending = 0;
 
