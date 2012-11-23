@@ -20,7 +20,11 @@
 #include <string.h>
 #include "libgame.h"
 
-void **ftab;
+extern void **_gFunTable;
+#ifndef TEST_BUILD
+static
+#endif
+int ftab_length = 0;
 
 extern uint32_t heap_ending;
 
@@ -59,7 +63,7 @@ uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
 uint32_t (*NativeGE_getTime) ();        // returns system ticks equivalent
 void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);   // uint64_t *keys);
 
-#define	FUNC(n)		*(ftab + (n >> 2))
+#define	FUNC(n)		*(_gFunTable + (n >> 2))
 
 #define FW_START 0x280000
 #define FW_START_P ((uint32_t *)FW_START)
@@ -573,6 +577,39 @@ out2:
         NativeGE_gamePause = g_stEmuAPIs->pause;
         NativeGE_gameResume = g_stEmuAPIs->resume;
     }
+
+    /* Determine gFunTable length by finding the loop counter of the
+       initialization loop in initFunTable(). */
+    for (head = FW_START_P; head < FW_END_P; head++) {
+        if (is_prolog(*head)) {
+            uint32_t *subhead;
+            for (subhead = head; subhead < head + 100; subhead++) {
+                if (is_ldr_pc(*subhead)) {
+                    if (ldr_pc_address(subhead) == _gFunTable) {
+                        uint32_t *subsubhead;
+                        for (subsubhead = subhead; subsubhead < subhead + 50; subsubhead++) {
+                            if ((subsubhead[0] & 0xffffff00) == 0xe3a01000 /* MOV R1, #xx */) {
+                                ftab_length = subsubhead[0] & 0xff;
+                                goto out3;
+                            }
+                        }
+                        /* no immediate MOV found, check for immediate CMP (JXD 100, for instance) */
+                        for (subsubhead = subhead; subsubhead < subhead + 50; subsubhead++) {
+                            if ((subsubhead[0] & 0xffffff00) == 0xe3520e00 /* CMP R2, #(xx * 16) */) {
+                                ftab_length = (subsubhead[0] & 0xff) * 4;
+                                goto out3;
+                            }
+                        }
+                    }
+                    else {
+                        /* different ldr, not initFunTable() */
+                        break;
+                    }
+                }
+            }
+        }
+    }
+out3:
 
     return;
 }

@@ -9,7 +9,7 @@
 	.global		_sbrk_asm
 	.global		_exit
 
-	.global		ftab
+	.global		_gFunTable
 	.global		__heap_end_asm
 
 	.extern		main
@@ -20,7 +20,7 @@
 
 start:
 	stmfd	sp!,{r0-r12, lr}
-	ldr		r1,=ftab
+	ldr		r1,=_gFunTable
 	str		r0, [r1]			// store the pointer to the function table 
 	
 	ldr		r1,=_save_stack
@@ -40,7 +40,7 @@ bss_zero:
 	ldmia	sp!,{r0-r12, pc}
 
 	.align	4
-ftab:
+_gFunTable:
 	.word	0
 
 	.align	4
