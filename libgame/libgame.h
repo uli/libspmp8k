@@ -32,6 +32,13 @@ typedef struct ge_key_data {
     uint32_t key2;
 } ge_key_data_t;
 
+typedef struct ge_tp_event {
+    uint32_t type;
+    uint32_t key;	/* not set by NativeGE_getTPEvent() (on the A16) */
+    uint16_t x;
+    uint16_t y;
+} ge_tp_event_t;
+
 /* OS debug interface */
 extern void (*diag_printf) (char *fmt, ...);
 extern int *g_onoff_p;
@@ -256,7 +263,7 @@ extern int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flag
                                    _ecos_off_t offset, _ecos_size_t count);
 /* extern void (*NativeGE_showFPS) (void); doesn't do anything */
 extern int (*NativeGE_gameExit) (void);
-/* extern int (*NativeGE_getTPEvent) (void); doesn't do anything */
+extern int (*NativeGE_getTPEvent) (ge_tp_event_t *);
 /* extern char (*NativeGE_setTPClickArea) (void); doesn't do anything */
 
 extern int (*NativeGE_gamePause) (void);

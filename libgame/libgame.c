@@ -127,7 +127,7 @@ int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flags, _eco
                             _ecos_size_t count) = 0;
 /* void (*NativeGE_showFPS) (void) = 0; doesn't do anything */
 int (*NativeGE_gameExit) (void) = 0;
-/* int (*NativeGE_getTPEvent) (void) = 0; doesn't do anything */
+int (*NativeGE_getTPEvent) (ge_tp_event_t *) = 0;
 /* char (*NativeGE_setTPClickArea) (void) = 0; doesn't do anything */
 
 int (*NativeGE_gamePause) (void) = 0;
@@ -724,7 +724,7 @@ void libgame_init(void)
     cyg_thread_delay = FUNC(0x11c);
     NativeGE_getTime = FUNC(0x124);
     NativeGE_gameExit = FUNC(0x130);
-    /* NativeGE_getTPEvent = FUNC(0x134); doesn't do anything */
+    NativeGE_getTPEvent = FUNC(0x134);
     /* NativeGE_setTPClickArea = FUNC(0x138); doesn't do anything */
 
     NativeGE_fsOpen = FUNC(0x13C);
