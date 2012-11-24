@@ -42,6 +42,8 @@ typedef struct ge_tp_event {
 /* OS debug interface */
 extern void (*diag_printf) (char *fmt, ...);
 extern int *g_onoff_p;
+extern void (**_diag_putc) (char);
+
 extern void libgame_set_debug(int onoff);
 
 // graphics stuff

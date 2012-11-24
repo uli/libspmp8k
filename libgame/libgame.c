@@ -30,6 +30,7 @@ extern uint32_t heap_ending;
 
 void (*diag_printf) (char *fmt, ...);
 int *g_onoff_p;
+void (**_diag_putc) (char) = 0;
 
 int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
@@ -558,6 +559,13 @@ out2:
     for (head = start; head < start + 50; head++) {
         if (is_ldr_pc(*head)) {
             g_onoff_p = ldr_pc_address(head);
+            uint32_t *subhead;
+            for (subhead = head + 1; subhead < head + 50; subhead++) {
+                if (is_ldr_pc(*subhead) && (subhead[1] & 0xfff00000) == 0xe5900000 /* MOV Rx, [Ry] */) {
+                    _diag_putc = ldr_pc_address(subhead);
+                    break;
+                }
+            }
             break;
         }
     }
