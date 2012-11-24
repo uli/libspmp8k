@@ -281,7 +281,7 @@ static void *ldr_pc_address(uint32_t *head)
 /* Check if mem points to a given string within firmware bounds. */
 static int string_starts_with(uint32_t *mem, const char *string)
 {
-    if (mem < FW_START_P || mem > FW_END_P)
+    if (mem < FW_START_P || mem > (uint32_t *)(FW_END - strlen(string)))
         return 0;
     return !strncmp((const char *)mem, string, strlen(string));
 }
