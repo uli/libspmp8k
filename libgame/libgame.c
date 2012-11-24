@@ -147,7 +147,7 @@ int (*emuIfGraphInit) (emu_graph_params_t *);
 int (*emuIfGraphShow) (void);
 int (*emuIfGraphChgView) (emu_graph_params_t *);
 int (*emuIfGraphCleanup) (void);
-uint32_t (*emuIfSoundInit) (emu_sound_params_t *params);
+int (*emuIfSoundInit) (emu_sound_params_t *params);
 uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
 uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
 

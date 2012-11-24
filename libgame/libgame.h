@@ -321,7 +321,7 @@ extern int (*emuIfGraphInit) (emu_graph_params_t *);
 extern int (*emuIfGraphShow) (void);
 extern int (*emuIfGraphChgView) (emu_graph_params_t *);
 extern int (*emuIfGraphCleanup) (void);
-extern uint32_t (*emuIfSoundInit) (emu_sound_params_t *params);
+extern int (*emuIfSoundInit) (emu_sound_params_t *params);
 extern uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
 extern uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
 
