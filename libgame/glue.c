@@ -244,7 +244,7 @@ extern uint32_t __heap_end_asm;
 
 extern caddr_t _sbrk_asm(int incr);
 
-#define RAM_END	0x2000000
+uint32_t _ram_end = 0x2000000;
 
 caddr_t _sbrk(int incr)
 {
@@ -257,7 +257,7 @@ caddr_t _sbrk(int incr)
     dmsg_printf("-> 0x%x) ", __heap_end_asm);
 #endif
     // safety check
-    if (__heap_end_asm >= RAM_END) {
+    if (__heap_end_asm >= _ram_end) {
         errno = ENOMEM;
         return (caddr_t) (-1);
     }

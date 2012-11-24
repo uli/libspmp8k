@@ -181,6 +181,8 @@ int (*changeARMFreq) (int mhz) = 0;     /* A1000 accepts 5 - 297 MHz */
 void (*hal_clock_read) (uint32_t *us) = 0;
 uint64_t (*cyg_current_time) (void) = 0;
 
+uint32_t *_gameMaxBufferSize_p = 0;
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val)
 {
@@ -278,6 +280,11 @@ static void *ldr_pc_address(uint32_t *head)
     return (void *)(*(head + (*head & 0xfff) / 4 + 2));
 }
 
+static int ldr_pc_register(uint32_t val)
+{
+    return (val >> 12) & 0xf;
+}
+
 /* Check if mem points to a given string within firmware bounds. */
 static int string_starts_with(uint32_t *mem, const char *string)
 {
@@ -334,10 +341,10 @@ void libgame_detect_firmware_abi()
     if (g_stEmuFuncs) {
         _ecos_close = (void *)next_bl_target(g_stEmuFuncs[_new_emu_abi ? 20 : 19]);
 
-        /* In theory, closedir() is different from close(), but in practice it
-           simply forwards its argument to close(). Since it's a very small
-           function, it's really tricky to find, so we don't bother and just
-           use close() in its place. */
+        /* In theory, closedir() is different from close(), but in practice
+           it simply forwards its argument to close(). Since it's a very
+           small function, it's really tricky to find, so we don't bother and 
+           just use close() in its place. */
         _ecos_closedir = (void *)_ecos_close;
 
         /* Determine if built with frame pointer. */
@@ -621,6 +628,29 @@ out2:
     }
 out3:
 
+    /* Find gameMaxBufferSize in emuStartupFunc(). */
+    for (head = FW_START_P; head < FW_END_P - 4; head++) {
+        /* Find the debug string. */
+        if (is_ldr_pc(*head) &&
+            string_starts_with(ldr_pc_address(head), "emuStartupFunc(): gameMaxBufferSize = ")) {
+            /* Find the call to diag_printf(). */
+            uint32_t *next_diag = next_bl(head);
+            if (branch_address(next_diag) != (uint32_t *)diag_printf)
+                continue;
+            /* The gameMaxBufferSize address is loaded between two insn
+               before the debug string and the diag_printf() call. */
+            uint32_t *subhead;
+            for (subhead = head - 2; subhead < next_diag; subhead++) {
+                /* Ignore the load of the debug string to R0. */
+                if (is_ldr_pc(*subhead) && ldr_pc_register(*subhead) != 0) {
+                    _gameMaxBufferSize_p = ldr_pc_address(subhead);
+                    goto out4;
+                }
+            }
+        }
+    }
+out4:
+
     return;
 }
 
@@ -709,6 +739,8 @@ static void libgame_detect_system(void)
         libgame_system_id = SYS_UNKNOWN;
 }
 
+extern uint32_t _ram_end;
+
 void libgame_init(void)
 {
     // setup function pointers
@@ -787,6 +819,10 @@ void libgame_init(void)
     heap_ending = 0;
 
     libgame_detect_firmware_abi();
+
+    if (_gameMaxBufferSize_p && *_gameMaxBufferSize_p < 0x1600000)
+        _ram_end = 0xa00000 + *_gameMaxBufferSize_p;
+
     libgame_assign_emuif();
     libgame_detect_system();
 }

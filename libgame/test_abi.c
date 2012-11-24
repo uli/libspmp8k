@@ -36,6 +36,7 @@ extern void libgame_assign_emuif(void);
 extern int _new_emu_abi;
 extern int _has_frame_pointer;
 char *heap_ending;
+uint32_t _ram_end;
 
 extern int ftab_length;
 void **_gFunTable;
@@ -120,5 +121,6 @@ int main(int argc, char **argv)
     PP(cyg_current_time);
     PP(g_onoff_p);
     PP(g_stEmuAPIs);
+    PP(_gameMaxBufferSize_p);
     return 0;
 }

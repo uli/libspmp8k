@@ -357,6 +357,8 @@ extern uint64_t (*cyg_current_time) (void);
 
 extern uint64_t libgame_utime(void);
 
+extern uint32_t *_gameMaxBufferSize_p;
+
 extern int libgame_system_id;
 #define SYS_UNKNOWN 0
 #define SYS_JXD_100 1
