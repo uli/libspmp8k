@@ -38,3 +38,4 @@ hal_clock_read 00299338
 cyg_current_time 0033b2a0
 g_onoff_p 00520910
 g_stEmuAPIs 00571e8c
+_gameMaxBufferSize_p 00571ed0
