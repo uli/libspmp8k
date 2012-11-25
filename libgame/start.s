@@ -35,9 +35,12 @@ bss_zero:
 	cmp		r1, r2
 	bls		bss_zero
 
+	ldr		r0, .Lfini
+	bl		atexit
+	bl		__libc_init_array
 	bl		main				// enter the show
 
-	ldmia	sp!,{r0-r12, pc}
+	b		exit
 
 	.align	4
 _gFunTable:
@@ -74,5 +77,14 @@ _exit:
 	ldmia	sp!,{r0-r12, pc}
 
 .global __aeabi_unwind_cpp_pr0
+.weak __aeabi_unwind_cpp_pr0
 __aeabi_unwind_cpp_pr0:
+.global _init
+.weak   _init
+_init:
+.global _fini
+.weak   _fini
+_fini:
 	bx lr
+.Lfini:
+	.word __libc_fini_array

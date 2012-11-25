@@ -2,6 +2,10 @@
 #ifndef __LIBGAME_H__
 #define __LIBGAME_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #include "mcatch_types.h"
 #include <stdlib.h>
 #include <sys/types.h>
@@ -367,5 +371,9 @@ extern int libgame_system_id;
 #define SYS_JXD_V3 4
 #define SYS_LETCOOL 5
 #define SYS_MMM 6
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif                          // __LIBGAME_H__
