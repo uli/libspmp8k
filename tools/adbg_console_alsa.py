@@ -82,7 +82,10 @@ def process_sample(prev, bit, next):
     elif state == 9 and pos == start_of_next_bit:
         # stop bit
         if bit == True:		# stop bit valid?
-            sys.stdout.write(chr(byte))
+            if (byte >= 32 or byte == 10 or byte == 13) and byte != 255:
+                sys.stdout.write(chr(byte))
+            else:
+                sys.stdout.write('<' + str(byte) + '>')
             #if (byte < 32 or byte > 127) and byte != 10:
             #    sys.exit(1)
         state = 0	# idle
