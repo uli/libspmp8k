@@ -19,13 +19,14 @@
 #
 
 import struct
-import pyaudio
+#import pyaudio
+import alsaaudio
 import sys
 
 sample_rate = 48000
 pulse_width = 5
 
-sample_buf_size = 4096
+sample_buf_size = 256
 
 def get_audio_devices(dontAsk=True):
     global card_id
@@ -39,14 +40,14 @@ def get_audio_devices(dontAsk=True):
             if card_id == -1:
                 card_id = card_index
 
-card_id = -1
-get_audio_devices()
-print "Using device",card_id
+#card_id = -1
+#get_audio_devices()
+#print "Using device",card_id
 
 def sample2bit(bit):
-    if bit > 15000:
+    if bit > 8000:
         return False
-    elif bit < -15000:
+    elif bit < -8000:
         return True
     else:
         return True
@@ -82,13 +83,18 @@ def process_sample(prev, bit, next):
         # stop bit
         if bit == True:		# stop bit valid?
             sys.stdout.write(chr(byte))
+            #if (byte < 32 or byte > 127) and byte != 10:
+            #    sys.exit(1)
         state = 0	# idle
     pos += 1
 
-pa = pyaudio.PyAudio()
-sound = pa.open(format = pyaudio.paInt16, channels = 1, rate = sample_rate,
-    input_device_index = card_id, input = True, output = False)
 #file = open("sample.raw", "w")
+sound = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK, 'default')
+# Set attributes: Mono, 44100 Hz, 16 bit little endian samples
+sound.setchannels(1)
+sound.setrate(48000)
+sound.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+sound.setperiodsize(sample_buf_size)
 
 prev = -32768
 pprev = -32768
@@ -97,13 +103,16 @@ try:
 
     while True:
         try:
-            sample_stream = sound.read(sample_buf_size)
+            l, sample_stream = sound.read()
+            #print len(sample_stream)
         except IOError, e:
             print 'dropped', e
 
-        #file.write(samples)
+        if l == 0: continue
+        
+        #file.write(sample_stream)
 
-        sample_values = struct.unpack(str(sample_buf_size) + 'h', sample_stream)
+        sample_values = struct.unpack(str(len(sample_stream)/2) + 'h', sample_stream)
         for i in sample_values:
             process_sample(pprev, prev, i)
             pprev = prev
