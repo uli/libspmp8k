@@ -191,6 +191,10 @@ int main()
     }    
 #endif
 
+    if (_gameMaxBufferSize_p) {
+        fs_fprintf(fd, "RAM size %d (end 0x%x)\n", *_gameMaxBufferSize_p, 0xa00000 + *_gameMaxBufferSize_p);
+    }
+
     NativeGE_fsClose(fd);
     return 0;
 }
