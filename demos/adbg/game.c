@@ -49,7 +49,7 @@ int main(void)
         adbg_puts("This is a debug message transmitted via line out. Do not be alarmed.\n");
         int i;
         for (i = 0; i < 10; i++)
-            adbg_puts("This is one of many messages printed consecutively.\n");
+            adbg_printf("This is %d of %d messages printed consecutively.\n", i, 10);
         adbg_puts("\nPress any key to repeat.\n\n");
         wait_keypress();
     }

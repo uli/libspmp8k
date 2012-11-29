@@ -20,6 +20,8 @@
 
 #include "libgame.h"
 #include <stdint.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include "adbg.h"
 
 #define SAMPLE_LOW -32767
@@ -90,6 +92,18 @@ void adbg_puts(const char *s)
     }
     add_samples(SAMPLE_HI, 11);
     flush_buffer();
+}
+
+int adbg_printf(const char *fmt, ...)
+{
+    int ret;
+    char str[256];
+    va_list args;
+    va_start(args, fmt);
+    ret = vsnprintf(str, 256, fmt, args);
+    va_end(args);
+    adbg_puts(str);
+    return ret;
 }
 
 int adbg_init(void)
