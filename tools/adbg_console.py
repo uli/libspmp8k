@@ -71,9 +71,9 @@ class PortSound:
         return ret
 
 def sample2bit(bit):
-    if bit < -15000:
+    if bit < -25000:
         return False
-    elif bit > 15000:
+    elif bit > 25000:
         return True
     else:
         return True
