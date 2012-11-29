@@ -21,32 +21,59 @@
 import struct
 import pyaudio
 import sys
+from optparse import OptionParser
 
 sample_rate = 48000
 pulse_width = 5
+sample_buf_size = 1024
 
-sample_buf_size = 4096
+parser = OptionParser()
+parser.add_option('-i', '--invert', action = 'store_true', dest = 'invert', help = 'Invert signal before processing.')
+parser.add_option('-a', '--audio-interface', dest = 'audio_system', default = 'alsa', help = 'Audio interface used ("alsa" or "portaudio")')
+parser.add_option('-d', '--device', dest = 'audio_device', default = None, help = 'Audio input device')
+parser.add_option('-l', '--list-devices', action = 'store_true', dest = 'list_devices', help = 'List available audio devices')
+parser.add_option('--vu-meter', action = 'store_true', dest = 'vu_meter', help = 'Show signal levels on input device')
+(options, args) = parser.parse_args()
 
-def get_audio_devices(dontAsk=True):
-    global card_id
-    p = pyaudio.PyAudio()
-    for i in range(p.get_default_host_api_info()["deviceCount"]):
-        di = p.get_device_info_by_index(i)
-        if di["maxInputChannels"] > 0:
-            card_name = di["name"]
-            card_index = di["index"]
-            print card_index, card_name
-            if card_id == -1:
-                card_id = card_index
+class AlsaSound:
+    def __init__(self, device = 'default'):
+        import alsaaudio
+        self.sound = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL, 'default')
+        self.sound.setchannels(1)
+        self.sound.setrate(sample_rate)
+        self.sound.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+        self.sound.setperiodsize(sample_buf_size)
+    def read(self):
+        return self.sound.read()[1]
+    def close(self):
+        self.sound.close()
+    def device_list(self):
+        return 'unimplemented'
 
-card_id = -1
-get_audio_devices()
-print "Using device",card_id
+class PortSound:
+    def __init__(self, device = 0):
+        import pyaudio
+        self.pa = pyaudio.PyAudio()
+        self.sound = self.pa.open(format = pyaudio.paInt16, channels = 1, rate = sample_rate,
+            input_device_index = device, input = True, output = False)
+    def read(self):
+        return self.sound.read(sample_buf_size)
+    def close(self):
+        self.sound.close()
+    def device_list(self):
+        ret = ''
+        for i in range(self.pa.get_default_host_api_info()["deviceCount"]):
+            di = self.pa.get_device_info_by_index(i)
+            if di["maxInputChannels"] > 0:
+                card_name = di["name"]
+                card_index = di["index"]
+                ret += str(card_index) + ' ' + card_name + '\n'
+        return ret
 
 def sample2bit(bit):
-    if bit > 15000:
+    if bit < -15000:
         return False
-    elif bit < -15000:
+    elif bit > 15000:
         return True
     else:
         return True
@@ -88,29 +115,60 @@ def process_sample(prev, bit, next):
         state = 0	# idle
     pos += 1
 
-pa = pyaudio.PyAudio()
-sound = pa.open(format = pyaudio.paInt16, channels = 1, rate = sample_rate,
-    input_device_index = card_id, input = True, output = False)
-#file = open("sample.raw", "w")
 
-prev = -32768
-pprev = -32768
+if options.audio_system == 'alsa':
+    if options.audio_device:
+        sound = AlsaSound(options.audio_device)
+    else:
+        sound = AlsaSound()
+elif options.audio_system == 'portaudio':
+    if options.audio_device:
+        sound = PortSound(int(options.audio_device))
+    else:
+        sound = PortSound()
+else:
+    sys.stderr.write('invalid audio interface "' + options.audio_system + '"\n')
+    sys.exit(1)
 
+if options.list_devices:
+    print '\nAvailable audio devices:'
+    print sound.device_list()
+    sys.exit(0)
+
+prev = 32768
+pprev = 32768
+
+file = open("sample.raw", "w")
 try:
 
     while True:
         try:
-            sample_stream = sound.read(sample_buf_size)
+            sample_stream = sound.read()
         except IOError, e:
             print 'dropped', e
 
-        #file.write(samples)
+        file.write(sample_stream)
 
         sample_values = struct.unpack(str(sample_buf_size) + 'h', sample_stream)
-        for i in sample_values:
-            process_sample(pprev, prev, i)
-            pprev = prev
-            prev = i
+        if options.vu_meter:
+            width = 75
+            max = 0
+            min = 0
+            for i in sample_values:
+                if i > max:
+                    max = i
+                if i < min:
+                    min = i
+            len = width * (max - min) / 65536
+            sys.stderr.write('|' + '*' * len + ' ' * (width - len) + '|\r')
+        else:
+            for i in sample_values:
+                if not options.invert:
+                    process_sample(pprev, prev, i)
+                else:
+                    process_sample(-pprev, -prev, -i)
+                pprev = prev
+                prev = i
 
 except KeyboardInterrupt:
     sound.close()
