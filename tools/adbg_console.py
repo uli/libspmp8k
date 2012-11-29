@@ -138,7 +138,7 @@ if options.list_devices:
 prev = 32768
 pprev = 32768
 
-file = open("sample.raw", "w")
+#file = open("sample.raw", "w")
 try:
 
     while True:
@@ -147,7 +147,7 @@ try:
         except IOError, e:
             print 'dropped', e
 
-        file.write(sample_stream)
+        #file.write(sample_stream)
 
         sample_values = struct.unpack(str(sample_buf_size) + 'h', sample_stream)
         if options.vu_meter:
