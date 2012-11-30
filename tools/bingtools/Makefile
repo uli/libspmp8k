@@ -25,7 +25,7 @@ bin2c	: bin2c.o
 
 # requires libpng
 png2c	: png2c.o
-		$(CC) -lpng $< -o png2c
+		$(CC) $< -o png2c -lpng
 
 clean	:
 		rm -f *.o
