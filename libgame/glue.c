@@ -94,7 +94,13 @@ int _fork()
 static void _ecos_stat_to_stat(struct stat *st, struct _ecos_stat *est)
 {
     memset(st, 0, sizeof(struct stat));
-    st->st_mode = est->st_mode;
+
+    st->st_mode = S_IREAD | S_IWRITE | S_IEXEC;
+    if (_ECOS_S_ISREG(est->st_mode))
+        st->st_mode |= _IFREG;
+    else if (_ECOS_S_ISDIR(est->st_mode))
+        st->st_mode |= _IFDIR;
+
     st->st_ino = est->st_ino;
     st->st_dev = est->st_dev;
     st->st_nlink = est->st_nlink;
