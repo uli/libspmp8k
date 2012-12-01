@@ -360,6 +360,7 @@ extern void (*hal_clock_read) (uint32_t *us);
 extern uint64_t (*cyg_current_time) (void);
 
 extern uint64_t libgame_utime(void);
+extern int libgame_chdir_game(void);
 
 extern uint32_t *_gameMaxBufferSize_p;
 

@@ -672,6 +672,29 @@ uint64_t libgame_utime(void)
         return cyg_current_time() * 10000;
 }
 
+int libgame_chdir_game(void)
+{
+    char cwd[256];
+    char cwd_new[256];
+    _ecos_getcwd(cwd, 256);
+    /* move as far up the tree as possible */
+    for (;;) {
+        /* _ecos_chdir() doesn't return an error when it can't change the
+           directory, so we have to use getcwd() to check if it succeeded. */
+        _ecos_chdir("..");
+	_ecos_getcwd(cwd_new, 256);
+        if (!strcmp(cwd, cwd_new))
+                break;
+        strcpy(cwd, cwd_new);
+    }
+    _ecos_chdir("GAME");
+    _ecos_getcwd(cwd, 256);
+    if (strcasestr(cwd, "/GAME"))
+        return 0;
+    else
+        return -1;
+}
+
 void libgame_set_debug(int onoff)
 {
     if (g_onoff_p)
