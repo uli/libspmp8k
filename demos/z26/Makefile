@@ -15,7 +15,7 @@ LDSCRIPT= $(LIBGAME)/libgame.ld
 
 CFLAGS	= -O2 -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
 LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
-LIBS	= -lc -lgcc -lgame
+LIBS	= -lgame -lc -lgcc
 START_O	= $(LIBGAME)/start.o
 
 #OBJS	= z26.o globals.o \
