@@ -1,11 +1,25 @@
 #ifndef __SPMP_H__
 #define __SPMP_H__
 
+#include <stdint.h>
+
 #define MCATCH_CMD_SYSTEM_SET_SYSINFO		0x001
 #define MCATCH_CMD_SYSTEM_GET_SYSINFO		0x002
 #define MCATCH_CMD_SYSTEM_POWER_OFF		0x003 /* canonical */
 #define MCATCH_CMD_SYSTEM_CAL_VOLTAGE		0x004
+
+typedef struct {
+    uint32_t sec;
+    uint32_t min;
+    uint32_t hour;
+    uint32_t day;
+    uint32_t month;
+    uint32_t year;
+} mcatch_system_time_t;
+
+/* out: mcatch_system_time_t */
 #define MCATCH_CMD_SYSTEM_SYS_TIME_GET		0x005
+
 #define MCATCH_CMD_SYSTEM_SYS_TIME_SET		0x006
 #define MCATCH_CMD_SYSTEM_ALARM_GET		0x007
 #define MCATCH_CMD_SYSTEM_ALARM_SET		0x008
