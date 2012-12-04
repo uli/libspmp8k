@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+/** @addtogroup text Text rendering routines
+@{ */
 #define FONT_SIZE_12 12
 #define FONT_SIZE_16 16
 
@@ -21,3 +23,4 @@ int text_get_font_size(void);
 void text_set_font_face(int face);
 void text_set_fg_color(uint16_t color);
 void text_set_bg_color(uint16_t color);
+/** @} */

@@ -1,3 +1,4 @@
+/** @file */
 
 #ifndef __LIBGAME_H__
 #define __LIBGAME_H__
@@ -10,10 +11,32 @@ extern "C" {
 #include <stdlib.h>
 #include <sys/types.h>
 
+/** @defgroup utility Utility functions
+@addtogroup utility
+@{ */
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((r & 0xf8) << 8) | ((g & 0xfc) << 3) | (b >> 3))
 
-/* key bits for cooked (NativeGE_getKeyInput4Ntv()) interface */
+extern uint64_t libgame_utime(void);
+extern int libgame_chdir_game(void);
+/** Enable/disable debug output.
+    Safe way of enabling/disabling debug output. Does nothing if the
+    required hook is not available. */
+extern void libgame_set_debug(int onoff);
+/** @} */
+
+/***************************************************************************/
+
+/** @defgroup nativege NativeGE interface */
+
+/***************************************************************************/
+
+/** @addtogroup ge_key NativeGE user input
+@ingroup nativege
+@{ */
+
+/** @name NativeGE_getKeyInput4Ntv() key masks
+@{ */
 #define	GE_KEY_UP	1
 #define	GE_KEY_DOWN	2
 #define	GE_KEY_LEFT	4
@@ -21,15 +44,13 @@ extern "C" {
 #define	GE_KEY_O	(1 << 16)
 #define	GE_KEY_X	(2 << 16)
 #define	GE_KEY_START	(1 << 13)
+/** @} */
 
-/* Cybergame Joystick mapping */
+/** @name Cybergame key mapping
+@{ */
 #define	CYBER_KEY_2		GE_KEY_O
 #define	CYBER_KEY_3		GE_KEY_X
-
-typedef struct ge_res_entry {
-    char filename[16];
-    uint8_t *res_data;
-} ge_res_entry_t;
+/** @} */
 
 typedef struct ge_key_data {
     uint32_t key1;
@@ -43,14 +64,41 @@ typedef struct ge_tp_event {
     uint16_t y;
 } ge_tp_event_t;
 
-/* OS debug interface */
+/** @name Hooks
+@{ */
+extern void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);
+extern int (*NativeGE_getTPEvent) (ge_tp_event_t *);
+/* extern char (*NativeGE_setTPClickArea) (void); doesn't do anything */
+/** @} */
+
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup debug OS debug interface.
+@{ */
+
+/** @name Hooks
+@{ */
+/** Print debug output to serial port. */
 extern void (*diag_printf) (char *fmt, ...);
+/** @} */
+
+/** Enable/disable debug output. */
 extern int *g_onoff_p;
+/** Pointer to debug character out function.
+    Can be used to redirect debug output. */
 extern void (**_diag_putc) (char);
+/** @} */
 
-extern void libgame_set_debug(int onoff);
+/***************************************************************************/
 
-// graphics stuff
+/** @addtogroup ge_gfx NativeGE graphics
+@ingroup nativege
+@{ */
+
+/** @name Hooks
+@{ */
 extern int (*MCatchInitGraph) (void);
 extern int (*MCatchSetFrameBuffer) (int width, int height);
 extern int (*MCatchSetDisplayScreen) (mcatch_rect_t *rect);
@@ -69,55 +117,115 @@ extern int (*MCatchFreeImage) (uint8_t img_id);
 extern int (*MCatchBitblt) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 extern int (*MCatchSprite) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 
-// music & sound (has some problems)
+/* extern int (*MCatchStoreImage) (void); doesn't do anything */
+/* extern int (*MCatchDecodeImageFromCard) (void); doesn't do anything */
+extern int (*MCatchGetColorROP) (uint32_t *rop);
+extern int (*MCatchSetBitPlaneMask) (int read_write, uint16_t mask);
+extern int (*MCatchGetBitPlaneMask) (int read_write, uint16_t *mask);
+extern int (*MCatchGetDisplayScreen) (mcatch_rect_t *);
+extern int (*MCatchSetRectClip) (mcatch_rect_t *);
+extern int (*MCatchGetRectClip) (mcatch_rect_t *);
+extern int (*MCatchSetStyleMask) (mcatch_rect_t *);
+extern int (*MCatchGetStyleMask) (mcatch_rect_t *);
+extern int (*MCatchSetLineMask) (mcatch_rect_t *);
+extern int (*MCatchGetLineMask) (mcatch_rect_t *);
+extern int (*MCatchDisableFeature) (int);
+extern int (*MCatchSetStyleLine) (uint8_t, uint8_t);
+/* extern int (*MCatchPreviewColorkey) (void); doesn't do anything */
+extern int (*MCatchGetFrameBuffer) (uint16_t *width, uint16_t *height);
+extern int (*MCatchSetMutableImage) (uint8_t);
+extern int (*MCatchSetPerPixelAlphaEq) (uint8_t);       /* 0 or 1 */
+extern int (*MCatchSetTransformation) (mcatch_point2d_t *, int /* 0 to 7 */ );
+extern int (*MCatchQueryImage) (uint8_t, uint8_t /* 1 to 3 */ );
+extern int (*MCatchEnableDoubleBuffer) (int /* 0 or 1 */ );
+extern int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]);
+/* extern int (*MCatchUpdateScreen) (void); doesn't do anything (except produce debug output) */
+extern int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ ,
+                              uint8_t /* < 0x18 */ );
+extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void * /* data */ );
+/** @} */
+
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup ge_res NativeGE audio.
+@ingroup nativege
+@{ */
+typedef struct ge_res_entry {
+    char filename[16];
+    uint8_t *res_data;
+} ge_res_entry_t;
+
+/** @name Hooks
+@{ */
 extern int (*NativeGE_initRes) (int val, void *res_table);
 extern int (*NativeGE_getRes) (char *filename, void *res_info);
 extern int (*NativeGE_playRes) (uint8_t res_type, int flags, void *res_info);
 extern int (*NativeGE_stopRes) (int arg);
 
-/* eCos constants from fcntl.h, unistd.h */
-#define FS_O_RDONLY     (1<<0)
-#define FS_O_WRONLY     (1<<1)
-#define FS_O_RDWR       (O_RDONLY|O_WRONLY)
-#define FS_O_CREAT      (1<<3)
-#define FS_O_EXCL       (1<<4)
-#define FS_O_NOCTTY     (1<<5)
-#define FS_O_TRUNC      (1<<6)
+extern void (*NativeGE_pauseRes) (uint8_t);
+extern void (*NativeGE_resumeRes) (uint8_t);
 
-#define FS_SEEK_SET		0
-#define FS_SEEK_CUR		1
-#define FS_SEEK_END		2
+extern uint16_t (*NativeGE_SPUCommand) (uint16_t, uint32_t);
+/** @} */
 
-#define	FS_STDIN_FILENO	0
-#define	FS_STDOUT_FILENO	1
-#define	FS_STDERR_FILENO	2
+/** @} */
 
-/* "Native game" file system interface */
-extern int (*NativeGE_fsOpen) (const char *filename, int flags, int *fd);
+/***************************************************************************/
 
-/* returns 0 (okay), 2 (error) */
-extern int (*NativeGE_fsRead) (int fd, const void *buf, size_t count, int *result);
-extern int (*NativeGE_fsWrite) (int fd, const void *buf, size_t count, int *result);
-extern int (*NativeGE_fsClose) (int fd);
-extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
-#define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
+/** @addtogroup ge_control NativeGE thread control
+@ingroup nativege
+@{ */
 
+/** @name Hooks
+@{ */
+extern int (*NativeGE_gameExit) (void);
+extern int (*NativeGE_gamePause) (void);
+extern int (*NativeGE_gameResume) (uint32_t);
+/** @} */
+
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup ge_misc NativeGE miscellaneous
+@ingroup nativege
+@{ */
+
+/** @name Hooks
+@{ */
 extern uint32_t (*NativeGE_getTime) (void);     /* returns system ticks
                                                    multiplied by 10 */
-extern void (*NativeGE_getKeyInput4Ntv) (ge_key_data_t * keys);
+/* extern void (*NativeGE_showFPS) (void); doesn't do anything */
+/** @} */
 
-/* Initialization function must be called before everything else. */
-/* XXX: should be a ctor */
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup init Initialization and finalization
+@{ */
+/** Initialization function must be called before everything else. */
 void libgame_init(void);
+/** @} */
 
-/* Debug console interface. */
+/***************************************************************************/
+
+/** @addtogroup dmsg Debug console
+@{ */
 int dmsg_init(int x, int y, int width, int height);
 void dmsg_shutdown(void);
 void dmsg_wait(int enable);
 void dmsg_clear(void);
 int dmsg_puts(char *__s);
 int dmsg_printf(char *format, ...);
+/** @} */
 
+/***************************************************************************/
+
+/** @addtogroup ecos eCos interface
+@{ */
 typedef void _ecos_DIR;
 #define _ecos_NAME_MAX 256
 struct _ecos_dirent {
@@ -183,33 +291,8 @@ struct _ecos_stat {
 #define _ECOS_O_RSYNC      (1<<10)      /* Synchronized read I/O */
 #define _ECOS_O_SYNC       (1<<11)      /* Synchronized I/O file integrity
                                            writes */
-
-typedef struct {
-    void (*setBuffFormat) (int);
-    int (*getBuffFormat) (void);
-    int (*getWidth) (void);
-    int (*getHeight) (void);
-    uint16_t *(*getShadowBuffer) (void);
-    void (*setFrameBuffer) (uint16_t *fb);      // educated guess
-    void (*flip) (void);
-    void (*clear) (void);    // actually returns BitBlt_hw retval, but
-                                // that is always 0
-    void (*setShadowBuffer) (uint16_t *fb);     // educated guess
-    uint16_t *(*getFrameBuffer) (void);
-} disp_device_t;
-
-typedef struct {
-    void *_unknown;
-    int (*pause) (void);
-    int (*resume) (uint32_t);
-    int (*exit) (uint32_t);
-    int (*save) (int);
-    int (*load) (int);
-} emu_apis_t;
-
-extern void **g_stEmuFuncs;
-extern emu_apis_t *g_stEmuAPIs;
-extern disp_device_t *gDisplayDev;
+/** @name Hooks
+@{ */
 extern int (*_ecos_close) (int fd);
 extern int (*_ecos_read) (int fd, void *buf, unsigned int count);
 extern int (*_ecos_write) (int fd, const void *buf, unsigned int count);
@@ -232,50 +315,91 @@ extern int (*_ecos_mkdir) (const char *pathname, _ecos_mode_t mode);
 extern int (*_ecos_fsync) (int fd);
 extern void (*cyg_thread_delay) (uint64_t /* cyg_tick_count_t */ delay);
 
-extern uint16_t (*SPMP_SendSignal) (uint16_t cmd, void *data, uint16_t size);
-extern void (*cache_sync) (void);
+extern uint64_t (*cyg_current_time) (void);
+/** @} */
 
-/* extern int (*MCatchStoreImage) (void); doesn't do anything */
-/* extern int (*MCatchDecodeImageFromCard) (void); doesn't do anything */
-extern int (*MCatchGetColorROP) (uint32_t *rop);
-extern int (*MCatchSetBitPlaneMask) (int read_write, uint16_t mask);
-extern int (*MCatchGetBitPlaneMask) (int read_write, uint16_t *mask);
-extern int (*MCatchGetDisplayScreen) (mcatch_rect_t *);
-extern int (*MCatchSetRectClip) (mcatch_rect_t *);
-extern int (*MCatchGetRectClip) (mcatch_rect_t *);
-extern int (*MCatchSetStyleMask) (mcatch_rect_t *);
-extern int (*MCatchGetStyleMask) (mcatch_rect_t *);
-extern int (*MCatchSetLineMask) (mcatch_rect_t *);
-extern int (*MCatchGetLineMask) (mcatch_rect_t *);
-extern int (*MCatchDisableFeature) (int);
-extern int (*MCatchSetStyleLine) (uint8_t, uint8_t);
-/* extern int (*MCatchPreviewColorkey) (void); doesn't do anything */
-extern int (*MCatchGetFrameBuffer) (uint16_t *width, uint16_t *height);
-extern int (*MCatchSetMutableImage) (uint8_t);
-extern int (*MCatchSetPerPixelAlphaEq) (uint8_t);       /* 0 or 1 */
-extern int (*MCatchSetTransformation) (mcatch_point2d_t *, int /* 0 to 7 */ );
-extern int (*MCatchQueryImage) (uint8_t, uint8_t /* 1 to 3 */ );
-extern int (*MCatchEnableDoubleBuffer) (int /* 0 or 1 */ );
-extern int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]);
-/* extern int (*MCatchUpdateScreen) (void); doesn't do anything (except produce debug output) */
-extern int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ ,
-                              uint8_t /* < 0x18 */ );
-extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void * /* data */ );
-extern void (*NativeGE_pauseRes) (uint8_t);
-extern void (*NativeGE_resumeRes) (uint8_t);
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup ge_fs NativeGE file system access.
+@ingroup nativege
+@{ */
+/* eCos constants from fcntl.h, unistd.h */
+#define FS_O_RDONLY     (1<<0)
+#define FS_O_WRONLY     (1<<1)
+#define FS_O_RDWR       (O_RDONLY|O_WRONLY)
+#define FS_O_CREAT      (1<<3)
+#define FS_O_EXCL       (1<<4)
+#define FS_O_NOCTTY     (1<<5)
+#define FS_O_TRUNC      (1<<6)
+
+#define FS_SEEK_SET		0
+#define FS_SEEK_CUR		1
+#define FS_SEEK_END		2
+
+#define	FS_STDIN_FILENO	0
+#define	FS_STDOUT_FILENO	1
+#define	FS_STDERR_FILENO	2
+
+extern int (*NativeGE_fsOpen) (const char *filename, int flags, int *fd);
+
+/* returns 0 (okay), 2 (error) */
+extern int (*NativeGE_fsRead) (int fd, const void *buf, size_t count, int *result);
+extern int (*NativeGE_fsWrite) (int fd, const void *buf, size_t count, int *result);
+extern int (*NativeGE_fsClose) (int fd);
+extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
+#define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
+
 extern int (*NativeGE_writeRecord) (const char *pathname, void *buf, uint8_t flags,
                                     _ecos_off_t offset, _ecos_size_t count);
 extern int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flags,
                                    _ecos_off_t offset, _ecos_size_t count);
-/* extern void (*NativeGE_showFPS) (void); doesn't do anything */
-extern int (*NativeGE_gameExit) (void);
-extern int (*NativeGE_getTPEvent) (ge_tp_event_t *);
-/* extern char (*NativeGE_setTPClickArea) (void); doesn't do anything */
+/** @} */
 
-extern int (*NativeGE_gamePause) (void);
-extern int (*NativeGE_gameResume) (uint32_t);
+/***************************************************************************/
 
-extern uint16_t (*NativeGE_SPUCommand) (uint16_t, uint32_t);
+/** @addtogroup hw Low-level hardware access
+@{ */
+typedef struct {
+    void (*setBuffFormat) (int);
+    int (*getBuffFormat) (void);
+    int (*getWidth) (void);
+    int (*getHeight) (void);
+    uint16_t *(*getShadowBuffer) (void);
+    void (*setFrameBuffer) (uint16_t *fb);      // educated guess
+    void (*flip) (void);
+    void (*clear) (void);    // actually returns BitBlt_hw retval, but
+                                // that is always 0
+    void (*setShadowBuffer) (uint16_t *fb);     // educated guess
+    uint16_t *(*getFrameBuffer) (void);
+} disp_device_t;
+
+extern disp_device_t *gDisplayDev;
+extern void (*cache_sync) (void);
+
+extern int (*GetArmCoreFreq) (void);
+extern int (*changeARMFreq) (int mhz);
+
+extern void (*hal_clock_read) (uint32_t *us);
+/** @} */
+
+/***************************************************************************/
+
+/** @addtogroup emu Emulator interface (emuIf)
+@{ */
+typedef struct {
+    void *_unknown;
+    int (*pause) (void);
+    int (*resume) (uint32_t);
+    int (*exit) (uint32_t);
+    int (*save) (int);
+    int (*load) (int);
+} emu_apis_t;
+
+extern void **g_stEmuFuncs;
+extern emu_apis_t *g_stEmuAPIs;
+
 
 typedef struct emu_sound_params {
     uint8_t *buf;               /* + 0x0 */
@@ -352,15 +476,16 @@ extern void (*emuIfunknown68) (void *);
 extern int (*emuIfunknown6c) (int, int, int);
 extern void (*emuIfunknown74) (int, void *, int);
 extern int (*emuIfunknown78) (void);
+/** @} */
 
-extern int (*GetArmCoreFreq) (void);
-extern int (*changeARMFreq) (int mhz);
+/***************************************************************************/
 
-extern void (*hal_clock_read) (uint32_t *us);
-extern uint64_t (*cyg_current_time) (void);
+/** @addtogroup spmp SPMP_SendSignal() command interface
+@{ */
+extern uint16_t (*SPMP_SendSignal) (uint16_t cmd, void *data, uint16_t size);
+/** @} */
 
-extern uint64_t libgame_utime(void);
-extern int libgame_chdir_game(void);
+/***************************************************************************/
 
 extern uint32_t *_gameMaxBufferSize_p;
 

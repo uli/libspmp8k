@@ -2,6 +2,8 @@
 #ifndef __GFX_TYPES_H__
 #define __GFX_TYPES_H__
 
+/** @addtogroup ge_gfx
+@{ */
 #define	IMG_TYPE_8BPP		1
 #define	IMG_TYPE_4BPP		2
 
@@ -35,5 +37,6 @@ typedef struct mcatch_pal {
     uint16_t entries;
     uint16_t *data;
 } mcatch_pal_t;
+/** @} */
 
 #endif                          // __GFX_TYPES_H__
