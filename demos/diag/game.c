@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include <libgame.h>
+#include <mcatch_cmd.h>
 
 //#define TEST_FREQ
 
@@ -194,6 +195,11 @@ int main()
     if (_gameMaxBufferSize_p) {
         fs_fprintf(fd, "RAM size %d (end 0x%x)\n", *_gameMaxBufferSize_p, 0xa00000 + *_gameMaxBufferSize_p);
     }
+
+    mcatch_system_time_t time;
+    SPMP_SendSignal(MCATCH_CMD_SYSTEM_SYS_TIME_GET, &time, sizeof(time));
+    fs_fprintf(fd, "RTC %d/%d/%d/%d/%d/%d\n",
+               time.sec, time.min, time.hour, time.day, time.month, time.year);
 
     NativeGE_fsClose(fd);
     return 0;
