@@ -11,6 +11,15 @@ extern "C" {
 #include <stdlib.h>
 #include <sys/types.h>
 
+/* Doxygen workaround: If you don't do this, all hooks will show up in the
+   first group. */
+/** @name Hooks
+@{ */
+#ifdef DOXYGEN
+#define DOXYGEN_SUCKS
+#endif
+/** @} */
+
 /** @defgroup utility Utility functions
 @addtogroup utility
 @{ */
