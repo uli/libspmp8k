@@ -37,11 +37,11 @@ void (**_diag_putc) (char) = 0;
 
 int (*MCatchInitGraph) (void);
 int (*MCatchSetFrameBuffer) (int width, int height);
-int (*MCatchSetDisplayScreen) (mcatch_rect_t *rect);
+int (*MCatchSetDisplayScreen) (mcatch_point2d_t *rect);
 int (*MCatchSetCameraMode) (int mode);
-int (*MCatchSetFGColor) (uint32_t *color);
+int (*MCatchSetFGColor) (uint8_t *color);
 uint32_t (*MCatchGetFGColor) ();
-int (*MCatchSetColorROP) (uint32_t rop);
+int (*MCatchSetColorROP) (uint8_t rop);
 int (*MCatchSetAlphaBld) (uint8_t src_alpha, uint8_t dest_alpha);
 int (*MCatchGetAlphaBld) (uint8_t *src_alpha, uint8_t *dest_alpha);
 int (*MCatchFillRect) (mcatch_rect_t *rect);
@@ -104,7 +104,7 @@ void (*cache_sync) (void) = 0;
 
 /* int (*MCatchStoreImage) (void) = 0; doesn't do anything */
 /* int (*MCatchDecodeImageFromCard) (void) = 0; doesn't do anything */
-int (*MCatchGetColorROP) (uint32_t *rop) = 0;
+int (*MCatchGetColorROP) (uint8_t *rop) = 0;
 int (*MCatchSetBitPlaneMask) (int read_write, uint16_t mask) = 0;
 int (*MCatchGetBitPlaneMask) (int read_write, uint16_t *mask) = 0;
 int (*MCatchGetDisplayScreen) (mcatch_rect_t *) = 0;

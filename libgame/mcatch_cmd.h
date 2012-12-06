@@ -27,6 +27,7 @@
 #include <stdint.h>
 
 /// @addtogroup system System commands
+/// Various system settings and information.
 /// @ingroup spmp
 /// @{
 
@@ -445,6 +446,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup image Image/playback commands
+/// Image file handling.
 /// @ingroup spmp
 /// @{
 
@@ -505,6 +507,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup media Media commands
+/// Media playback and recording.
 /// @ingroup spmp
 /// @{
 typedef struct {
@@ -599,6 +602,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup fs File system commands
+/// File system access.
 /// @ingroup spmp
 /// @{
 
@@ -784,6 +788,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup usb USB commands
+/// USB subsystem control.
 /// @ingroup spmp
 /// @{
 
@@ -828,6 +833,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup gfx Graphics commands
+/// Display subsystem controls.
 /// @ingroup spmp
 /// @{
 
@@ -905,6 +911,7 @@ typedef struct {
 /// @}
 
 /// @addtogroup gm Game manager commands
+/// Game thread management.
 /// @ingroup spmp
 /// @{
 

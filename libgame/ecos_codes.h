@@ -1,4 +1,9 @@
-/// @addtogroup ecos
+/// @addtogroup ecos_error Error codes
+/// Error codes
+/// @ingroup ecos
+/// @{
+
+/// @name Error codes
 /// @{
 #define _ECOS_ENOERR           0     /**< No error */
 #define _ECOS_EPERM            1     /**< Not permitted */
@@ -28,4 +33,6 @@
 #define _ECOS_EDEADLK          35    /**< Resource deadlock would occur */
 #define _ECOS_EDEADLOCK        _ECOS_EDEADLK
 #define _ECOS_ENOSYS           38    /**< Function not implemented */
+/// @}
+
 /// @}

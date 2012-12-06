@@ -1,0 +1,21 @@
+/**
+\mainpage
+
+This document tries to provide you with an overview over the various
+interfaces @c libgame provides to the keen SPMP8000 programmer.
+
+@note @c libgame is mostly a product of reverse-engineering. The information
+presented here may be incorrect, incomplete, or even completely bogus.  Many
+of the type, function, and variable names used in the source code are
+unknown and had to be guessed.
+
+Links:
+- libgame is part of [libspmp8k](http://github.com/ulih/libspmp8k)
+- [eCos](http://ecos.sourceware.org/) is the operating system the SPMP8000
+  firmware is based on.
+- [Suncom Digital](http://www.suncomdigital.com/) (aka Sunkong, aka Shenzhen
+  Youview Technology Co, aka Umbrella Corporation<sup>[citation
+  needed]</sup>) is (probably) the source of SPMP8000 hardware and firmware.
+- [JXD](http://www.jxd.cc) is a manufacturer of SPMP8000-based devices.
+
+*/
