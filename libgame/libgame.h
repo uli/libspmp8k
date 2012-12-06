@@ -20,8 +20,7 @@ extern "C" {
 #endif
 /** @} */
 
-/** @defgroup utility Utility functions
-@addtogroup utility
+/** @addtogroup utility Utility functions
 @{ */
 #define	MAKE_RGB(r, g, b) (r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16);
 #define	MAKE_RGB565(r, g, b) (((r & 0xf8) << 8) | ((g & 0xfc) << 3) | (b >> 3))
@@ -158,7 +157,7 @@ extern int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void *
 
 /***************************************************************************/
 
-/** @addtogroup ge_res NativeGE audio.
+/** @addtogroup ge_res NativeGE audio
 @ingroup nativege
 @{ */
 typedef struct ge_res_entry {
@@ -221,7 +220,7 @@ void libgame_init(void);
 
 /***************************************************************************/
 
-/** @addtogroup dmsg Debug console
+/** @addtogroup dmsg Graphical Debug Console
 @{ */
 int dmsg_init(int x, int y, int width, int height);
 void dmsg_shutdown(void);
@@ -331,7 +330,7 @@ extern uint64_t (*cyg_current_time) (void);
 
 /***************************************************************************/
 
-/** @addtogroup ge_fs NativeGE file system access.
+/** @addtogroup ge_fs NativeGE file system access
 @ingroup nativege
 @{ */
 /* eCos constants from fcntl.h, unistd.h */
@@ -351,6 +350,8 @@ extern uint64_t (*cyg_current_time) (void);
 #define	FS_STDOUT_FILENO	1
 #define	FS_STDERR_FILENO	2
 
+/** @name Hooks
+@{ */
 extern int (*NativeGE_fsOpen) (const char *filename, int flags, int *fd);
 
 /* returns 0 (okay), 2 (error) */
@@ -358,12 +359,14 @@ extern int (*NativeGE_fsRead) (int fd, const void *buf, size_t count, int *resul
 extern int (*NativeGE_fsWrite) (int fd, const void *buf, size_t count, int *result);
 extern int (*NativeGE_fsClose) (int fd);
 extern uint64_t (*NativeGE_fsSeek) (int fd, int offset, int whence);
-#define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
 
 extern int (*NativeGE_writeRecord) (const char *pathname, void *buf, uint8_t flags,
                                     _ecos_off_t offset, _ecos_size_t count);
 extern int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flags,
                                    _ecos_off_t offset, _ecos_size_t count);
+/** @} */
+#define tell(fd) (NativeGE_fsSeek(fd, 0, SEEK_CUR) >> 32)
+
 /** @} */
 
 /***************************************************************************/
@@ -385,12 +388,17 @@ typedef struct {
 } disp_device_t;
 
 extern disp_device_t *gDisplayDev;
+
+/** @name Hooks
+@{ */
 extern void (*cache_sync) (void);
 
 extern int (*GetArmCoreFreq) (void);
 extern int (*changeARMFreq) (int mhz);
 
 extern void (*hal_clock_read) (uint32_t *us);
+/** @} */
+
 /** @} */
 
 /***************************************************************************/
@@ -454,6 +462,8 @@ typedef struct emu_keymap {
 
 #define EMU_FUNC_ENTRY(n)	(g_stEmuFuncs[(n) / 4])
 
+/** @name Hooks
+@{ */
 extern int (*emuIfGraphInit) (emu_graph_params_t *);
 extern int (*emuIfGraphShow) (void);
 extern int (*emuIfGraphChgView) (emu_graph_params_t *);
@@ -487,11 +497,18 @@ extern void (*emuIfunknown74) (int, void *, int);
 extern int (*emuIfunknown78) (void);
 /** @} */
 
+/** @} */
+
 /***************************************************************************/
 
 /** @addtogroup spmp SPMP_SendSignal() command interface
 @{ */
+
+/** @name Hooks
+@{ */
 extern uint16_t (*SPMP_SendSignal) (uint16_t cmd, void *data, uint16_t size);
+/** @} */
+
 /** @} */
 
 /***************************************************************************/
