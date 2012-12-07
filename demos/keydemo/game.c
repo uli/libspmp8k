@@ -74,36 +74,21 @@ int main()
 #endif
 	
 	color = MAKE_RGB(0, 255, 0);
-	okeys.key1 = 0;
-	okeys.key2 = 1;
+	okeys.keys = 1;
 	i=0;
 	while (1) {
 		NativeGE_getKeyInput4Ntv(&keys);
 
-		if (keys.key1 != okeys.key1) {
-			rect.x = 0;
-			rect.y = 100;
-			rect.width = 320;
-			rect.height = 16;
-			MCatchSetColorROP(0xcc);
-			MCatchFillRect(&rect);
-			sprintf(key1, "KEY1: %08X", keys.key1);
-			draw_string_centered(font_id, 100, key1);
-			okeys.key1 = keys.key1;
-			MCatchFlush();
-			MCatchPaint();
-		}
-		
-		if (keys.key2 != okeys.key2) {
+		if (keys.keys != okeys.keys) {
 			rect.x = 0;
 			rect.y = 140;
 			rect.width = 320;
 			rect.height = 16;
 			MCatchSetColorROP(0xcc);
 			MCatchFillRect(&rect);
-			sprintf(key2, "KEY2: %08X", keys.key2);
+			sprintf(key2, "KEY2: %08X", keys.keys);
 			draw_string_centered(font_id, 120, key2);
-			okeys.key2 = keys.key2;
+			okeys.keys = keys.keys;
 			MCatchFlush();
 			MCatchPaint();
 		}

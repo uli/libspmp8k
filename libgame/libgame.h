@@ -77,10 +77,10 @@ extern void libgame_set_debug(int onoff);
 #define	CYBER_KEY_3		GE_KEY_X
 /// @}
 
-/// Key state for controllers 1 and 2.
+/// NativeGE cooked key state.
 typedef struct ge_key_data {
-    uint32_t key1;	///< Controller 1 key state
-    uint32_t key2;	///< Controller 2 key state
+    uint32_t __unused_00;
+    uint32_t keys;	///< key state
 } ge_key_data_t;
 
 /// Touchscreen event.

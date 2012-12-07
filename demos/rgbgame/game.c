@@ -60,11 +60,11 @@ int main()
 	close(fd);
 	
 	NativeGE_getKeyInput4Ntv(&no_keys);
-//	no_keys.key2 &= ~0x5ff0;
+//	no_keys.keys &= ~0x5ff0;
 	while (1) {
 		NativeGE_getKeyInput4Ntv(&keys);
-//		keys.key2 &= ~0x5ff0;
-		if (keys.key2 != no_keys.key2) break;
+//		keys.keys &= ~0x5ff0;
+		if (keys.keys != no_keys.keys) break;
 		uint16_t *fb = (uint16_t *)0x1d80000;
 		for (i = 0; i < 65536; i++) {
 			fb[i] = i;

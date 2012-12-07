@@ -192,14 +192,14 @@ int dmsg_puts(char *__s)
                 // wait for 'O' press
                 while (1) {
                     NativeGE_getKeyInput4Ntv(&keys);
-                    if (keys.key2 & GE_KEY_O)
+                    if (keys.keys & GE_KEY_O)
                         break;
                 }
 
                 // wait for 'O' release
                 while (1) {
                     NativeGE_getKeyInput4Ntv(&keys);
-                    if ((keys.key2 & GE_KEY_O) == 0)
+                    if ((keys.keys & GE_KEY_O) == 0)
                         break;
                 }
             }
