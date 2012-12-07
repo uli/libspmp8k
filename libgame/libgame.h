@@ -867,9 +867,9 @@ typedef struct emu_graph_params {
     uint16_t *pixels;           ///< source buffer
     uint32_t width;             ///< source width
     uint32_t height;            ///< source height
-    uint32_t unknown_flag;
-    uint32_t palette;           ///< +10
-    uint32_t pad2;
+    int has_palette;		///< use color palette
+    void *palette;		///< palette data
+    uint32_t __unused_14;
     uint32_t src_clip_x;        ///< source clipping rectangle left
     uint32_t src_clip_y;	///< source clipping rectangle top
     uint32_t src_clip_w;        ///< source clipping rectangle width
