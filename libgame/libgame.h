@@ -446,19 +446,6 @@ void libgame_init(void);
 
 /***************************************************************************/
 
-/// @addtogroup dmsg Graphical Debug Console
-/// On-screen debug output console.
-/// @{
-int dmsg_init(int x, int y, int width, int height);
-void dmsg_shutdown(void);
-void dmsg_wait(int enable);
-void dmsg_clear(void);
-int dmsg_puts(char *__s);
-int dmsg_printf(char *format, ...);
-/// @}
-
-/***************************************************************************/
-
 /// @addtogroup ecos eCos interface
 /// eCos operating system interface.
 /// The SPMP8000 firmware is based on the eCos operating system, which
