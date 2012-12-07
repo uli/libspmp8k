@@ -77,11 +77,13 @@ extern void libgame_set_debug(int onoff);
 #define	CYBER_KEY_3		GE_KEY_X
 /// @}
 
+/// Key state for controllers 1 and 2.
 typedef struct ge_key_data {
     uint32_t key1;	///< Controller 1 key state
     uint32_t key2;	///< Controller 2 key state
 } ge_key_data_t;
 
+/// Touchscreen event.
 typedef struct ge_tp_event {
     uint32_t type;
     uint32_t key;	///< not set by NativeGE_getTPEvent() (on the A16)
@@ -323,20 +325,51 @@ extern int (*MCatchModifyPalette) (uint8_t img_id, uint8_t start, uint8_t size, 
 ///
 /// See an [example program](@ref audio/game.c).
 /// @{
+
 typedef struct ge_res_entry {
-    char filename[16];
+    char name[16];
     uint8_t *res_data;
 } ge_res_entry_t;
 
+/// Audio resource information.
+typedef struct {
+    char *data;
+    int size;
+} ge_res_info_t;
+
 /// @name Hooks
 /// @{
-extern int (*NativeGE_initRes) (int val, void *res_table);
-extern int (*NativeGE_getRes) (char *filename, void *res_info);
-extern int (*NativeGE_playRes) (uint8_t res_type, int flags, void *res_info);
-extern int (*NativeGE_stopRes) (int arg);
 
-extern void (*NativeGE_pauseRes) (uint8_t);
-extern void (*NativeGE_resumeRes) (uint8_t);
+/// Load resource table.
+/// This function installs an array of ge_res_entry_t structures as the
+/// resource table that will later be used by NativeGE_getRes() to
+/// retrieve audio resources.
+/// @param val ignored
+/// @param[in] res_table table of resources
+extern int (*NativeGE_initRes) (int val, ge_res_entry_t *res_table);
+/// Get audio resource information.
+/// This function fills in a ge_res_info_t structure that can be passed
+/// to NativeGE_playRes().
+/// @param[in] name name as specified in the resource table
+/// @param[out] res_info resource info
+/// @return resource type (must be passed to NativeGE_playRes())
+extern int (*NativeGE_getRes) (char *name, ge_res_info_t *res_info);
+/// Play back audio resource.
+/// Plays an audio resource. Only one resource of a type can be played at
+/// a time.
+/// @param res_type resource type as returned by NativeGE_getRes()
+/// @param repeat repeat count (0 means forever)
+/// @param res_info resource info
+extern int (*NativeGE_playRes) (uint8_t res_type, int repeat, ge_res_info_t *res_info);
+/// Stop audio playback.
+/// @param res_type resource type as returned by NativeGE_getRes()
+extern int (*NativeGE_stopRes) (int res_type);
+/// Pause audio playback.
+/// @param res_type resource type as returned by NativeGE_getRes()
+extern void (*NativeGE_pauseRes) (uint8_t res_type);
+/// Resume audio playback.
+/// @param res_type resource type as returned by NativeGE_getRes()
+extern void (*NativeGE_resumeRes) (uint8_t res_type);
 
 /// @note This hook is only available on recent firmwares.
 extern uint16_t (*NativeGE_SPUCommand) (uint16_t, uint32_t);

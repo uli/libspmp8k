@@ -53,10 +53,10 @@ int (*MCatchFreeImage) (uint8_t img_id);
 int (*MCatchBitblt) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 int (*MCatchSprite) (uint8_t img_id, mcatch_rect_t *rect, mcatch_point2d_t *at);
 
-int (*NativeGE_initRes) (int val, void *res_table);
-int (*NativeGE_getRes) (char *filename, void *res_info);
-int (*NativeGE_playRes) (uint8_t res_type, int flags, void *res_info);
-int (*NativeGE_stopRes) (int arg);
+int (*NativeGE_initRes) (int val, ge_res_entry_t *res_table);
+int (*NativeGE_getRes) (char *filename, ge_res_info_t *res_info);
+int (*NativeGE_playRes) (uint8_t res_type, int flags, ge_res_info_t *res_info);
+int (*NativeGE_stopRes) (int res_type);
 
 int (*NativeGE_fsOpen) (const char *filename, int flags, int *fd);
 int (*NativeGE_fsRead) (int fd, const void *buf, size_t count, int *result);
@@ -127,8 +127,8 @@ int (*MCatchGradientFill) (mcatch_rect_t *, uint16_t[6], uint32_t[2]) = 0;
 /* int (*MCatchUpdateScreen) (void) = 0; doesn't do anything (except produce debug output) */
 int (*MCatchShowFont) (mcatch_point2d_t *, int, uint8_t /* < 0x18 */ , uint8_t /* < 0x18 */ ) = 0;
 int (*MCatchModifyPalette) (uint8_t, uint8_t, uint8_t /* size */ , void * /* data */ ) = 0;
-void (*NativeGE_pauseRes) (uint8_t) = 0;
-void (*NativeGE_resumeRes) (uint8_t) = 0;
+void (*NativeGE_pauseRes) (uint8_t res_type) = 0;
+void (*NativeGE_resumeRes) (uint8_t res_type) = 0;
 int (*NativeGE_writeRecord) (const char *pathname, void *buf, uint8_t flags, _ecos_off_t offset,
                              _ecos_size_t count) = 0;
 int (*NativeGE_readRecord) (const char *pathname, void *buf, uint8_t flags, _ecos_off_t offset,

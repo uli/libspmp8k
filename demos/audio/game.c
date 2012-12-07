@@ -26,18 +26,13 @@
 
 void wait_keypress(void);
 
-typedef struct {
-    char    *audio_data;
-    int     audio_size;
-} audio_data_desc;
-
 ge_res_entry_t resources[] = {
     {
-        .filename = "8k8bpcm.wav",
-        .res_data = _8k8bpcm_data
+        .name = "8k8bpcm.wav",
+        .res_data = (uint8_t *)_8k8bpcm_data
     },
     {
-        .filename = "TAEND",
+        .name = "TAEND",
         .res_data = NULL
     }
 };
@@ -58,14 +53,14 @@ void wait_keypress(void)
 int main(void)
 {
     int type;
-    audio_data_desc ri;
+    ge_res_info_t ri;
 
     libgame_init();
 
     diag_printf("\n");
     diag_printf("Starting audio test.\n");
 
-    NativeGE_initRes(0, &resources);
+    NativeGE_initRes(0, resources);
 
     type = NativeGE_getRes("8k8bpcm.wav", &ri);
     NativeGE_playRes(type, 1, &ri);
