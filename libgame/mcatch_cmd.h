@@ -24,6 +24,10 @@
 #ifndef __SPMP_H__
 #define __SPMP_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #include <stdint.h>
 
 /// @addtogroup system System commands
@@ -956,5 +960,8 @@ typedef struct {
 
 /// @}
 
-#endif
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
+#endif
