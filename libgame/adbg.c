@@ -120,5 +120,5 @@ int adbg_init(void)
 
 void adbg_fini(void)
 {
-    emuIfSoundCleanup(&sp);
+    emuIfSoundCleanup();
 }

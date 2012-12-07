@@ -815,9 +815,46 @@ typedef struct emu_sound_params {
 
 /// @name Hooks
 /// @{
+
+/// Initialize emulator sound subsystem.
+/// This function initializes the sound system and sets the hardware up
+/// according to the values you pass in your emu_sound_params_t.
+/// @note Only the rate and the number of channels (and, if supported, the
+/// callback pointer) are used on initialization.  You can change the other
+/// parameters later without having to reinitialize.
+/// @param[in] params audio parameters
+/// @return 0 on success, -4 on error
 extern int (*emuIfSoundInit) (emu_sound_params_t *params);
-extern uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
-extern uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
+/// Play a sound buffer.
+/// Plays the buffer currently set in the parameter (emu_sound_params_t::buf
+/// and emu_sound_params_t::buf_size) at the rate and number of channels
+/// chosen when emuIfSoundInit() was called.
+///
+/// emuIfSoundPlay() blocks if playing the previous buffer has not been
+/// completed yet. This occasionally poses a problem because in a typical
+/// game program there are two blocking functions, this one and
+/// emuIfGraphShow(). This constellation may cause a substantial loss
+/// of usable CPU time if the two events waited for (end of sound buffer
+/// and vertical blanking period) are not synchronized. There are several
+/// solutions to this problem:
+/// - Synchronize sound buffer size and vertical refresh period. This
+///   means you have to choose the sound buffer size in such a way that
+///   it plays for exactly the duration of one display frame (1/60 s).
+/// - Turn off double buffering. See disp_device_t::flip().
+/// - Run the audio code in a separate thread. This requires access
+///   to the eCos threading interface, which is currently not available
+///   in libgame.
+/// - Use the emu_sound_params_t::callback. This requires sound callback
+///   support (and thus won't work on older devices) and a hack setting
+///   the "emulator type" (gEmuType) to 5 because the firmware will
+///   otherwise ignore this parameter.
+/// @param params audio parameters
+/// @return zero
+extern int (*emuIfSoundPlay) (emu_sound_params_t *params);
+/// Finalize emulator sound subsystem.
+/// Call this function to stop the audio subsystem.
+/// @return zero
+extern int (*emuIfSoundCleanup) (void);
 /// @}
 
 /// @}

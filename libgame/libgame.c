@@ -151,8 +151,8 @@ int (*emuIfGraphShow) (void);
 int (*emuIfGraphChgView) (emu_graph_params_t *);
 int (*emuIfGraphCleanup) (void);
 int (*emuIfSoundInit) (emu_sound_params_t *params);
-uint32_t (*emuIfSoundPlay) (emu_sound_params_t *params);
-uint32_t (*emuIfSoundCleanup) (emu_sound_params_t *params);
+int (*emuIfSoundPlay) (emu_sound_params_t *params);
+int (*emuIfSoundCleanup) (void);
 
 int (*emuIfunknown0c) (void *) = 0;     /* sets the source buffer? */
 int (*emuIfKeyInit) (emu_keymap_t *) = 0;
