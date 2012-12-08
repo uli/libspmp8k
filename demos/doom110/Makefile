@@ -20,7 +20,7 @@ OBJS	= ./objs/g_game.o ./objs/am_map.o ./objs/f_wipe.o  ./objs/m_random.o \
 
 # OBJS	+= $(RESOBJS)
 
-LIBS	= -lc -lgcc -lgame
+LIBS	= -lgame -lc -lgcc
 
 include $(LIBSPMP8K)/main.cfg
 include $(LIBGAME)/libgame.mk

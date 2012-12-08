@@ -196,13 +196,13 @@ void I_Error (char *error, ...)
 	// wait until 'O' is released
 	while (1) {
 		NativeGE_getKeyInput4Ntv(&keys);
-		if ((keys.key2 & GE_KEY_O) == 0) break;
+		if ((keys.keys & GE_KEY_O) == 0) break;
 	}
 	
 	// wait for 'O'
 	while (1) {
 		NativeGE_getKeyInput4Ntv(&keys);
-		if (keys.key2 & GE_KEY_O) break;
+		if (keys.keys & GE_KEY_O) break;
 	}
 	
 	exit(-1);

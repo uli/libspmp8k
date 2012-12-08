@@ -211,8 +211,8 @@ void I_StartTic (void)
 	NativeGE_getKeyInput4Ntv(&keys);
 	
 	// UP
-	key = keys.key2 & GE_KEY_UP;
-	prev_key = prev_keys.key2 & GE_KEY_UP;
+	key = keys.keys & GE_KEY_UP;
+	prev_key = prev_keys.keys & GE_KEY_UP;
 	event.data1 = KEY_UPARROW;
 	if ((key == GE_KEY_UP) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -226,8 +226,8 @@ void I_StartTic (void)
 	}
 	
 	// DOWN
-	key = keys.key2 & GE_KEY_DOWN;
-	prev_key = prev_keys.key2 & GE_KEY_DOWN;
+	key = keys.keys & GE_KEY_DOWN;
+	prev_key = prev_keys.keys & GE_KEY_DOWN;
 	event.data1 = KEY_DOWNARROW;
 	if ((key == GE_KEY_DOWN) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -241,8 +241,8 @@ void I_StartTic (void)
 	}
 	
 	// LEFT
-	key = keys.key2 & GE_KEY_LEFT;
-	prev_key = prev_keys.key2 & GE_KEY_LEFT;
+	key = keys.keys & GE_KEY_LEFT;
+	prev_key = prev_keys.keys & GE_KEY_LEFT;
 	event.data1 = KEY_LEFTARROW;
 	if ((key == GE_KEY_LEFT) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -256,8 +256,8 @@ void I_StartTic (void)
 	}
 	
 	// RIGHT
-	key = keys.key2 & GE_KEY_RIGHT;
-	prev_key = prev_keys.key2 & GE_KEY_RIGHT;
+	key = keys.keys & GE_KEY_RIGHT;
+	prev_key = prev_keys.keys & GE_KEY_RIGHT;
 	event.data1 = KEY_RIGHTARROW;
 	if ((key == GE_KEY_RIGHT) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -271,8 +271,8 @@ void I_StartTic (void)
 	}
 	
 	// X (ENTER)
-	key = keys.key2 & GE_KEY_X;
-	prev_key = prev_keys.key2 & GE_KEY_X;
+	key = keys.keys & GE_KEY_X;
+	prev_key = prev_keys.keys & GE_KEY_X;
 	event.data1 = KEY_RCTRL;
 	if ((key == GE_KEY_X) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -286,8 +286,8 @@ void I_StartTic (void)
 	}
 	
 	// O (USE)
-	key = keys.key2 & GE_KEY_O;
-	prev_key = prev_keys.key2 & GE_KEY_O;
+	key = keys.keys & GE_KEY_O;
+	prev_key = prev_keys.keys & GE_KEY_O;
 	event.data1 = 0x20;
 	if ((key == GE_KEY_O) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -301,8 +301,8 @@ void I_StartTic (void)
 	}
 	
 	// SELECT (ENTER)
-	key = keys.key2 & 0xF000;
-	prev_key = prev_keys.key2 & 0xF000;
+	key = keys.keys & 0xF000;
+	prev_key = prev_keys.keys & 0xF000;
 	event.data1 = KEY_ENTER;
 	if ((key != 0) && (prev_key == 0)) {
 		event.type = ev_keydown;
@@ -315,7 +315,7 @@ void I_StartTic (void)
 	//	dmsg_puts("s");
 	}
 	
-	prev_keys.key2 = keys.key2;
+	prev_keys.keys = keys.keys;
 }
 /*
 KEY_UP		1
@@ -460,6 +460,5 @@ void I_InitGraphics(void)
 	MCatchSetColorROP(0xcc);
 	
 	// initialize input
-	prev_keys.key1 = 0;
-	prev_keys.key2 = 0;
+	prev_keys.keys = 0;
 }
