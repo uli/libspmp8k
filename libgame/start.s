@@ -76,6 +76,10 @@ _exit:
 	ldr		sp, [r1]
 	ldmia	sp!,{r0-r12, pc}
 
+.global __dso_handle
+.weak __dso_handle
+__dso_handle: .word 0
+
 .global __aeabi_unwind_cpp_pr0
 .weak __aeabi_unwind_cpp_pr0
 __aeabi_unwind_cpp_pr0:
