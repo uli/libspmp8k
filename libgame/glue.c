@@ -43,7 +43,7 @@ static void errno_from_ecos(void)
 */
 char *__env[1] = { 0 };
 
-char **environ = __env;
+//char **environ = __env;
 
 /* _exit
 **  Exit a program without cleaning up files.
