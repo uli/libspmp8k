@@ -62,12 +62,25 @@ int main(int argc, char **argv)
 	if ((fout = fopen(filename, "w+")) == NULL) ERR("cannot create header file\n")
 	//strcpy(filename, argv[2]);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
-	for (i=0; i<strlen(argv[2]); i++) str[i] = toupper(filename[i]);
+	for (i=0; i<strlen(argv[2]); i++) {
+		str[i] = toupper(filename[i]);
+	}
+
+	char *fnstripped = strrchr(filename, '/');
+	if (!fnstripped)
+		fnstripped = filename;
+	else
+		fnstripped++;
+	char *strstripped = strrchr(str, '/');
+	if (!strstripped)
+		strstripped = str;
+	else
+		strstripped++;
 	
-	fprintf(fout, "\n#ifndef __%s_H__\n#define __%s_H__\n\n", str, str);
-	fprintf(fout, "#define %s_LENGTH\t%d\n\n", str, size);
-	fprintf(fout, "extern char %s_data[];\n\n", filename);
-	fprintf(fout, "#endif // __%s_H__\n\n", str);
+	fprintf(fout, "\n#ifndef __%s_H__\n#define __%s_H__\n\n", strstripped, strstripped);
+	fprintf(fout, "#define %s_LENGTH\t%d\n\n", strstripped, size);
+	fprintf(fout, "extern char %s[];\n\n", fnstripped);
+	fprintf(fout, "#endif // __%s_H__\n\n", strstripped);
 	fclose(fout);
 	fout = NULL;
 
@@ -78,8 +91,8 @@ int main(int argc, char **argv)
 	if ((fout = fopen(filename, "w+")) == NULL) ERR("cannot create header file\n")
 	//strcpy(filename, argv[2]);
 	if (strchr(filename, '.') != NULL) *strchr(filename, '.') = '\0';
-	fprintf(fout, "\n#include \"%s.h\"\n\n", filename);
-	fprintf(fout, "char %s_data[%s_LENGTH] = {", filename, str);
+	fprintf(fout, "\n#include \"%s.h\"\n\n", fnstripped);
+	fprintf(fout, "char %s[%s_LENGTH] = {", fnstripped, strstripped);
 	for (i=0; i<size; i++) {
 		if ((i % 12) == 0) fprintf(fout, "\n\t");
 		if (i == (size-1)) fprintf(fout, "0x%02x\n};\n\n", data[i]);
