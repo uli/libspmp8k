@@ -97,3 +97,22 @@ libvorbis-$(LIBVORBIS_VERSION)/config.h: libogg
 		./configure --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
 			--with-ogg-libraries="../lib -logg -lc -lgame" \
 	)
+
+tremor: lib/libvorbisidec.a
+
+lib/libvorbisidec.a: Tremor/.libs/libvorbisidec.a
+	$(MAKE) -C Tremor install
+
+Tremor/.libs/libvorbisidec.a: Tremor/config.h
+	# keep libtool from complaining about funny LDFLAGS
+	$(MAKE) -C Tremor/lib libvorbisidec.la LDFLAGS=""
+	$(MAKE) -C Tremor
+
+Tremor/config.h: libogg
+	(cd Tremor ; \
+		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
+		LIBS="-lc -lgame" \
+		./autogen.sh --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
+			OGG_LIBS="../lib -logg -lc -lgame" OGG_CFLAGS="-I../include" \
+	)
