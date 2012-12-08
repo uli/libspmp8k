@@ -1,9 +1,11 @@
 ZLIB_VERSION = 1.2.7
 LIBMAD_VERSION = 0.15.1b
+LIBOGG_VERSION = 1.3.0
+LIBVORBIS_VERSION = 1.3.3
 
 include ../main.cfg
 
-all: zlib freetype
+all: zlib freetype libmad # libogg libvorbis
 
 zlib: lib/libz.a
 
@@ -37,6 +39,8 @@ clean:
 	rm -fr lib/*.a include/*
 	$(MAKE) -C freetype-flat clean
 	rm -f $(LIBMAD_DIR)/*.o $(LIBMAD_DIR)/libmad.a
+	$(MAKE) -C libogg-$(LIBOGG_VERSION) clean
+	$(MAKE) -C libvorbis-$(LIBVORBIS_VERSION) clean
 
 libmad: lib/libmad.a
 
@@ -56,3 +60,40 @@ libmad-$(LIBMAD_VERSION)/libmad.a: libmad-$(LIBMAD_VERSION)/*.h $(LIBMAD_SRC2)
 	cd $(LIBMAD_DIR) ; $(TOOLCHAIN)gcc -O2 -Wall -DASO_INTERLEAVE1 -DASO_IMDCT \
 		-DOPT_SPEED -DOPT_SSO -DHAVE_ASSERT_H -DFPM_ARM -c $(LIBMAD_SRC)
 	$(TOOLCHAIN)ar r $@ $(LIBMAD_OBJ)
+
+libogg: lib/libogg.a
+
+lib/libogg.a: libogg-$(LIBOGG_VERSION)/src/.libs/libogg.a
+	$(MAKE) -C libogg-$(LIBOGG_VERSION) install
+
+libogg-$(LIBOGG_VERSION)/src/.libs/libogg.a: libogg-$(LIBOGG_VERSION)/config.h
+	# keep libtool from complaining about funny LDFLAGS
+	$(MAKE) -C libogg-$(LIBOGG_VERSION)/src libogg.la LDFLAGS=""
+	$(MAKE) -C libogg-$(LIBOGG_VERSION)
+
+libogg-$(LIBOGG_VERSION)/config.h:
+	(cd libogg-$(LIBOGG_VERSION) ; \
+		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
+		LIBS="-lc -lgame" \
+		./configure --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
+	)
+
+libvorbis: lib/libvorbis.a
+
+lib/libvorbis.a: libvorbis-$(LIBVORBIS_VERSION)/src/.libs/libvorbis.a
+	$(MAKE) -C libvorbis-$(LIBVORBIS_VERSION) install
+
+libvorbis-$(LIBVORBIS_VERSION)/src/.libs/libvorbis.a: libvorbis-$(LIBVORBIS_VERSION)/config.h
+	# keep libtool from complaining about funny LDFLAGS
+	$(MAKE) -C libvorbis-$(LIBVORBIS_VERSION)/lib libvorbis.la libvorbisfile.la libvorbisenc.la LDFLAGS=""
+	$(MAKE) -C libvorbis-$(LIBVORBIS_VERSION)
+
+libvorbis-$(LIBVORBIS_VERSION)/config.h: libogg
+	(cd libvorbis-$(LIBVORBIS_VERSION) ; \
+		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
+		LIBS="-lc -lgame" \
+		./configure --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
+			--with-ogg-libraries="../lib -logg -lc -lgame" \
+	)
