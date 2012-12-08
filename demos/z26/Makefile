@@ -13,9 +13,9 @@ MKBING	= $(TOOLS_DIR)/mkbing
 
 LDSCRIPT= $(LIBGAME)/libgame.ld
 
-CFLAGS	= -O2 -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -nostdlib -mcpu=arm926ej-s -msoft-float
-LDFLAGS	= -nostdlib -L$(LIBGAME) -L$(NEWLIB)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
-LIBS	= -lgame -lc -lgcc
+CFLAGS	= -O2 -c -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -mcpu=arm926ej-s -msoft-float
+LDFLAGS	= -L$(LIBGAME) -L$(NEWLIB)/lib -march=armv5 -msoft-float
+LIBS	=
 START_O	= $(LIBGAME)/start.o
 
 #OBJS	= z26.o globals.o \

@@ -1,4 +1,7 @@
 ENTRY(start)
+STARTUP(start.o)
+
+GROUP (-lgame -lc)
 
 SECTIONS
 {

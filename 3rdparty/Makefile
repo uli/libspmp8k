@@ -74,8 +74,7 @@ libogg-$(LIBOGG_VERSION)/src/.libs/libogg.a: libogg-$(LIBOGG_VERSION)/config.h
 libogg-$(LIBOGG_VERSION)/config.h:
 	(cd libogg-$(LIBOGG_VERSION) ; \
 		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
-		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
-		LIBS="-lc -lgame" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame" \
 		./configure --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
 	)
 
@@ -92,10 +91,9 @@ libvorbis-$(LIBVORBIS_VERSION)/src/.libs/libvorbis.a: libvorbis-$(LIBVORBIS_VERS
 libvorbis-$(LIBVORBIS_VERSION)/config.h: libogg
 	(cd libvorbis-$(LIBVORBIS_VERSION) ; \
 		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
-		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
-		LIBS="-lc -lgame" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame" \
 		./configure --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
-			--with-ogg-libraries="../lib -logg -lc -lgame" \
+			--with-ogg-libraries="../lib" \
 	)
 
 tremor: lib/libvorbisidec.a
@@ -111,8 +109,7 @@ Tremor/.libs/libvorbisidec.a: Tremor/config.h
 Tremor/config.h: libogg
 	(cd Tremor ; \
 		CC=$(TOOLCHAIN)gcc CFLAGS="-O2 -mcpu=arm926ej-s -Wall" \
-		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame `pwd`/../../libgame/start.o" \
-		LIBS="-lc -lgame" \
+		LDFLAGS="-nostartfiles -T `pwd`/../../libgame/libgame.ld -L`pwd`/../../libgame" \
 		./autogen.sh --host=arm-eabi --prefix=`pwd`/.. --libdir=`pwd`/../lib \
-			OGG_LIBS="../lib -logg -lc -lgame" OGG_CFLAGS="-I../include" \
+			OGG_LIBS="../lib" OGG_CFLAGS="-I../include" \
 	)
