@@ -5,7 +5,7 @@
 #
 #
 
-all: build-rgbgame build-keydemo build-doom110 build-z26
+all: build-rgbgame build-keydemo build-doom110 build-z26 build-adbg build-audio
 
 clean:
 	$(MAKE) -C rgbgame clean
@@ -31,3 +31,8 @@ build-doom110:
 build-z26:
 	$(MAKE) -C z26
 
+build-adbg:
+	$(MAKE) -C adbg
+
+build-audio:
+	$(MAKE) -C audio

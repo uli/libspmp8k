@@ -31,7 +31,7 @@ void wait_keypress(void)
 
     while (1) {
         NativeGE_getKeyInput4Ntv(&keys);
-        if (keys.key2 != no_keys.key2)
+        if (keys.keys != no_keys.keys)
             break;
     }
 }
