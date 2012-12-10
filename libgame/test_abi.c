@@ -61,6 +61,7 @@ int main(int argc, char **argv)
     SETFUN(5, MCatchPaint);
     SETFUN(6, NativeGE_getKeyInput4Ntv);
     SETFUN(7, _gFunTable);
+    SETFUN(8, NativeGE_gamePause);
 
     /* Load the firmware image to memory at 0x280000. We assume that the code 
        in the firmware file starts at offset 0x4c. */
@@ -122,5 +123,22 @@ int main(int argc, char **argv)
     PP(g_onoff_p);
     PP(g_stEmuAPIs);
     PP(_gameMaxBufferSize_p);
+    PP(cyg_thread_create);
+    PP(cyg_thread_resume);
+    PP(cyg_thread_exit);
+    PP(cyg_thread_delete);
+    PP(cyg_thread_suspend);
+    PP(cyg_thread_self);
+    PP(cyg_thread_set_priority);
+    PP(cyg_thread_get_priority);
+    PP(cyg_scheduler_lock);
+    PP(cyg_scheduler_unlock);
+    PP(cyg_mutex_destroy);
+    PP(cyg_mutex_init);
+    PP(cyg_mutex_lock);
+    PP(cyg_mutex_unlock);
+    PP(cyg_mutex_release);
+    PP(cyg_mutex_set_protocol);
+    PP(cyg_mutex_set_ceiling);
     return 0;
 }

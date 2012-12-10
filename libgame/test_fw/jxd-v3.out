@@ -6,6 +6,7 @@ NativeGE_fsWrite = 0046b700
 MCatchPaint = 002dc148
 NativeGE_getKeyInput4Ntv = 002d2234
 _gFunTable = 005f5614
+NativeGE_gamePause = 0046a32c
 gFunTable length 85
 g_stEmuFuncs 00569e80 (new ABI)
 gDisplayDev 0055c890
@@ -39,3 +40,20 @@ cyg_current_time 0033a630
 g_onoff_p 00519478
 g_stEmuAPIs 00569f18
 _gameMaxBufferSize_p 00569f5c
+cyg_thread_create 0033a3c4
+cyg_thread_resume 0033a484
+cyg_thread_exit 0033a41c
+cyg_thread_delete 0033a430
+cyg_thread_suspend 0033a470
+cyg_thread_self 0033a4c0
+cyg_thread_set_priority 0033a4d0
+cyg_thread_get_priority 0033a4e4
+cyg_scheduler_lock 0033a30c
+cyg_scheduler_unlock 0033a348
+cyg_mutex_destroy 0033a938
+cyg_mutex_init 0033a924
+cyg_mutex_lock 0033a94c
+cyg_mutex_unlock 0033a960
+cyg_mutex_release 0033a974
+cyg_mutex_set_protocol 0033a99c
+cyg_mutex_set_ceiling 0033a988
