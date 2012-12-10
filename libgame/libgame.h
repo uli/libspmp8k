@@ -446,7 +446,7 @@ void libgame_init(void);
 
 /***************************************************************************/
 
-/// @addtogroup ecos eCos interface
+/// @defgroup ecos eCos interface
 /// eCos operating system interface.
 /// The SPMP8000 firmware is based on the eCos operating system, which
 /// provides standard-conforming mechanisms for file system access and
@@ -454,11 +454,13 @@ void libgame_init(void);
 /// application because their functionality is not available or has been
 /// artificially limited in the "official" SPMP8000 programmer's
 /// interfaces.
+///
+/// Check the [eCos Reference Manual](http://ecos.sourceware.org/docs-latest/ref/ecos-ref.html)
+/// for additional information.
 /// @warning The data types and constants used by eCos are different
 /// from those used by newlib. Do not mix them! Whenever you call
 /// functions with an \c _ecos prefix you should only use data types
 /// with an \c _ecos prefix.
-/// @{
 
 /// @addtogroup ecos_fs File system interface
 /// File system access.
@@ -583,17 +585,27 @@ extern int (*_ecos_fsync) (int fd);
 
 /// @}
 
+/// @addtogroup ecos_misc Miscellaneous
+/// @ingroup ecos
+/// Various functions not belonging to any other category.
+/// @{
+
 /// @name Hooks
 /// @{
 
-/// Delay the current thread by a number of ticks.
-/// @param delay Delay in system ticks [cyg_tick_count_t, actually]
-extern void (*cyg_thread_delay) (uint64_t delay);
 /// Get system time in ticks.
 /// eCos as configured in the SPMP8000 firmware keeps system time with a 100
 /// Hz resolution.
 /// @return current time (ticks)
 extern uint64_t (*cyg_current_time) (void);
+/// @}
+
+/// @}
+
+/// @addtogroup ecos_thread Threads and synchronization
+/// @ingroup ecos
+/// eCos threads, mutexes, and scheduling.
+/// @{
 
 typedef uint32_t cyg_addrword_t;
 typedef void cyg_thread_entry_t(cyg_addrword_t);
@@ -603,6 +615,32 @@ typedef uint8_t cyg_thread[0xa0];
 typedef int cyg_bool_t;
 typedef uint32_t cyg_priority_t;
 
+typedef void cyg_mutex_t;
+
+enum cyg_mutex_protocol
+{
+    CYG_MUTEX_NONE = 0,                   ///< no inversion protocol
+    CYG_MUTEX_INHERIT,                    ///< priority inheritance protocol
+    CYG_MUTEX_CEILING                     ///< priority ceiling protocol
+};
+
+/// @name Hooks
+/// @{
+
+/// Delay the current thread by a number of ticks.
+/// @param delay Delay in system ticks [cyg_tick_count_t, actually]
+extern void (*cyg_thread_delay) (uint64_t delay);
+
+/// Create a new thread.
+/// @param[in] sched_info scheduling info; in our case, it's the priority (lower number means higher priority)
+/// @param[in] entry entry point function
+/// @param[in] entry_data entry data passed as a parameter to the entry point function
+/// @param[in] name optional thread name
+/// @param[in] stack_base pointer to memory used as stack; allegedly it is possible to pass NULL and
+///            have the OS allocate the memory, but this has always led to a system crash for me
+/// @param[in] stack_size size of stack memory
+/// @param[out] handle new thread's handle
+/// @param[in] thread memory used by the operating system to store thread information
 extern void (*cyg_thread_create) (
     cyg_addrword_t      sched_info,             ///< scheduling info (eg pri)
     cyg_thread_entry_t  *entry,                 ///< entry point function
@@ -614,39 +652,90 @@ extern void (*cyg_thread_create) (
     cyg_thread          *thread                 ///< put thread here
 );
 
+/// End current thread.
 extern void (*cyg_thread_exit) (void);
+/// Delete thread.
+/// @param[in] thread thread handle
+/// According to the eCos documentation, calling this function is "dangerous"
+/// and should be avoided in favor of messaging the thread to quit on its own
+/// accord. One wonders why this function is made available in the first
+/// place...
 extern cyg_bool_t (*cyg_thread_delete) (cyg_handle_t thread);
+/// Suspend thread.
+/// @param[in] thread thread handle
 extern void (*cyg_thread_suspend) (cyg_handle_t thread);
+/// Resume thread.
+/// @param[in] thread thread_handle;
 extern void (*cyg_thread_resume) (cyg_handle_t thread);
+/// Get current thread's handle.
+/// Useful for getting or setting one's own priority, for instance.
+/// @return current thread's handle
 extern cyg_handle_t (*cyg_thread_self) (void);
+/// Set thread priority.
+/// Lower number means higher priority.
+/// @note It is probably a good idea not to use hardcoded values here. 
+/// It seems that different firmwares use different priorities for the
+/// various system threads, and using a fixed number may cause undesirable
+/// effects.  Instead, use the main thread's priority as a starting point.
+/// @param[in] thread thread handle
+/// @param[in] priority desired priority
 extern void (*cyg_thread_set_priority) (cyg_handle_t thread, cyg_priority_t priority );
+/// Get thread priority.
+/// @param thread thread handle
+/// @return thread's priority
 extern cyg_priority_t (*cyg_thread_get_priority) (cyg_handle_t thread);
 
-/// Lock and unlock the scheduler. When the scheduler is
-/// locked thread preemption is disabled.
+/// Lock the scheduler.
+/// When the scheduler is locked thread preemption is disabled.
 extern void (*cyg_scheduler_lock)(void);
+/// Unlock the scheduler.
 extern void (*cyg_scheduler_unlock)(void);
 
-typedef void cyg_mutex_t;
-
-enum cyg_mutex_protocol
-{
-    CYG_MUTEX_NONE = 0,                   ///< no inversion protocol
-    CYG_MUTEX_INHERIT,                    ///< priority inheritance protocol
-    CYG_MUTEX_CEILING                     ///< priority ceiling protocol
-};
-
-extern void (*cyg_mutex_init) (
-    cyg_mutex_t *mutex          ///< Mutex to init
-);
+/// Initialize mutex.
+/// @param[out] mutex mutex to initialize
+extern void (*cyg_mutex_init) (cyg_mutex_t *mutex);
+/// Finalize mutex.
+/// @param[in] mutex mutex to destroy
 extern void (*cyg_mutex_destroy) (cyg_mutex_t *mutex);
+/// Lock mutex.
+/// @param[in] mutex mutex to lock
+/// @return 1 if mutex was locked, 0 otherwise
 extern cyg_bool_t (*cyg_mutex_lock) (cyg_mutex_t *mutex);
+/// Unlock mutex.
+/// @note Unfortunately, the variety @c cyg_mutex_trylock() is not available.
+/// The likely reason is that it is not used in the SPMP8000 firmware and
+/// has therefore not been linked into the binary.
+/// @param[in] mutex mutex to unlock
 extern void (*cyg_mutex_unlock) (cyg_mutex_t *mutex);
+/// Release all threads waiting on a mutex.
+/// This releases all threads waiting on a mutex. All threads that were
+/// waiting on the mutex will be receive an error condition indicating that
+/// the mutex was not acquired.
+/// @param[in] mutex mutex to release
 extern void (*cyg_mutex_release) (cyg_mutex_t *mutex);
+/// Set ceiling priority of mutex.
+/// This sets the ceiling priority of a thread that acquires the given
+/// mutex.  This is only meaningful if the protocol of the mutex is set to
+/// CYG_MUTEX_CEILING. Mutexes with ceilings cause the thread that has
+/// acquired the mutex to inherit the ceiling priority temporarily to avoid
+/// deadlocks.
+/// @param[in] mutex mutex to set ceiling of
+/// @param[in] priority ceiling priority
 extern void (*cyg_mutex_set_ceiling) (cyg_mutex_t *mutex, cyg_priority_t priority);
+/// Set mutex protocol.
+/// This sets the protocol of a mutex. The following protocols are valid:
+/// - CYG_MUTEX_NONE - no priority inheritance
+/// - CYG_MUTEX_INHERIT - inherit priority of thread currently holding mutex
+/// - CYG_MUTEX_CEILING - inherit ceiling priority of mutex
+///
+/// A priority will only be inherited if it causes the thread holding the
+/// mutex to go up in priority.
+/// @param[in] mutex mutex to set protocol of
+/// @param[in] protocol protocol to use
 extern void (*cyg_mutex_set_protocol ) (cyg_mutex_t *mutex, enum cyg_mutex_protocol protocol);
-
 /// @}
+
+/// @example thread/thread.c
 
 /// @}
 
