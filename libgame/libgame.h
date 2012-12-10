@@ -807,7 +807,7 @@ typedef struct {
     void *_unknown;
     int (*pause) (void);
     int (*resume) (uint32_t);
-    int (*exit) (uint32_t);
+    int (*exit) ();
     int (*save) (int);
     int (*load) (int);
 } emu_apis_t;
