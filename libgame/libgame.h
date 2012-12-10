@@ -599,7 +599,7 @@ typedef uint32_t cyg_addrword_t;
 typedef void cyg_thread_entry_t(cyg_addrword_t);
 typedef uint32_t cyg_ucount32;
 typedef uint32_t cyg_handle_t;
-typedef void cyg_thread;
+typedef uint8_t cyg_thread[0xa0];
 typedef int cyg_bool_t;
 typedef uint32_t cyg_priority_t;
 
