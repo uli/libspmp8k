@@ -274,7 +274,7 @@ static uint32_t *find_fs_function(int index)
 /* Is this a PC-relative load? */
 static int is_ldr_pc(uint32_t val)
 {
-    return (val & 0xffff0000U) == 0xe59f0000U;
+    return (val & 0x0fff0000U) == 0x059f0000U;
 }
 
 /* Get address of PC-relative load. */
