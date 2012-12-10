@@ -1,5 +1,5 @@
 /**
-\mainpage
+@mainpage
 
 This document tries to provide you with an overview over the various
 interfaces @c libgame provides to the keen SPMP8000 programmer.
@@ -9,7 +9,7 @@ presented here may be incorrect, incomplete, or even completely bogus.  Many
 of the type, function, and variable names used in the source code are
 unknown and had to be guessed.
 
-Links:
+@section Links
 - libgame is part of [libspmp8k](http://github.com/ulih/libspmp8k)
 - [eCos](http://ecos.sourceware.org/) is the operating system the SPMP8000
   firmware is based on.
@@ -17,5 +17,279 @@ Links:
   Youview Technology Co, aka Umbrella Corporation<sup>[citation
   needed]</sup>) is (probably) the source of SPMP8000 hardware and firmware.
 - [JXD](http://www.jxd.cc) is a manufacturer of SPMP8000-based devices.
+
+@page ifaces Interface Overview
+The SPMP8000 firmware is pieced together from various components:
+- The **eCos** real-time operating system forms the base of the software stack.
+- The **SPMP** media player subsystem provides a mid-level interface for
+  the built-in "media player" applications.
+- **MicroWindows** (now called Nano-X) provides a graphical user interface
+  for the built-in applications.
+- The "native game" environment (**NativeGE**) provides an API for third-
+  party applications.
+- The emulator interface (**emuIf**) provides an API for the built-in emulators
+  that come with the video game-form factor SPMP8000 devices.
+- The **display device** provides an abstraction of the various kinds of
+  displays (LCDs, SDTV, HDMI) that may be attached.
+
+@section subsystems Available Interfaces
+
+Much of the functionality that you may want to use in your application is
+provided by more than one interface, and this document will give you a few
+hints as to what can be found where and which variety is the best to use.
+
+@subsection eCos
+
+
+[eCos](http://ecos.sourceware.org) is an open-source real-time operating
+system and has been chosen by Sunplus (or whatever their real name is) as
+the base operating system.
+
+eCos is a highly configurable and very light-weight operating system. In the
+SPMP8000 firmware, eCos contributes these things:
+
+- Limited hardware abstraction, mostly for the really low-level stuff, such
+  as timers and interrupt handling.
+- The file systems, namely FAT and romfs.
+- Thread scheduling.
+- Synchronization primitives.
+
+libgame provides you with access to eCos's [file system](@ref ecos_fs),
+[threading, and synchronization](@ref ecos_thread) API.
+
+@subsection SPMP
+SPMP (probably) stands for "Sunplus Portable Media Player", and is a
+relatively stable command-based interface that is also used in devices based
+on the SPMP30xx series of microcontrollers. It provides a plethora of
+functions, although not all of them are likely to be useful or even usable
+for our purposes:
+
+- [System commands](@ref system) is a grab-bag consisting of system information,
+  power management, real-time clock support, TV output, speaker, and
+  keyboard control, audio settings, FM radio control, and a lot more.
+- Various [file system commands](@ref fs).
+- [Graphics subsystem controls](@ref gfx), such as getting and setting the graphics
+  mode, frame buffer format, and display backlight.
+- [Media](@ref media) playback and recording.
+- [Image](@ref image) decoding and display.
+- [Digital still camera](@ref dsc) and [USB port](@ref usb) control.
+- [Game thread](@ref gm) management.
+
+libgame provides access to all SPMP commands.
+
+@subsection MicroWindows
+[MicroWindows](http://microwindows.org) (now called Nano-X) is another piece
+of open-source software that the Sunplus developers have taken advantage of. 
+It provides a light-weight graphical user interface that is used by the
+built-in applications and launcher. It is closely coupled to the SPMP
+subsystem.
+
+libgame does not provide you with access to the MicroWindows API. If you
+would like to use MicroWindows as the user interface for your application
+you will have to build it yourself from source.
+
+@subsection NativeGE
+
+The "Native Game Environment" (I guess) is a rather extensive interface
+provided to developers of third-party applications (aka "native games" or
+"BIN games"). It is the only interface that is exported in a well-defined
+manner. The functionality it provides includes:
+
+- An extensive [graphics subsystem](@ref ge_gfx) with double buffering,
+  alpha blending, sprites, font rendering and more.
+- An [audio subsystem](@ref ge_res) that supports MIDI and WAV files.
+- [File system access](@ref ge_fs).
+- [User input handling](@ref ge_key) (keys and touchscreen).
+
+All that sounds good on paper, but that's about as far as it goes. You will
+learn more about the quality of this interface later. At any rate,
+libgame provides you with access to the entire NativeGE interface.
+
+@subsection emuIf
+
+The emulator interface (I call it emuIf, after the common prefix of its
+function names) provides a very lean interface to the built-in emulators
+that allow you to seamlessly run vintage game ROMs from the launcher. Its
+functionality consists of:
+
+- [Graphics subsystem](@ref emu_graph) with hardware scaling and scrolling.
+- Streaming [sound output](@ref emu_sound).
+- [User input](@ref emu_key) (keyboard only).
+- [File system access](@ref emu_fs).
+- [Timing support](@ref emu_time).
+
+libgame provides access to the entire emuIf interface.
+
+@subsection disp Display Device
+
+The "display device" (named after the global variable
+[gDisplayDev](@ref gDisplayDev)) is a very thin abstraction of the currently
+active display hardware. It allows you to:
+
+- Get access to the display buffers.
+- Change the location of the display buffers.
+- Set the pixel format.
+- Exchange (flip) the frame and shadow buffer.
+
+libgame provides access to all [display device methods](@ref disp_device_t).
+
+@subsection newlib
+
+[newlib](http://sourceware.org/newlib/) is not actually part of the SPMP8000
+firmware, but it is part of the libgame toolchain and provides standard C
+runtime support for your application, thus making it part of your interface
+to the world. Apart from the usual C library stuff like strcpy() and
+malloc(), it provides you with POSIX-like file I/O (open(), read(), ...) as
+well as C standard I/O (fopen(), fread(), ...), both of which are
+transparently glued to the corresponding eCos functions.
+
+@section iface_use What Interfaces to Use
+
+You may have noticed that there is a lot of redundancy in these interfaces.
+There are, for instance, four ways to access the file system. That raises
+the question: Which interface should you use?
+
+Once you start taking a closer look at the various interfaces, you will soon
+notice that there is always one (or at most two) interfaces that excel,
+while all others suck golf balls through a hose. Here's a rundown of the
+various things you may want to do, and what I have found to be the best ways
+to go about it.
+
+@subsection Graphics
+
+At first glance, the [NativeGE API]@(ref ge_gfx) seems to rule here. It even
+has alpha blending! Sadly, once you try to use it, you will be deeply
+disappointed:
+
+- It is severely limited. Apparently, the API developers made the rather
+  questionable decision to aim for the least common denominator.  In this
+  case, it's a device with two buttons and a 320x240 pixel screen. If your
+  application runs on a device with a bigger screen, the 320x240 pixel
+  buffer will simply be scaled up.  Even though there are
+  [various](@ref MCatchSetDisplayScreen) [functions](@ref MCatchSetFrameBuffer)
+  that may lead you to believe you could do something about the resolution,
+  whatever you set there will simply be ignored.
+- Its performance sucks. There are various examples from the olden days,
+  before libgame gave you access to better interfaces, that use NativeGE for
+  graphics output. Their common feature is that they are unbearably slow.
+- It simply doesn't work. Even very simple example uses of the
+  NativeGE interface don't work reliably. The [rgbgame](@ref rgbgame/game.c) example draws three
+  rectangles. In practice, usually about two actually show on the screen. My
+  theory is that this interface had once been implemented in a working
+  fashion on some ancient device and has since been carried forward without
+  receiving much testing. The limited supply of "native games" and thus
+  limited practical application of the interface likely hasn't helped
+  either.
+
+In short: Don't use it. You will be happier for it. Instead, use either the
+[emuIf](@ref emu_graph), or the [display device](@ref disp_device_t) directly.
+The former gives you fast hardware scaling from arbitrary resolutions to the
+native display size, source buffer clipping, and support for both palettized
+and true-color source formats. The latter provides you with direct access
+to the 16-bit frame buffer at the native resolution without any
+intermediaries and the ability to change the pixel format.  Both support
+single and double buffering, although single buffering with emuIf needs a
+[little trick](@ref disp_device_t::flip).
+
+NativeGE also provides font rendering support, but before exerting the
+effort to reverse-engineer this interface I have implemented my own
+[text rendering routines](@ref text). They provide access to all built-in
+fonts, two text sizes (12 and 16 pixels) and full Unicode support.
+
+@subsection Audio
+
+The [NativeGE audio interface](@ref ge_res) doesn't sound all that great to
+begin with, but NativeGE nonetheless manages to underwhelm: Sampled sound
+output is limited to an 8 kHz sample rate and a single channel. There is
+the ability to load and play MIDI files, which may come in handy some day,
+although it remains to be tested if it can be used at the same time as the
+other audio output interface.
+
+[That interface]@(ref emu_sound), the one from emuIf, is fortunately much
+more usable. It allows various sample rates up to 48 kHz, mono or stereo
+output, and variable buffer size. It lacks file parsing functionality and a
+non-blocking mode, which may necessitate the creation of a separate audio
+thread.
+
+Various auxiliary functions, such as volume and speaker control, are
+competently [provided by SPMP](@ref system).
+
+@subsection input User Input
+
+For key input, emuIf is the winner. [NativeGE](@ref ge_key) follows its
+usual approach of supporting the least capable system that can reasonably be
+assumed to find a buyer and supports a grand total of two buttons (X and O)
+and the d-pad, leaving all other keys dead. It also supports only a single
+controller.
+
+Instead of making any assumptions about what keys your device may or may not
+have, the [emuIf key input interface](@ref emu_key) simply gives you the raw
+device-specific key bitmap (thus theoretically supporting up to 32 buttons
+per controller) and at the same time provides you with a
+[translation table](@ref emu_keymap_t) that allows you to do the translation
+of the bitmap yourself.  The catch is that, depending on your device, this
+translation table may or may not be complete, so you may still have to ask
+your users to map their keys manually. emuIf supports more than one
+controller.
+
+When it comes to [touchscreen support](@ref NativeGE_getTPEvent), NativeGE
+is the winner by default: it's the only interface that provides access to
+touchscreen events. I do not own a touchscreen device yet, so I cannot make
+give any statements on the quality of this interface.
+
+@subsection fs File System Access
+
+All three file system interfaces provided by Sunplus are severely
+restricted. They do not allow access to parts of the file system (such as
+the romfs mounted at @c /Rom) and do not provide any way to list a
+directory.
+
+That leaves the [eCos file API](@ref ecos_fs), which provides you with a
+completely run-of-the-mill file interface with everything you are used to on
+your desktop operating system, including directory support and access to
+"hidden" parts of the file system. For your convenience you will probably
+want to use the newlib wrappers and remain portable (or reduce your porting
+effort).
+
+@subsection Timing
+
+Various interfaces give you access to the system time, but whatever unit
+of time they return (usually milliseconds), they all use the
+[eCos system clock](@ref cyg_current_time), which in the SPMP8000 firmware
+has been configured to run at 100 Hz. That is not exactly high-precision,
+so libgame provides you with a utility function (libgame_utime()) that gives
+you a microsecond-resolution time by combining eCos system ticks and the
+underlying hardware timer.
+
+Sleeping should probably done using cyg_thread_delay(), mostly because it
+has well-defined behavior. If you need to sleep for less than 10ms (one
+tick), you will have to do busy waiting using libgame_utime(). (Note that
+this may cause problems if you use several threads.)
+
+[Real-time clock access](@ref MCATCH_CMD_SYSTEM_SYS_TIME_GET) is exclusively
+provided by SPMP.
+
+@subsection other Other Functionality
+
+There are a couple more things that you may want to do and for which only
+one choice is available:
+
+- Power management control is provided by SPMP, including
+  [shutdown](@ref MCATCH_CMD_SYSTEM_POWER_OFF),
+  [reboot](@ref MCATCH_CMD_SYSTEM_SYS_REBOOT),
+  and [suspend](@ref MCATCH_CMD_SYSTEM_SUSPEND_ENABLE).
+- [Display backlight control](@ref MCATCH_CMD_SYSTEM_SET_PANEL_BRIGHTNESS)
+  is also provided by SPMP, but the extent to which it is actually
+  implemented in the underlying drivers varies by device.
+- [Threading and synchronization primitives](@ref ecos_thread) are provided by eCos.
+- [Data cache synchronization](@ref cache_sync) and
+  [CPU scaling](@ref changeARMFreq) are provided by individual functions
+  that are not known to be part of any of the aforementioned interfaces.
+- [Digital still camera control](@ref dsc) is provided by SPMP, but a
+  cursory glance at the code reveals that it uses the "native game" buffer
+  (where our application is loaded), so it is not likely to be usable
+  without some tricks.
+
+@example rgbgame/game.c
 
 */
