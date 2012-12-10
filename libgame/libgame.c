@@ -98,6 +98,36 @@ int (*_ecos_rmdir) (const char *pathname) = 0;
 int (*_ecos_mkdir) (const char *pathname, _ecos_mode_t mode) = 0;
 int (*_ecos_fsync) (int fd) = 0;
 void (*cyg_thread_delay) (uint64_t /* cyg_tick_count_t */ delay) = 0;
+void (*cyg_thread_create) (
+    cyg_addrword_t      sched_info,
+    cyg_thread_entry_t  *entry,
+    cyg_addrword_t      entry_data,
+    char                *name,
+    void                *stack_base,
+    cyg_ucount32        stack_size,
+    cyg_handle_t        *handle,
+    cyg_thread          *thread
+) = 0;
+void (*cyg_thread_exit) (void) = 0;
+cyg_bool_t (*cyg_thread_delete) (cyg_handle_t thread) = 0;
+void (*cyg_thread_suspend) (cyg_handle_t thread) = 0;
+void (*cyg_thread_resume) (cyg_handle_t thread) = 0;
+cyg_handle_t (*cyg_thread_self) (void) = 0;
+void (*cyg_thread_set_priority) (cyg_handle_t thread, cyg_priority_t priority ) = 0;
+cyg_priority_t (*cyg_thread_get_priority) (cyg_handle_t thread) = 0;
+
+/// Lock and unlock the scheduler. When the scheduler is
+/// locked thread preemption is disabled.
+void (*cyg_scheduler_lock)(void) = 0;
+void (*cyg_scheduler_unlock)(void) = 0;
+
+void (*cyg_mutex_init) (cyg_mutex_t *mutex) = 0;
+void (*cyg_mutex_destroy) (cyg_mutex_t *mutex) = 0;
+cyg_bool_t (*cyg_mutex_lock) (cyg_mutex_t *mutex) = 0;
+void (*cyg_mutex_unlock) (cyg_mutex_t *mutex) = 0;
+void (*cyg_mutex_release) (cyg_mutex_t *mutex) = 0;
+void (*cyg_mutex_set_ceiling) (cyg_mutex_t *mutex, cyg_priority_t priority) = 0;
+void (*cyg_mutex_set_protocol ) (cyg_mutex_t *mutex, enum cyg_mutex_protocol protocol) = 0;
 
 uint16_t (*SPMP_SendSignal) (uint16_t cmd, void *data, uint16_t size) = 0;
 void (*cache_sync) (void) = 0;
@@ -593,10 +623,12 @@ out2:
             }
         }
     }
+#ifndef TEST_BUILD	/* g_stEmuAPIs does not contain real data in test harness */
     if (g_stEmuAPIs) {
         NativeGE_gamePause = g_stEmuAPIs->pause;
         NativeGE_gameResume = g_stEmuAPIs->resume;
     }
+#endif
 
     /* Determine gFunTable length by finding the loop counter of the
        initialization loop in initFunTable(). */
@@ -653,6 +685,124 @@ out3:
         }
     }
 out4:
+
+    /* Find cyg_thread_create/exit/delete(). */
+    for (head = FW_START_P; head < FW_END_P; head++) {
+        if (is_ldr_pc(*head)) {
+            if (string_starts_with(ldr_pc_address(head), "Demo GUI")) {
+                head = next_bl(head);
+                cyg_thread_create = (void *)branch_address(head);
+                cyg_thread_resume = (void *)next_bl_target(head + 1);
+            }
+            else if (string_starts_with(ldr_pc_address(head), "%s%s%04d%s")) {
+                uint32_t *subhead;
+                for (subhead = head; !is_prolog(*subhead); subhead++) {
+                    if (is_branch_link(*subhead)) {
+                        cyg_thread_exit = (void *)branch_address(subhead);
+                    }
+                }
+            }
+            else if (string_starts_with(ldr_pc_address(head), "delete handle thread")) {
+                cyg_thread_delete = (void *)next_bl_target(head + 2);
+            }
+            if (cyg_thread_create && cyg_thread_resume &&
+                cyg_thread_exit && cyg_thread_delete)
+                break;
+        }
+    }
+
+    /* Find cyg_thread_suspend(), last function called by NativeGE_gamePause. */
+    if (NativeGE_gamePause) {
+        for (head = ((uint32_t *)NativeGE_gamePause) + 1; !is_prolog(*head); head++) {
+            if (is_branch_link(*head))
+                cyg_thread_suspend = (void *)branch_address(head);
+        }
+    }
+
+    uint32_t *fun_start;
+    uint32_t *backtrace = 0;
+    for (head = FW_START_P; head < FW_END_P; head++) {
+        if (is_prolog(*head)) {
+            fun_start = head;
+            continue;
+        }
+        if (is_ldr_pc(*head)) {
+            uint32_t *ldr_addr = ldr_pc_address(head);
+            /* cyg_thread_self/set_priority() are the first functions called by win_main(). */
+            if (string_starts_with(ldr_addr, "[win_main] ")) {
+                uint32_t *self_branch = next_bl(fun_start);
+                if (branch_address(self_branch) == (uint32_t *)diag_printf) {
+                    self_branch = next_bl(self_branch + 1);
+                    cyg_thread_self = (void *)next_bl_target(self_branch);
+                }
+                else
+                    cyg_thread_self = branch_address(self_branch);
+                cyg_thread_set_priority = (void *)next_bl_target(self_branch + 1);
+            }
+            /* cyg_thread_get_priority() is the second function called by
+               vdoBitsReadThread_suspend() after cyg_thread_self() */
+            if (string_starts_with(ldr_addr, "vdoBRT_suspend")) {
+                uint32_t *self_branch = next_bl(fun_start);
+                cyg_thread_get_priority = (void *)next_bl_target(self_branch + 1);
+            }
+            /* cyg_scheduler_lock() is the first function called by setFrameBufferMgr().
+               Some firmwares do not seem to have setFrameBufferMgr(); we use
+               changeMutexProtocol() then. */
+            if (string_starts_with(ldr_addr, "[setFrameBufferMgr]") ||
+                string_starts_with(ldr_addr, "[changeMutexProtocol]")) {
+                uint32_t *subhead = next_bl(fun_start);
+                cyg_scheduler_lock = (void *)branch_address(subhead);
+                for (subhead++; !is_prolog(*subhead); subhead++) {
+                    if (is_branch_link(*subhead) && branch_address(subhead) != diag_printf)
+                        cyg_scheduler_unlock = branch_address(subhead);
+                }
+            }
+            /* cyg_mutex_destroy() is called by Parser_mutex_destroy(), which is the
+               third function called by Parser_free() */
+            if (string_starts_with(ldr_addr, "Enter Parser_free")) {
+                uint32_t *parser_mutex_destroy = next_bl_target(next_bl(next_bl(head) + 1) + 1);
+                cyg_mutex_destroy = (void *)next_bl_target(parser_mutex_destroy);
+            }
+            /* cyg_mutex_init() is the second function after diag_printf()
+               called by clkMgr_init(). (Note that the call to diag_printf() may be
+               conditional.) */
+            if (string_starts_with(ldr_addr, "clkMgr_init")) {
+                uint32_t *mi = next_bl(fun_start);
+                if (branch_address(mi) == diag_printf)
+                    mi = next_bl(mi + 1);
+                cyg_mutex_init = branch_address(mi);
+            }
+            if (string_starts_with(ldr_addr, "---------------back trace")) {
+                backtrace = fun_start;
+            }
+            if (string_starts_with(ldr_addr, "+Cx1620_init: cxFlags=")) {
+                uint32_t *cmi = next_bl(head);
+                if (branch_address(cmi) == diag_printf)
+                    cmi = next_bl(cmi + 1);
+                cyg_mutex_release = (void *)next_bl_target(cmi + 1);
+            }
+            if (string_starts_with(ldr_addr, "ParserInitEx: new file")) {
+                uint32_t *Parser_mutex_init = next_bl_target(next_bl(head) + 1);
+                uint32_t *cmsp = next_bl(next_bl(Parser_mutex_init) + 1);
+                cyg_mutex_set_protocol = branch_address(cmsp);
+                cyg_mutex_set_ceiling = (void *)next_bl_target(cmsp + 1);
+            }
+
+            if (cyg_thread_self && cyg_thread_set_priority && cyg_thread_get_priority &&
+                cyg_scheduler_lock && cyg_scheduler_unlock && cyg_mutex_destroy &&
+                cyg_mutex_init && backtrace && cyg_mutex_release && cyg_mutex_set_protocol &&
+                cyg_mutex_set_ceiling)
+                break;
+        }
+    }
+
+    if (_ecos_cyg_fd_alloc) {
+        uint32_t *cml = next_bl(_ecos_cyg_fd_alloc);
+        if (branch_address(cml) == backtrace)
+            cml = next_bl(cml + 1);
+        cyg_mutex_lock = branch_address(cml);
+        cyg_mutex_unlock = (void *)next_bl_target(cml + 1);
+    }
 
     return;
 }

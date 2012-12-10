@@ -595,6 +595,57 @@ extern void (*cyg_thread_delay) (uint64_t delay);
 /// @return current time (ticks)
 extern uint64_t (*cyg_current_time) (void);
 
+typedef uint32_t cyg_addrword_t;
+typedef void cyg_thread_entry_t(cyg_addrword_t);
+typedef uint32_t cyg_ucount32;
+typedef uint32_t cyg_handle_t;
+typedef void cyg_thread;
+typedef int cyg_bool_t;
+typedef uint32_t cyg_priority_t;
+
+extern void (*cyg_thread_create) (
+    cyg_addrword_t      sched_info,             ///< scheduling info (eg pri)
+    cyg_thread_entry_t  *entry,                 ///< entry point function
+    cyg_addrword_t      entry_data,             ///< entry data
+    char                *name,                  ///< optional thread name
+    void                *stack_base,            ///< stack base, NULL = alloc
+    cyg_ucount32        stack_size,             ///< stack size, 0 = default
+    cyg_handle_t        *handle,                ///< returned thread handle
+    cyg_thread          *thread                 ///< put thread here
+);
+
+extern void (*cyg_thread_exit) (void);
+extern cyg_bool_t (*cyg_thread_delete) (cyg_handle_t thread);
+extern void (*cyg_thread_suspend) (cyg_handle_t thread);
+extern void (*cyg_thread_resume) (cyg_handle_t thread);
+extern cyg_handle_t (*cyg_thread_self) (void);
+extern void (*cyg_thread_set_priority) (cyg_handle_t thread, cyg_priority_t priority );
+extern cyg_priority_t (*cyg_thread_get_priority) (cyg_handle_t thread);
+
+/// Lock and unlock the scheduler. When the scheduler is
+/// locked thread preemption is disabled.
+extern void (*cyg_scheduler_lock)(void);
+extern void (*cyg_scheduler_unlock)(void);
+
+typedef void cyg_mutex_t;
+
+enum cyg_mutex_protocol
+{
+    CYG_MUTEX_NONE = 0,                   ///< no inversion protocol
+    CYG_MUTEX_INHERIT,                    ///< priority inheritance protocol
+    CYG_MUTEX_CEILING                     ///< priority ceiling protocol
+};
+
+extern void (*cyg_mutex_init) (
+    cyg_mutex_t *mutex          ///< Mutex to init
+);
+extern void (*cyg_mutex_destroy) (cyg_mutex_t *mutex);
+extern cyg_bool_t (*cyg_mutex_lock) (cyg_mutex_t *mutex);
+extern void (*cyg_mutex_unlock) (cyg_mutex_t *mutex);
+extern void (*cyg_mutex_release) (cyg_mutex_t *mutex);
+extern void (*cyg_mutex_set_ceiling) (cyg_mutex_t *mutex, cyg_priority_t priority);
+extern void (*cyg_mutex_set_protocol ) (cyg_mutex_t *mutex, enum cyg_mutex_protocol protocol);
+
 /// @}
 
 /// @}
