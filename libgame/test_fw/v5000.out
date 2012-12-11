@@ -1,0 +1,59 @@
+diag_printf = 00297ed0
+MCatchInitGraph = 002d322c
+NativeGE_fsOpen = 0044ac38
+NativeGE_fsRead = 0044a9b0
+NativeGE_fsWrite = 0044a954
+MCatchPaint = 002d14cc
+NativeGE_getKeyInput4Ntv = 002c7c00
+_gFunTable = 0068fff8
+NativeGE_gamePause = 0044be30
+gFunTable length 88
+g_stEmuFuncs 0051aad8 (new ABI)
+gDisplayDev 005117fc
+compiled without frame pointer
+_ecos_close 002dd72c
+_ecos_read 002dd708
+_ecos_write 002dd6e4
+_ecos_lseek 002dd4fc
+_ecos_fstat 002dd408
+_ecos_open 002a820c
+_ecos_opendir 002a844c
+_ecos_cyg_error_get_errno_p 00298da0
+_ecos_cyg_fd_alloc 002a76e4
+_ecos_readdir_r 002a83c4
+_ecos_readdir 002a8414
+_ecos_closedir 002dd72c
+_ecos_stat 002a78d8
+_ecos_getcwd 002a7e88
+_ecos_chdir 002a7a1c
+_ecos_unlink 002a7da4
+_ecos_mkdir 002a7cc0
+_ecos_rmdir 002a7bdc
+_ecos_fsync 002dd484
+SPMP_SendSignal 002cb978
+cache_sync 0029cacc
+emuIfSoundCleanup 00447d6c
+changeARMFreq 002cd918
+GetArmCoreFreq 00295c00
+hal_clock_read 00299160
+cyg_current_time 00334ea8
+g_onoff_p 0050ff1c
+g_stEmuAPIs 00626c78
+_gameMaxBufferSize_p 00626fc4
+cyg_thread_create 00334d48
+cyg_thread_resume 00334e1c
+cyg_thread_exit 00334d3c
+cyg_thread_delete 00334e40
+cyg_thread_suspend 00334d30
+cyg_thread_self 00334e98
+cyg_thread_set_priority 00334d18
+cyg_thread_get_priority 00334ec0
+cyg_scheduler_lock 00334a28
+cyg_scheduler_unlock 00334ed4
+cyg_mutex_destroy 00334ac0
+cyg_mutex_init 00334da4
+cyg_mutex_lock 00334ab4
+cyg_mutex_unlock 00334aa8
+cyg_mutex_release 00334a9c
+cyg_mutex_set_protocol 00334a84
+cyg_mutex_set_ceiling 00334a90
