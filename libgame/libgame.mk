@@ -6,6 +6,7 @@
 include $(LIBSPMP8K)/main.cfg
 
 CC		= $(TOOLCHAIN)gcc
+CXX		= $(TOOLCHAIN)g++
 AS		= $(TOOLCHAIN)as
 LD		= $(TOOLCHAIN)gcc
 CPP		= $(TOOLCHAIN)cpp
@@ -18,6 +19,7 @@ RM		= rm -f
 LDSCRIPT= $(LIBGAME)/libgame.ld
 
 CFLAGS	+= -DHAVE_NEWLIB -I$(LIBGAME) -I$(NEWLIB)/include -I$(3RDPARTY)/include -mcpu=arm926ej-s -msoft-float
+CXXFLAGS = $(CFLAGS)
 LDFLAGS	+= -L$(LIBGAME) -L$(NEWLIB)/lib -L$(3RDPARTY)/lib -march=armv5 -msoft-float -nostartfiles -T$(LDSCRIPT)
 #LIBS	= -lgcc -lgame -lc
 
@@ -32,6 +34,11 @@ $(TARGET).bin: $(OBJS)
 		$(CC) $(CFLAGS) -c $< -o $@
 		@mkdir -p .deps/$(dir $*.d)
 		@$(CC) -MM -MT $@ $(CFLAGS) -c $< > .deps/$*.d
+
+%.o		: %.cpp
+		$(CXX) $(CXXFLAGS) -c $< -o $@
+		@mkdir -p .deps/$(dir $*.d)
+		@$(CXX) -MM -MT $@ $(CXXFLAGS) -c $< > .deps/$*.d
 
 %.o		: %.s
 		$(CPP) $< -o $<-tmp.s
