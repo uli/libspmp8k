@@ -425,27 +425,6 @@ extern uint32_t (*NativeGE_getTime) (void);     /* returns system ticks
 
 /***************************************************************************/
 
-/// @addtogroup init Initialization and finalization
-/// Library initialization and finalization routines.
-/// @{
-
-/// Initialize libgame interfaces.
-/// This function performs a number of initializations:
-/// - Initialize [NativeGE](@ref nativege) hooks passed from the operating system.
-/// - Perform firmware analysis and setup "non-official" interfaces
-///   ([emulator](@ref emu), [eCos](@ref ecos), [hardware access](@ref hw),
-///   [SPMP](@ref spmp))
-/// - Detect system type (see @ref libgame_system_id).
-/// - Determine available memory.
-///
-/// This function must be called before any other libgame interfaces can be used.
-/// @todo libgame_init() should really be called automatically by the start-up
-/// code because nothing works without it anyway.
-void libgame_init(void);
-/// @}
-
-/***************************************************************************/
-
 /// @addtogroup ecos eCos interface
 /// eCos operating system interface.
 /// The SPMP8000 firmware is based on the eCos operating system, which

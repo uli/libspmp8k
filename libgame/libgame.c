@@ -917,7 +917,24 @@ static void libgame_detect_system(void)
 
 extern uint32_t _ram_end;
 
+/// @internal
+/// @{
+/// Compatibility function.
 void libgame_init(void)
+{
+}
+
+/// Initialize libgame interfaces.
+/// This function performs a number of initializations:
+/// - Initialize [NativeGE](@ref nativege) hooks passed from the operating system.
+/// - Perform firmware analysis and setup "non-official" interfaces
+///   ([emulator](@ref emu), [eCos](@ref ecos), [hardware access](@ref hw),
+///   [SPMP](@ref spmp))
+/// - Detect system type (see @ref libgame_system_id).
+/// - Determine available memory.
+///
+/// This function is called by the startup code.
+void _libgame_init(void)
 {
     // setup function pointers
     diag_printf = FUNC(0x04);
@@ -1002,3 +1019,4 @@ void libgame_init(void)
     libgame_assign_emuif();
     libgame_detect_system();
 }
+/// @}
