@@ -1184,6 +1184,16 @@ extern int libgame_system_id;
 
 /// @}
 
+typedef struct {
+    char *name;
+    uint32_t index;
+} libgame_buttonmap_t;
+
+int libgame_map_buttons(const char *mapfile,
+                        emu_keymap_t *keymap,
+                        const libgame_buttonmap_t *buttonmap);
+int libgame_load_buttons(const char *mapfile, emu_keymap_t *keymap);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

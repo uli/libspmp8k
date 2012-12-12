@@ -35,6 +35,9 @@ static uint8_t *asc12_font = 0;
 static uint8_t *asc16_font = 0;
 static uint16_t *hzx12_font = 0;
 static uint16_t *hzx16_font = 0;
+
+static int text_initialized = 0;
+
 #include "hzktable.c"
 
 struct sunplus_font_header {
@@ -126,6 +129,9 @@ static int load_hzx_font(int font_size)
 
 int text_init(void)
 {
+    if (text_initialized)
+        return 0;
+
     int fd = open("/Rom/mw/fonts/CHINESE/ASC12", O_RDONLY);
     if (!fd)
         return -1;
@@ -144,12 +150,16 @@ int text_init(void)
     if (!asc16_font || read(fd, asc16_font, st.st_size) != st.st_size)
         return -2;
     close(fd);
-
+    
+    text_initialized = 1;
     return 0;
 }
 
 void text_free(void)
 {
+    if (!text_initialized)
+        return;
+
     if (asc12_font)
         free(asc12_font);
     asc12_font = 0;
@@ -177,6 +187,7 @@ void text_free(void)
         if (fnt->char_data)
             free(fnt->char_data);
     }
+    text_initialized = 0;
 }
 
 static int font_size = FONT_SIZE_12;
