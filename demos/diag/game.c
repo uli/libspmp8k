@@ -115,6 +115,24 @@ int main()
     PP(cyg_current_time);
     PP(g_onoff_p);
     PP(g_stEmuAPIs);
+    PP(_gameMaxBufferSize_p);
+    PP(cyg_thread_create);
+    PP(cyg_thread_resume);
+    PP(cyg_thread_exit);
+    PP(cyg_thread_delete);
+    PP(cyg_thread_suspend);
+    PP(cyg_thread_self);
+    PP(cyg_thread_set_priority);
+    PP(cyg_thread_get_priority);
+    PP(cyg_scheduler_lock);
+    PP(cyg_scheduler_unlock);
+    PP(cyg_mutex_destroy);
+    PP(cyg_mutex_init);
+    PP(cyg_mutex_lock);
+    PP(cyg_mutex_unlock);
+    PP(cyg_mutex_release);
+    PP(cyg_mutex_set_protocol);
+    PP(cyg_mutex_set_ceiling);
     // NativeGE_fsClose(fd);
 
     if (_ecos_fsync)
