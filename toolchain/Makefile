@@ -71,6 +71,8 @@ gcc-final: build-gcc-final/.installed
 
 build-gcc-final/.installed: build-gcc-final/gcc/cc1
 	$(SUDO) make -C build-gcc-final install $(INSTALL_FLAGS)
+	make -C ../libgame start.o
+	$(SUDO) install -m 644 ../libgame/start.o /usr/local/arm-eabi/lib/crt0.o
 	touch build-gcc-final/.installed
 
 build-gcc-final/gcc/cc1: build-gcc-final/Makefile
