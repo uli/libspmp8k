@@ -1,6 +1,6 @@
 /* libgame - SPMP8000 game API interface
  *
- * Copyright (C) 2012, Ulrich Hecht <ulrich.hecht@gmail.com>
+ * Copyright (C) 2012, 2013 Ulrich Hecht <uli@emulinks.de>
  * Rewritten based on code Copyright (C) 2010, alemaxx
  *
  * This software is provided 'as-is', without any express or implied
@@ -813,14 +813,40 @@ out4:
                 uint32_t *cmi = next_bl(head);
                 if (branch_address(cmi) == diag_printf) {
                     cmi = next_bl(cmi + 1);
-                    if (branch_address(cmi) == diag_printf)
-                        _rwstor2_msg_55a_call = next_bl(cmi + 1);
+                    if (branch_address(cmi) == diag_printf) {
+                        uint32_t *subhead;
+                        for (subhead = cmi + 1; subhead < cmi + 20; subhead++) {
+                            if ((*subhead & 0x0ffffff0) == 0x01a0f000) {
+                                /* MOV?? PC, R?? */
+                                _rwstor2_msg_55a_call = subhead;
+                                break;
+                            }
+                            else if (is_branch_link(*subhead) && branch_address(subhead) != diag_printf) {
+                                _rwstor2_msg_55a_call = subhead;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-            if (string_starts_with(ldr_addr, "------------------------USBIN----------")) {
+            if (string_starts_with(ldr_addr, " VBUS high, USBIN")) {
                 uint32_t *cmi = next_bl(head);
                 if (branch_address(cmi) == diag_printf) {
-                    _rwstor2_msg_551_call = next_bl(cmi + 1);
+                    cmi = next_bl(cmi + 1);
+                    if (branch_address(cmi) == diag_printf) {
+                        uint32_t *subhead = cmi;
+                        for (subhead = cmi + 1; subhead < cmi + 10; subhead++) {
+                            if ((*subhead & 0x0ffffff0) == 0x01a0f000) {
+                                /* MOV?? PC, R?? */
+                                _rwstor2_msg_551_call = subhead;
+                                break;
+                            }
+                            else if (is_branch_link(*subhead) && branch_address(subhead) != diag_printf) {
+                                _rwstor2_msg_551_call = subhead;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             if (cyg_thread_self && cyg_thread_set_priority && cyg_thread_get_priority &&

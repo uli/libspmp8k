@@ -78,14 +78,18 @@ void usbdbg_puts(const char *s)
 }
 
 /* We redirect the call from RWStor2_Thread_UDC() to PostMessageExt() with
-   message ID 0x55a here because it is interpreted by Game_Proc() as an
-   order to start the USB application and commit suicide. Instead, we perform
-   the necessary SPMP_SendSignal() call ourselves. */
+   message ID 0x55a (0x499 on some older(?) firmwares) here because it is
+   interpreted by Game_Proc() as an order to start the USB application and
+   commit suicide.  Instead, we perform the necessary SPMP_SendSignal() call
+   ourselves. */
 static void my_PostMessageExt(uint32_t r0, uint32_t r1, uint32_t r2)
 {
+  /* NB: Parameters are not reliable; some firmware versions use a wrapper
+     through a function pointer to call PostMessageExt. */
   (void)r0;
   (void)r1;
   (void)r2;
+
 #if 0
   /* This is also done by Game_Proc() somewhere along the line (as a response
      to message 0x551, which we also disable), but it does not seem to be
@@ -95,6 +99,7 @@ static void my_PostMessageExt(uint32_t r0, uint32_t r1, uint32_t r2)
   unknown[7] = 1;
   SPMP_SendSignal(MCATCH_CMD_USB_SAVE_POWER_ON, unknown, 32);
 #endif
+
   SPMP_SendSignal(MCATCH_CMD_USB_MODE_SET, "usb_test", 0);
 }
 
