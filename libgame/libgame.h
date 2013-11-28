@@ -131,6 +131,8 @@ extern int *g_onoff_p;
 /// Pointer to debug character out function pointer.
 /// Can be used to redirect debug output.
 extern void (**_diag_putc) (char);
+/// Pointer to MicroWindows debug flags.
+extern uint32_t *g_MwFlags;
 /// @}
 
 /***************************************************************************/

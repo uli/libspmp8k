@@ -216,6 +216,8 @@ uint64_t (*cyg_current_time) (void) = 0;
 
 uint32_t *_gameMaxBufferSize_p = 0;
 
+uint32_t *g_MwFlags = 0;
+
 /* returns true if this is a pointer into the firmware area */
 static int is_ptr(uint32_t val)
 {
@@ -501,6 +503,16 @@ out:
 
     if (g_stEmuFuncs)
         SPMP_SendSignal = (void *)next_bl_target(g_stEmuFuncs[(_new_emu_abi ? 0x28 : 0x24) / 4]);
+
+    if (SPMP_SendSignal) {
+        start = (uint32_t *)SPMP_SendSignal;
+        for (head = start; head < start + 100; head++) {
+            if (is_ldr_pc(*head)) {
+                g_MwFlags = *((uint32_t **)ldr_pc_address(head));
+                break;
+            }
+        }
+    }
 
     /* Find various file functions */
     if (_has_frame_pointer != -1 && _ecos_cyg_error_get_errno_p) {
