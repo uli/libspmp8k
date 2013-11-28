@@ -57,3 +57,7 @@ cyg_mutex_unlock 00333ac8
 cyg_mutex_release 00333abc
 cyg_mutex_set_protocol 00333aa4
 cyg_mutex_set_ceiling 00333ab0
+readBlksWithLock_SD 002bef98
+writeBlksWithLock_SD 002be808
+_rwstor2_msg_55a_call 0030782c
+_rwstor2_msg_551_call 00307a24

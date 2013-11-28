@@ -140,5 +140,9 @@ int main(int argc, char **argv)
     PP(cyg_mutex_release);
     PP(cyg_mutex_set_protocol);
     PP(cyg_mutex_set_ceiling);
+    PP(readBlksWithLock_SD);
+    PP(writeBlksWithLock_SD);
+    PP(_rwstor2_msg_55a_call);
+    PP(_rwstor2_msg_551_call);
     return 0;
 }

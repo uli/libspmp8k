@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-gcc-4.7 -g -O0 -Wall -W -DTEST_BUILD -m32 -g -o test_abi test_abi.c libgame.c
+gcc -g -D_GNU_SOURCE -O0 -Wall -W -DTEST_BUILD -m32 -g -o test_abi test_abi.c libgame.c
 function do_test {
 	name=$1
 	shift
