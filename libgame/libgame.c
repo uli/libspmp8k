@@ -216,6 +216,10 @@ uint64_t (*cyg_current_time) (void) = 0;
 
 uint32_t *_gameMaxBufferSize_p = 0;
 
+void *readBlksWithLock_SD = 0;
+void *writeBlksWithLock_SD = 0;
+uint32_t *_rwstor2_msg_55a_call = 0;
+uint32_t *_rwstor2_msg_551_call = 0;
 uint32_t *g_MwFlags = 0;
 
 /* returns true if this is a pointer into the firmware area */
@@ -799,11 +803,31 @@ out4:
                 cyg_mutex_set_protocol = branch_address(cmsp);
                 cyg_mutex_set_ceiling = (void *)next_bl_target(cmsp + 1);
             }
-
+            if (string_starts_with(ldr_addr, "readBlksWithLock_SD")) {
+                readBlksWithLock_SD = fun_start;
+            }
+            if (string_starts_with(ldr_addr, "writeBlksWithLock_SD")) {
+                writeBlksWithLock_SD = fun_start;
+            }
+            if (string_starts_with(ldr_addr, " MSDC_NOTIFY, wait.....")) {
+                uint32_t *cmi = next_bl(head);
+                if (branch_address(cmi) == diag_printf) {
+                    cmi = next_bl(cmi + 1);
+                    if (branch_address(cmi) == diag_printf)
+                        _rwstor2_msg_55a_call = next_bl(cmi + 1);
+                }
+            }
+            if (string_starts_with(ldr_addr, "------------------------USBIN----------")) {
+                uint32_t *cmi = next_bl(head);
+                if (branch_address(cmi) == diag_printf) {
+                    _rwstor2_msg_551_call = next_bl(cmi + 1);
+                }
+            }
             if (cyg_thread_self && cyg_thread_set_priority && cyg_thread_get_priority &&
                 cyg_scheduler_lock && cyg_scheduler_unlock && cyg_mutex_destroy &&
                 cyg_mutex_init && backtrace && cyg_mutex_release && cyg_mutex_set_protocol &&
-                cyg_mutex_set_ceiling)
+                cyg_mutex_set_ceiling && readBlksWithLock_SD && writeBlksWithLock_SD &&
+                _rwstor2_msg_55a_call && _rwstor2_msg_551_call)
                 break;
         }
     }

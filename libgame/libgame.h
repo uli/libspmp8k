@@ -1264,6 +1264,11 @@ int libgame_map_buttons(const char *mapfile,
                         const libgame_buttonmap_t *buttonmap);
 int libgame_load_buttons(const char *mapfile, emu_keymap_t *keymap);
 
+extern void *readBlksWithLock_SD;
+extern void *writeBlksWithLock_SD;
+extern uint32_t *_rwstor2_msg_55a_call;
+extern uint32_t *_rwstor2_msg_551_call;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
