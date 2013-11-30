@@ -205,7 +205,7 @@ the ability to load and play MIDI files, which may come in handy some day,
 although it remains to be tested if it can be used at the same time as the
 other audio output interface.
 
-[That interface]@(ref emu_sound), the one from emuIf, is fortunately much
+[That interface](@ref emu_sound), the one from emuIf, is fortunately much
 more usable. It allows various sample rates up to 48 kHz, mono or stereo
 output, and variable buffer size. It lacks file parsing functionality and a
 non-blocking mode, which may necessitate the creation of a separate audio
