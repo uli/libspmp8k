@@ -1,0 +1,11 @@
+#!/bin/sh
+# Power on hub and start USB debug console.
+condev='/dev/disk/by-id/usb-USB_DISK_MASS_STORAGE48F0_aaaaaaaa-0:1'
+hub="001:001"
+
+sudo hubpower "$hub" bind
+while ! test -e "$condev"
+do
+	usleep 300000
+done
+sudo usb_console "$condev"

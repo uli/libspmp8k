@@ -1,0 +1,7 @@
+#!/bin/sh
+# Unmounts internal flash from /spmp and powers down port.
+hub="001:001"
+port="4"
+
+sudo umount /spmp
+sudo hubpower "$hub" power "$port" off
