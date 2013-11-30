@@ -33,8 +33,8 @@
 
 #define AUDIO_BUF_SIZE (SAMPLE_RATE * 1) /* 1 second buffer */
 
-int16_t buf[AUDIO_BUF_SIZE];
-int buf_idx = 0;
+static int16_t buf[AUDIO_BUF_SIZE];
+static int buf_idx = 0;
 
 static emu_sound_params_t sp;
 static uint64_t next_idle = 0;
