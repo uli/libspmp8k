@@ -43,6 +43,8 @@ int usbdbg_init(void);
 /// session.
 void usbdbg_fini(void);
 
+void usbdbg_redirect_stdio(int);
+
 /// @example usb/usb.c
 
 /// @}

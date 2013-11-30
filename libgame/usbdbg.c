@@ -103,6 +103,12 @@ static void my_PostMessageExt(uint32_t r0, uint32_t r1, uint32_t r2)
   SPMP_SendSignal(MCATCH_CMD_USB_MODE_SET, "usb_test", 0);
 }
 
+extern int _libgame_glue_redirect_stdio_to_usbdbg;
+void usbdbg_redirect_stdio(int onoff)
+{
+  _libgame_glue_redirect_stdio_to_usbdbg = onoff;
+}
+
 static void invalidate_icache(void)
 {
   __asm__("mcr p15, 0, %0, c7, c5, 0\n" :: "r"(0));

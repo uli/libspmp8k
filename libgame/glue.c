@@ -5,6 +5,7 @@
  *
  */
 #include "libgame.h"
+#include "usbdbg.h"
 
 #include <sys/stat.h>
 #include <reent.h>
@@ -319,6 +320,8 @@ int _wait(int *status __attribute__ ((unused)))
     return -1;
 }
 
+int _libgame_glue_redirect_stdio_to_usbdbg = 0;
+
 /* write
 **  Write a character to a file.
 **
@@ -332,9 +335,15 @@ int _wait(int *status __attribute__ ((unused)))
 */
 int _write(int file, char *ptr, int len)
 {
-    int ret = _ecos_write(file, ptr, len);
-    errno_from_ecos();
-    return ret;
+    if (_libgame_glue_redirect_stdio_to_usbdbg && (file == 1 || file == 2)) {
+        usbdbg_write(ptr, len);
+        return len;
+    }
+    else {
+        int ret = _ecos_write(file, ptr, len);
+        errno_from_ecos();
+        return ret;
+    }
 }
 
 char *getcwd(char *buf, size_t size)
