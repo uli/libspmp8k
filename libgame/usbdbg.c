@@ -92,6 +92,8 @@ void usbdbg_write(const char *data, int len)
   }
 }
 
+static volatile int usb_plugged = 0;
+
 /* We redirect the call from RWStor2_Thread_UDC() to PostMessageExt() with
    message ID 0x55a (0x499 on some older(?) firmwares) here because it is
    interpreted by Game_Proc() as an order to start the USB application and
@@ -116,6 +118,13 @@ static void my_PostMessageExt(uint32_t r0, uint32_t r1, uint32_t r2)
 #endif
 
   SPMP_SendSignal(MCATCH_CMD_USB_MODE_SET, "usb_test", 0);
+  usb_plugged = 1;
+}
+
+void usbdbg_wait_for_plug(void)
+{
+  while (!usb_plugged)
+    cyg_thread_delay(10);
 }
 
 extern int _libgame_glue_redirect_stdio_to_usbdbg;

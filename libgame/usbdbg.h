@@ -45,6 +45,9 @@ int usbdbg_init(void);
 /// session.
 void usbdbg_fini(void);
 
+/// Wait until USB device has been plugged in.
+void usbdbg_wait_for_plug(void);
+
 void usbdbg_redirect_stdio(int);
 
 /// @example usb/usb.c
