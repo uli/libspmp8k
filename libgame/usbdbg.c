@@ -25,7 +25,7 @@
 #include <string.h>
 
 #define DEBUG_BUF_SIZE 8192
-#define MAGIC_BLOCK 16
+#define MAGIC_BLOCK 3072
 
 static char dbg_buf[DEBUG_BUF_SIZE];
 static volatile unsigned int dbg_buf_start = 0;

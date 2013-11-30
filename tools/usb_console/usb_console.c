@@ -26,7 +26,7 @@
 #include <sys/mman.h>
 #include <stdint.h>
 
-#define MAGIC_BLOCK 16
+#define MAGIC_BLOCK 3072
 #define READ_SIZE 512
 
 int main(int argc, char **argv)
