@@ -17,6 +17,7 @@ extern "C" {
 /// mass storage devices, as that can lead to system crashes and data
 /// corruption. It is advisable to reset the device after a debugging
 /// session.
+/// @note An SD card must be present for USB debugging to work.
 /// @{
 
 /// Enable blocking I/O.
@@ -29,6 +30,7 @@ extern int usbdbg_blocking;
 /// Send a string to the USB debug console.
 void usbdbg_puts(const char *);
 
+/// Write a number of bytes to the USB debug console.
 void usbdbg_write(const char *, int);
 
 /// Initialize USB debug system.
@@ -48,6 +50,7 @@ void usbdbg_fini(void);
 /// Wait until USB device has been plugged in.
 void usbdbg_wait_for_plug(void);
 
+/// Redirect output for stdio and stderr to USB.
 void usbdbg_redirect_stdio(int);
 
 /// @example usb/usb.c
