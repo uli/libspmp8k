@@ -6,7 +6,7 @@
 #
 
 all:	build-bingtools build-chksum build-el2mmp build-packboot \
-	build-romboy build-sprdump build-usb_console
+	build-romboy build-sprdump build-usb_console build-hubpower
 
 clean:
 	$(MAKE) -C bingtools clean
@@ -37,3 +37,6 @@ build-sprdump:
 
 build-usb_console:
 	$(MAKE) -C usb_console
+
+build-hubpower:
+	$(MAKE) -C hubpower
