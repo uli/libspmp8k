@@ -1255,7 +1255,7 @@ extern int libgame_system_id;
 /// @}
 
 typedef struct {
-    char *name;
+    const char *name;
     uint32_t index;
 } libgame_buttonmap_t;
 
