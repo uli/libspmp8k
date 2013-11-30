@@ -135,7 +135,11 @@ void usbdbg_redirect_stdio(int onoff)
 
 static void invalidate_icache(void)
 {
-  __asm__("mcr p15, 0, %0, c7, c5, 0\n" :: "r"(0));
+  __asm__(/* "mcr p15, 0, %0, c7, c6, 0\n" */
+          "1: mrc p15, 0, r15, c7, c14, 3\n"
+          "bne 1b\n"
+          "mcr p15, 0, %0, c7, c5, 0\n"
+          "mcr p15, 0, %0, c7, c10, 4\n" :: "r"(0));
 }
 
 static uint32_t _rwstor2_msg_55a_call_orig = 0;
