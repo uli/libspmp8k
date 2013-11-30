@@ -77,6 +77,21 @@ void usbdbg_puts(const char *s)
   }
 }
 
+void usbdbg_write(const char *data, int len)
+{
+  while (len) {
+    if (usbdbg_blocking) {
+      while (dbg_buf_end == (dbg_buf_start - 1) % DEBUG_BUF_SIZE) {
+        cyg_thread_delay(2);
+      }
+    }
+    dbg_buf[dbg_buf_end] = *data;
+    data++;
+    dbg_buf_end = (dbg_buf_end + 1) % DEBUG_BUF_SIZE;
+    len--;
+  }
+}
+
 /* We redirect the call from RWStor2_Thread_UDC() to PostMessageExt() with
    message ID 0x55a (0x499 on some older(?) firmwares) here because it is
    interpreted by Game_Proc() as an order to start the USB application and

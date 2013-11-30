@@ -29,6 +29,8 @@ extern int usbdbg_blocking;
 /// Send a string to the USB debug console.
 void usbdbg_puts(const char *);
 
+void usbdbg_write(const char *, int);
+
 /// Initialize USB debug system.
 /// This function must be run before any other \c usbdbg functions
 /// can be used.
