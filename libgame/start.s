@@ -37,8 +37,8 @@ bss_zero:
 
 	ldr		r0, .Lfini
 	bl		atexit
-	bl		__libc_init_array
 	bl		_libgame_init
+	bl		__libc_init_array
 	bl		main				// enter the show
 
 	b		exit
