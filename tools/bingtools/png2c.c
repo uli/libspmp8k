@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <png.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
 #define	ERR(msg) { \
@@ -55,7 +56,7 @@ int main(int argc, char **argv)
 	uint8_t header[8];
 	uint8_t *image_data = NULL;
 	png_bytep *row_pointers = NULL;
-	int i;
+	unsigned int i;
 
 	if (argc < 3) ERR("too few arguments")
 
@@ -75,7 +76,7 @@ int main(int argc, char **argv)
 		ERR2("fssdfs");
 	}
 
-	if (setjmp(png_ptr->jmpbuf)) {
+	if (setjmp(png_jmpbuf(png_ptr))) {
         png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
         return 0;
     }
@@ -83,11 +84,11 @@ int main(int argc, char **argv)
 	png_init_io(png_ptr, fin);
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
-	printf("width    : %u\n", (unsigned int)info_ptr->width);
-	printf("height   : %u\n", (unsigned int)info_ptr->height);
-	printf("bpp      : %d\n", info_ptr->bit_depth);
-	printf("palette  : %d entries\n", info_ptr->num_palette);
-	printf("rowbytes : %u\n", (unsigned int)info_ptr->rowbytes);
+	printf("width    : %u\n", png_get_image_width(png_ptr, info_ptr));
+	printf("height   : %u\n", png_get_image_height(png_ptr, info_ptr));
+	printf("bpp      : %d\n", png_get_bit_depth(png_ptr, info_ptr));
+	printf("palette  : %d entries\n", png_get_palette_max(png_ptr, info_ptr));
+	printf("rowbytes : %u\n", (unsigned int)png_get_rowbytes(png_ptr, info_ptr));
 /*	fclose(fin);
 	return 0;
 
@@ -102,13 +103,13 @@ int main(int argc, char **argv)
 
 	// optional call to update the info structure
 //	png_read_update_info(png_ptr, info_ptr);
-	if ((image_data = (uint8_t*)malloc(info_ptr->rowbytes*info_ptr->height)) == NULL) {
+	if ((image_data = (uint8_t*)malloc(png_get_rowbytes(png_ptr, info_ptr)*png_get_image_height(png_ptr, info_ptr))) == NULL) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		return 0;
 	}
 
-	row_pointers = (png_bytep*)malloc(sizeof(png_bytep)*info_ptr->height);
-	for (i=0;  i<info_ptr->height; ++i) row_pointers[i] = image_data + i*info_ptr->rowbytes;
+	row_pointers = (png_bytep*)malloc(sizeof(png_bytep)*png_get_image_height(png_ptr, info_ptr));
+	for (i=0;  i<png_get_image_height(png_ptr, info_ptr); ++i) row_pointers[i] = image_data + i*png_get_rowbytes(png_ptr, info_ptr);
 
 	// the easiest way to read the image
 	png_read_image(png_ptr, row_pointers);
@@ -117,13 +118,16 @@ int main(int argc, char **argv)
 	char filename[256];
 	strcpy(filename, argv[2]);
 /*	write_binimg(strcat(filename, ".raw"), image_data, info_ptr->palette, info_ptr->num_palette,
-		info_ptr->width, info_ptr->height, info_ptr->bit_depth);
+		png_get_image_width(png_ptr, info_ptr), png_get_image_height(png_ptr, info_ptr), info_ptr->bit_depth);
 */
-	write_2c(argv[2], image_data, info_ptr->palette, info_ptr->num_palette,
-		info_ptr->width, info_ptr->height, info_ptr->bit_depth);
+	png_colorp pal;
+	int num_pal;
+	png_get_PLTE(png_ptr, info_ptr, &pal, &num_pal);
+	write_2c(argv[2], image_data, pal, num_pal,
+		png_get_image_width(png_ptr, info_ptr), png_get_image_height(png_ptr, info_ptr), png_get_bit_depth(png_ptr, info_ptr));
 
 	// clean up after the read, and free any memory allocated
-	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infop)0);
+	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)0);
 //	png_read_end(png_ptr, NULL);
 
 //i_am_done:
