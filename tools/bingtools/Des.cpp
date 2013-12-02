@@ -216,7 +216,7 @@ void Xor(uint8_t *InA, const uint8_t *InB, int len)
 void RotateL(uint8_t *In, int len, int loop)
 {
     memcpy(Tmp, In, loop);
-    memcpy(In, In+loop, len-loop);
+    memmove(In, In+loop, len-loop);
     memcpy(In+len-loop, Tmp, loop);
 }
 void ByteToBit(uint8_t *Out, const char *In, int bits)
